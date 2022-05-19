@@ -16,7 +16,7 @@ public:
 
 private:
     Executor m_executor;
-    std::string generateSelect AllQuery(const std::string& tableName) const;
+    std::string generateSelectAllQuery(const std::string& tableName) const;
 };
 }
 
