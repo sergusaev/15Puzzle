@@ -26,6 +26,12 @@ public:
     DBTypes::DBIndex dbID() const;
     void setDbID(DBTypes::DBIndex newDbID);
 
+    bool operator==(const Record& other) const{
+        return (other.nickname() == nickname()
+                && other.time() == time()
+                && other.turns() == turns());
+    }
+
 private:
     QString m_nickname;
     int m_time;

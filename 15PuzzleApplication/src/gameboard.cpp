@@ -1,4 +1,5 @@
 #include "gameboard.h"
+#include "recordsmodel.h"
 
 #include <cmath>
 #include <numeric>

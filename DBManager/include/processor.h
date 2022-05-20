@@ -12,8 +12,9 @@ class Processor
 public:
     Processor();
     ~Processor();
-    std::pair<DBTypes::DBResult,
-              std::vector<DBTypes::DBEntry>> requestTableData(DBTypes::DBTables table);
+    std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry>> requestTableData(DBTypes::DBTables table);
+    std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry>> requestTopTimeData(DBTypes::DBTables table);
+    std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry>> requestTopTurnsData(DBTypes::DBTables table);
 
     std::pair<DBTypes::DBResult, DBTypes::DBIndex> insertDataRecord(DBTypes::DBTables table, const DBTypes::DBEntry& recordData);
     DBTypes::DBResult removeDataRecord(DBTypes::DBTables table, const DBTypes::DBIndex index);

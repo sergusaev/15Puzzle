@@ -51,6 +51,20 @@ std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry>> Processor::requestTa
     return std::make_pair(resultState, std::move(result));
 }
 
+std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry> > Processor::requestTopTimeData(DBTypes::DBTables table)
+{
+    std::vector<QVariantList> result;
+    const DBTypes::DBResult resultState {m_d->selector.selectTopTime(tableMapper.at(table), result)};
+    return std::make_pair(resultState, std::move(result));
+}
+
+std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry> > Processor::requestTopTurnsData(DBTypes::DBTables table)
+{
+    std::vector<QVariantList> result;
+    const DBTypes::DBResult resultState {m_d->selector.selectTopTurns(tableMapper.at(table), result)};
+    return std::make_pair(resultState, std::move(result));
+}
+
 std::pair<DBTypes::DBResult, DBTypes::DBIndex> Processor::insertDataRecord(DBTypes::DBTables table, const DBTypes::DBEntry &recordData)
 {
     return m_d->manipulator.insertRow(tableMapper.at(table), recordData);

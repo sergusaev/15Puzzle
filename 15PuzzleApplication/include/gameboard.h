@@ -74,6 +74,7 @@ private:
     int m_currentElement = 0;
     int m_seconds = 0;
     int m_counter = 0;
+    QString nickname;
     bool m_currWinStatus = false;
     QString m_bestTime;
     int m_bestTurns;

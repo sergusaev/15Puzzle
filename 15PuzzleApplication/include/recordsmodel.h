@@ -20,6 +20,11 @@ public:
 
     QVariant data(const QModelIndex &index = {}, int role = Qt::DisplayRole) const override;
 
+    void addRecord(Record record);
+
+    void showTimeTop();
+
+    void showTurnsTop();
 private:
 
     std::vector<Record> m_records;
