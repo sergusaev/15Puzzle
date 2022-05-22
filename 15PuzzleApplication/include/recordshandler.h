@@ -5,6 +5,7 @@
 #include <memory>
 #include "record.h"
 
+
 namespace db {
 class Processor;
 }
@@ -17,8 +18,8 @@ public:
     std::pair<bool, std::vector<Record>> browseBestInTime();
     std::pair<bool, std::vector<Record>> browseBestInTurns();
     DBTypes::DBIndex addRecord (const Record& record);
-    bool removeRecord (const DBTypes::DBIndex index);
-    bool updateRecord (const DBTypes::DBIndex index, const Record& updatedRecord);
+//    bool removeRecord (const DBTypes::DBIndex index);
+//    bool updateRecord (const DBTypes::DBIndex index, const Record& updatedRecord);
 
 private:
     std::unique_ptr<db::Processor> m_processor;

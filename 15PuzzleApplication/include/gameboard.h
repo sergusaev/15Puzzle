@@ -4,6 +4,8 @@
 #include <vector>
 #include <utility>
 #include <QTimer>
+#include "recordshandler.h"
+
 
 class GameBoard : public QAbstractListModel
 {
@@ -14,11 +16,12 @@ class GameBoard : public QAbstractListModel
     Q_PROPERTY(int timePoint READ timePoint NOTIFY timePointChanged)
     Q_PROPERTY(int counter READ counter WRITE setCounter NOTIFY counterChanged)
     Q_PROPERTY(QString getTime READ getTime NOTIFY getTimeChanged)
-    Q_PROPERTY(bool winStatus READ winStatus WRITE setWinStatus NOTIFY winStatusChanged)
+    Q_PROPERTY(QString nickname READ nickname WRITE setNickname NOTIFY nicknameChanged)
+
 
 public:
     using Position = std::pair<size_t, size_t>;
-    static constexpr size_t DEFAULT_DIMENSION  {4};
+    static constexpr size_t DEFAULT_DIMENSION  {2};
 
     GameBoard(QObject *parent = nullptr, size_t board_dimension = DEFAULT_DIMENSION);
 
@@ -50,7 +53,6 @@ public:
     void setCurrentElement(int value);
     void setTimePoint(int value);
     Q_INVOKABLE void setCounter(int value);
-    Q_INVOKABLE void setWinStatus(bool value);
     Q_INVOKABLE QString getTime();
     Q_INVOKABLE bool move (int index);
     Q_INVOKABLE bool checkWin();
@@ -58,10 +60,13 @@ public:
     int currentElement() const;
     int timePoint() const;
     int counter() const;
-    bool winStatus() const;
+
     size_t dimension() const;
     size_t hiddenElementValue() const;
 
+
+    const QString &nickname() const;
+    void setNickname(const QString &newNickname);
 
 private slots:
     void onTimeout();
@@ -74,24 +79,25 @@ private:
     int m_currentElement = 0;
     int m_seconds = 0;
     int m_counter = 0;
-    QString nickname;
-    bool m_currWinStatus = false;
-    QString m_bestTime;
-    int m_bestTurns;
+    QString m_nickname;
     QTimer m_timer;
-
+    RecordsHandler m_recordsHandler;
 
     bool isBoardValid() const;
     bool isPositionValid(const size_t position) const;
     bool isSolved() const;
     Position getRowCol(size_t index) const;
 
+
+
 signals:
     void currentElementChanged();
     void timePointChanged();
     void counterChanged();
+    void nicknameChanged();
     void getTimeChanged();
-    void winStatusChanged();
+    void puzzleSolved(QString nickname, int time, int turns);
+
 
 };
 

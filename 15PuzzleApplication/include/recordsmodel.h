@@ -22,9 +22,13 @@ public:
 
     void addRecord(Record record);
 
-    void showTimeTop();
+    Q_INVOKABLE void getTimeRanking();
 
-    void showTurnsTop();
+    Q_INVOKABLE void getTurnsRanking();
+
+
+
+
 private:
 
     std::vector<Record> m_records;

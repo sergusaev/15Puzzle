@@ -1,7 +1,7 @@
 #ifndef RECORD_H
 #define RECORD_H
 
-#include "dbtypes.h"
+#include <dbtypes.h>
 #include <QString>
 
 

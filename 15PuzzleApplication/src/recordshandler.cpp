@@ -4,7 +4,7 @@
 RecordsHandler::RecordsHandler()
     : m_processor {new db::Processor{}}
 {
-
+//    connect(&model, &RecordsModel::puzzleSolved, this, addRecord());
 }
 
 RecordsHandler::~RecordsHandler()
@@ -51,25 +51,25 @@ DBTypes::DBIndex RecordsHandler::addRecord(const Record &record)
     return (result == DBTypes::DBResult::OK) ? index : -1;
 }
 
-bool RecordsHandler::removeRecord(const DBTypes::DBIndex index)
-{
-    DBTypes::DBResult result;
-    result = m_processor->removeDataRecord(DBTypes::DBTables::Records, index);
-    return result == DBTypes::DBResult::OK;
-}
+//bool RecordsHandler::removeRecord(const DBTypes::DBIndex index)
+//{
+//    DBTypes::DBResult result;
+//    result = m_processor->removeDataRecord(DBTypes::DBTables::Records, index);
+//    return result == DBTypes::DBResult::OK;
+//}
 
-bool RecordsHandler::updateRecord(const DBTypes::DBIndex index, const Record &updatedRecord)
-{
-    DBTypes::DBResult result;
-    result = m_processor->updateDataRecord(DBTypes::DBTables::Records,
-                                           index,
-                                           {updatedRecord.nickname(),
-                                            updatedRecord.time(),
-                                            updatedRecord.turns(),
-                                            updatedRecord.dbID()});
-#ifdef DEBUG_OUTPUT
-    qDebug() << "In function RecordsHandler::updateRecord(<args>) ID of record to update:" << index;
-#endif
-    return result == DBTypes::DBResult::OK;
+//bool RecordsHandler::updateRecord(const DBTypes::DBIndex index, const Record &updatedRecord)
+//{
+//    DBTypes::DBResult result;
+//    result = m_processor->updateDataRecord(DBTypes::DBTables::Records,
+//                                           index,
+//                                           {updatedRecord.nickname(),
+//                                            updatedRecord.time(),
+//                                            updatedRecord.turns(),
+//                                            updatedRecord.dbID()});
+//#ifdef DEBUG_OUTPUT
+//    qDebug() << "In function RecordsHandler::updateRecord(<args>) ID of record to update:" << index;
+//#endif
+//    return result == DBTypes::DBResult::OK;
 
-}
+//}

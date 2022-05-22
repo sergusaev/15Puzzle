@@ -32,7 +32,7 @@ HEADERS += \
     include/recordshandler.h
 
 INCLUDEPATH += $$PWD/include
-INCLUDEPATH += $$PWD/../DBManager/include
+INCLUDEPATH += $$PWD/../shared/include
 
 LIBS += -L$$PWD/../shared/lib/ -lDBManager
 
@@ -43,6 +43,10 @@ win32:RC_FILE = ico_rec.rc
 
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
+
+#QT_BINS = $$shell_path($${QT.core.bins})
+#QMAKE_POST_LINK += "$$QMAKE_COPY release\\$${TARGET}.exe $$shell_quote($$shell_path($$_PRO_FILE_PWD_/../../Dist/15Puzzle/))" & \
+#    "$${QT_BINS}\\windeployqt.exe --release --qmldir $${QT_BINS}\\..\\qml $$shell_quote($$shell_path($$_PRO_FILE_PWD_/../../Dist/15Puzzle/$${TARGET}.exe))"
 
 DISTFILES += \
     android/AndroidManifest.xml \

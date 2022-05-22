@@ -119,8 +119,7 @@ bool ConnectionManager::DBManagerPrivate::setUpTables()
             "("
             "Nickname TEXT,"
             "Time INTEGER,"
-            "Turns INTEGER,"
-            "UNIQUE(Nickname)"
+            "Turns INTEGER"
             ")"
         }
     };

@@ -15,7 +15,8 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     GameBoard model;
-    RecordsModel recordsModel;
+    RecordsModel timeRecordsModel;
+    RecordsModel turnsRecordsModel;
 
 //    qmlRegisterType<GameBoard>("Game", 1, 0, "GameBoardModel");
 //    qmlRegisterType<RecordsModel>("Records", 1, 0, "RecordsModel");
@@ -29,7 +30,8 @@ int main(int argc, char *argv[])
     }, Qt::QueuedConnection);
 
     engine.rootContext()->setContextProperty("gameBoardModel", &model);
-    engine.rootContext()->setContextProperty("recordsModel", &recordsModel);
+    engine.rootContext()->setContextProperty("timeRecordsModel", &timeRecordsModel);
+    engine.rootContext()->setContextProperty("turnsRecordsModel", &turnsRecordsModel);
 
     engine.load(url);
 

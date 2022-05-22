@@ -3,7 +3,7 @@
 
 RecordsModel::RecordsModel()
 {
-
+//    connect();
 }
 
 QHash<int, QByteArray> RecordsModel::roleNames() const
@@ -64,7 +64,7 @@ void RecordsModel::addRecord(Record record)
     endInsertRows();
 }
 
-void RecordsModel::showTimeTop()
+void RecordsModel::getTimeRanking()
 {
     bool requestResult {false};
     std::vector<Record> recordsResult;
@@ -84,7 +84,7 @@ void RecordsModel::showTimeTop()
 
 }
 
-void RecordsModel::showTurnsTop()
+void RecordsModel::getTurnsRanking()
 {
     bool requestResult {false};
     std::vector<Record> recordsResult;

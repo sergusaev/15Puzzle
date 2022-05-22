@@ -14,7 +14,8 @@ GameBoard::GameBoard(QObject *parent, size_t board_dimension):
     m_hiddenElementValue {m_boardsize},
     m_currentElement {-1},
     m_seconds {0},
-    m_counter {0}
+    m_counter {0},
+    m_nickname {"Longfellow"}
 
 {
     m_raw_board.resize(m_boardsize);
@@ -28,6 +29,19 @@ GameBoard::GameBoard(QObject *parent, size_t board_dimension):
 void GameBoard::onTimeout()
 {
     setTimePoint(timePoint() + 1);
+}
+
+const QString &GameBoard::nickname() const
+{
+    return m_nickname;
+}
+
+void GameBoard::setNickname(const QString &newNickname)
+{
+    if (m_nickname == newNickname)
+        return;
+    m_nickname = newNickname;
+    emit nicknameChanged();
 }
 
 bool GameBoard::moveRows(const QModelIndex & sourceParent, int sourceRow, int count, const QModelIndex & destinationParent, int destinationChild)
@@ -143,10 +157,6 @@ int GameBoard::counter() const
     return m_counter;
 }
 
-bool GameBoard::winStatus() const
-{
-    return m_currWinStatus;
-}
 
 void GameBoard::setCurrentElement(int value)
 {
@@ -180,10 +190,6 @@ void GameBoard::setCounter(int value)
     emit  counterChanged();
 }
 
-void GameBoard::setWinStatus(bool value)
-{
-    m_currWinStatus = value;
-}
 
 QString GameBoard::getTime()
 {
@@ -253,8 +259,7 @@ bool GameBoard::checkWin()
 {
     if(isSolved()) {
         m_timer.stop();
-        m_bestTime = getTime();
-        m_bestTurns = m_counter;
+        m_recordsHandler.addRecord({m_nickname, m_seconds, m_counter});
         return true;
     }
     else {
