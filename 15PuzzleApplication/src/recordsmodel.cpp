@@ -32,7 +32,7 @@ QVariant RecordsModel::data(const QModelIndex &index, int role) const
         return QVariant::fromValue(record.nickname());
     }
     case RecordRoles::TimeRole: {
-        return QVariant::fromValue(record.time());
+        return QVariant::fromValue(timeToString(record.time()));
     }
     case RecordRoles::TurnsRole: {
         return QVariant::fromValue(record.turns());
@@ -44,25 +44,6 @@ QVariant RecordsModel::data(const QModelIndex &index, int role) const
     }
 }
 
-void RecordsModel::addRecord(Record record)
-{
-    DBTypes::DBIndex index = m_recordsHandler.addRecord(record);
-    if(index == -1) {
-        qDebug() << "Failed to insert new contact into database" << "\n";
-        return;
-    }
-    qDebug() << "New contact has index " << index << " in database" << "\n";
-    record.setDbID(index);
-    beginInsertRows(QModelIndex(),rowCount(), rowCount());
-    m_records.push_back(record);
-    for(const auto& record : m_records) {
-        qDebug() <<  "Database ID: " << record.dbID() << " "
-                 <<  "Nickname: " << record.nickname() << " "
-                 <<  "Time: " << record.time() << " "
-                 <<  "Turns: " << record.turns() << "\n";
-    }
-    endInsertRows();
-}
 
 void RecordsModel::getTimeRanking()
 {
@@ -70,8 +51,9 @@ void RecordsModel::getTimeRanking()
     std::vector<Record> recordsResult;
     std::tie(requestResult, recordsResult) = m_recordsHandler.browseBestInTime();
     if (requestResult) {
+        beginResetModel();
         m_records.swap(recordsResult);
-        emit dataChanged(createIndex(0,0), createIndex(m_records.size(), 0));
+        endResetModel();
     } else {
         qCritical() << "Browsing records via time failed!";
     }
@@ -90,8 +72,9 @@ void RecordsModel::getTurnsRanking()
     std::vector<Record> recordsResult;
     std::tie(requestResult, recordsResult) = m_recordsHandler.browseBestInTurns();
     if (requestResult) {
+        beginResetModel();
         m_records.swap(recordsResult);
-        emit dataChanged(createIndex(0,0), createIndex(m_records.size(), 0));
+        endResetModel();
     } else {
         qCritical() << "Browsing records via turns failed!";
     }
@@ -101,4 +84,9 @@ void RecordsModel::getTurnsRanking()
                  <<  "Time: " << record.time() << " "
                  <<  "Turns: " << record.turns() << "\n";
     }
+}
+
+QString RecordsModel::timeToString(int time) const
+{
+    return  QString("%1 : %2").arg(time / 60).arg(time % 60);
 }

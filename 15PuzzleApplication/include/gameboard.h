@@ -54,6 +54,7 @@ public:
     void setTimePoint(int value);
     Q_INVOKABLE void setCounter(int value);
     Q_INVOKABLE QString getTime();
+
     Q_INVOKABLE bool move (int index);
     Q_INVOKABLE bool checkWin();
     Q_INVOKABLE void restart();

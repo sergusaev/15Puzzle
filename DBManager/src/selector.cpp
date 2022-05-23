@@ -87,13 +87,13 @@ std::string Selector::generateSelectAllQuery(const std::string& tableName) const
 
 std::string Selector::generateSelectTopTimeQuery(const std::string &tableName) const
 {
-    std::string query = "SELECT TOP 10 * FROM " + tableName + " ORDER BY " + tablesMapping.at(tableName)[1] + " ASC";
+    std::string query = "SELECT * FROM " + tableName + " ORDER BY " + tablesMapping.at(tableName)[1] + " ASC LIMIT 10";
     return query;
 }
 
 std::string Selector::generateSelectTopTurnsQuery(const std::string &tableName) const
 {
-    std::string query = "SELECT TOP 10 * FROM " + tableName + " ORDER BY " + tablesMapping.at(tableName)[2] + " ASC";
+    std::string query = "SELECT * FROM " + tableName + " ORDER BY " + tablesMapping.at(tableName)[2] + " ASC LIMIT 10";
     return query;
 }
 }

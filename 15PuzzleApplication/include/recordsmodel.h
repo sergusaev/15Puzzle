@@ -20,13 +20,11 @@ public:
 
     QVariant data(const QModelIndex &index = {}, int role = Qt::DisplayRole) const override;
 
-    void addRecord(Record record);
-
     Q_INVOKABLE void getTimeRanking();
 
     Q_INVOKABLE void getTurnsRanking();
 
-
+    Q_INVOKABLE QString timeToString(int time) const; // func to display time in records table
 
 
 private:

@@ -3,11 +3,44 @@ import QtQuick.Controls 2.15
 
 CustomPage {
 
+    Component.onCompleted: {
+        timeRecordsModel.getTimeRanking()
+        turnsRecordsModel.getTurnsRanking()
+    }
 
     id: root
+    Rectangle {
+        id: _records_table_wrapper
+        anchors.top: parent.top
+        anchors.topMargin: width / 2.5
+        anchors.horizontalCenter: parent.horizontalCenter
+        width: root.width * 0.82
+        height: width * 1.5
+        color: "white"
 
-    Component.onCompleted: {
-        console.log(13)
+        StackView {
+            id: _stack_view_records
+            anchors.fill: parent
+            initialItem: _time_records_page
+
+        }
+
+        Component {
+            id: _time_records_page
+            RecordsTable {
+                id:_time_records_table
+                tableType: "time"
+            }
+        }
+
+        Component {
+            id:  _turns_records_page
+            RecordsTable {
+                id:_turns_records_table
+                tableType: "turns"
+            }
+        }
+
     }
 
     CustomButton {
@@ -52,8 +85,6 @@ CustomPage {
 
             }
         }
-
-
 
 
 

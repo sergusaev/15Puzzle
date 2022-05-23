@@ -197,6 +197,8 @@ QString GameBoard::getTime()
 }
 
 
+
+
 GameBoard::Position GameBoard::getRowCol(size_t index) const
 {
     size_t row = index / m_dimension;
