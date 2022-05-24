@@ -88,5 +88,16 @@ void RecordsModel::getTurnsRanking()
 
 QString RecordsModel::timeToString(int time) const
 {
-    return  QString("%1 : %2").arg(time / 60).arg(time % 60);
+    return QString("%1:%2").arg(time / 60).arg(time % 60);
 }
+
+QString RecordsModel::rankToString(int rank) const
+{
+    return QString("%1.").arg(rank);
+
+}
+
+//QString RecordsModel::turnsToString(int turns) const
+//{
+//    return QString("%1 turns").arg(turns);
+//}

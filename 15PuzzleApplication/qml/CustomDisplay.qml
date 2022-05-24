@@ -23,7 +23,7 @@ Item {
             Text {
                 color: "white"
                 font {
-                    pointSize: Math.min(parent.width, parent.height) / 2
+                    pointSize: parent.height / 2.2
                     bold : true
                 }
                 anchors.centerIn: parent

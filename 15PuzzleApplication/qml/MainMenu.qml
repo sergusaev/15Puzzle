@@ -12,7 +12,7 @@ CustomPage {
         text: qsTr("15-Puzzle")
         color: "burlywood"
         style: Text.Outline
-        styleColor: "darksalmon"
+        styleColor:  Qt.darker("burlywood", 2)
         font {
             pointSize: Math.min(root.width, root.height) / 14
             bold : true

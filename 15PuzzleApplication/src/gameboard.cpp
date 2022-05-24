@@ -193,7 +193,7 @@ void GameBoard::setCounter(int value)
 
 QString GameBoard::getTime()
 {
-    return  QString("%1 : %2").arg(timePoint() / 60).arg(timePoint() % 60);
+    return  QString("%1:%2").arg(timePoint()/60).arg(timePoint()%60);
 }
 
 
