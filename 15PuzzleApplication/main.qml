@@ -12,10 +12,16 @@ ApplicationWindow {
     StackView {
         id: _stack_view
         anchors.fill: parent
-        initialItem: _main_menu_stack_page
+        initialItem: _authorization_window_stack_page
 
     }
 
+    Component {
+        id: _authorization_window_stack_page
+        MyQml.AuthorizationWindow {
+            id:_authorization_window
+        }
+    }
     Component {
         id: _main_menu_stack_page
         MyQml.MainMenu {
@@ -35,15 +41,8 @@ ApplicationWindow {
         }
     }
 
-
-
     onClosing: {
-        if(_stack_view.depth > 1){
-            close.accepted = false
-            _stack_view.pop();
-        }else{
-            return;
-        }
+        Qt.quit()
     }
 
 }

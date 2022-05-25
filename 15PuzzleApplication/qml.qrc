@@ -17,5 +17,6 @@
         <file>qml/Records.qml</file>
         <file>qml/Tile.qml</file>
         <file>qml/RecordsTable.qml</file>
+        <file>qml/AuthorizationWindow.qml</file>
     </qresource>
 </RCC>

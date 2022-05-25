@@ -67,7 +67,7 @@ public:
 
 
     const QString &nickname() const;
-    void setNickname(const QString &newNickname);
+    Q_INVOKABLE void setNickname(const QString &newNickname);
 
 private slots:
     void onTimeout();

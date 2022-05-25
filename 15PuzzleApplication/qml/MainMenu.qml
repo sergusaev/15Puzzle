@@ -2,19 +2,18 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtGraphicalEffects 1.15
 
-//import Qt5Compat.GraphicalEffects
-
 CustomPage {
     id: root
 
     Text {
-        id: _15_puzzle_text
-        text: qsTr("15-Puzzle")
+        id: _greetings_text
+
+        text: qsTr("Hi, " + gameBoardModel.nickname + "!")
         color: "burlywood"
         style: Text.Outline
         styleColor:  Qt.darker("burlywood", 2)
         font {
-            pointSize: Math.min(root.width, root.height) / 14
+            pointSize: Math.min(root.width, root.height) / 18
             bold : true
         }
         anchors.top: parent.top
@@ -23,12 +22,13 @@ CustomPage {
     }
 
     DropShadow {
-        anchors.fill: _15_puzzle_text
+        anchors.fill: _greetings_text
         horizontalOffset: 6
         verticalOffset: 6
         color: "black"
-        source: _15_puzzle_text
+        source: _greetings_text
     }
+
 
 
     CustomButton {
@@ -36,7 +36,7 @@ CustomPage {
         buttonWidth: root.width * 0.7
         buttonHeight: buttonWidth * 0.3
         anchors.horizontalCenter:  parent.horizontalCenter
-        anchors.top: _15_puzzle_text.bottom
+        anchors.top: _greetings_text.bottom
         anchors.topMargin: parent.height / 8
         text: qsTr("NEW GAME")
         onClicked:  {
@@ -59,15 +59,20 @@ CustomPage {
     }
 
     CustomButton {
-        id: _quit_button
+        id: _back_button
         buttonWidth: parent.width * 0.7
         buttonHeight: buttonWidth * 0.3
         anchors.horizontalCenter:  parent.horizontalCenter
         anchors.top: _records_button.bottom
         anchors.topMargin: parent.height / 8
-        text: qsTr("QUIT")
-        onClicked: Qt.quit()
-    }
+        text: qsTr("BACK")
+        onClicked: {
+            if(_stack_view.depth > 1) {
+                _stack_view.pop()
+            } else {
+                return
+            }
+        }
 }
 
 
@@ -84,3 +89,4 @@ Designer {
     D{i:0;autoSize:true;height:480;width:640}
 }
 ##^##*/
+}

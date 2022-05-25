@@ -9,7 +9,8 @@ SOURCES += \
         src/recordsmodel.cpp \
         src/record.cpp \
         src/gameboard.cpp \
-        main.cpp
+        main.cpp \
+        src/usersettings.cpp
 
 RESOURCES += qml.qrc
 
@@ -29,7 +30,8 @@ HEADERS += \
     include/gameboard.h \
     include/record.h \
     include/recordsmodel.h \
-    include/recordshandler.h
+    include/recordshandler.h \
+    include/usersettings.h
 
 INCLUDEPATH += $$PWD/include
 INCLUDEPATH += $$PWD/../shared/include
@@ -49,6 +51,7 @@ ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 #    "$${QT_BINS}\\windeployqt.exe --release --qmldir $${QT_BINS}\\..\\qml $$shell_quote($$shell_path($$_PRO_FILE_PWD_/../../Dist/15Puzzle/$${TARGET}.exe))"
 
 DISTFILES += \
+    AutorizationWindow.qml \
     android/AndroidManifest.xml \
     android/build.gradle \
     android/gradle.properties \
