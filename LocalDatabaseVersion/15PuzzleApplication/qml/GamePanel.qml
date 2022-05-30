@@ -18,9 +18,7 @@ CustomPage {
             bold : true
         }
         anchors.top: parent.top
-//        anchors.right: _gameboard_wrapper.right
         anchors.horizontalCenter: _counter.horizontalCenter
-//        anchors.horizontalCenterOffset: width
         anchors.topMargin: parent.height / 10
     }
 
@@ -43,9 +41,7 @@ CustomPage {
             bold : true
         }
         anchors.top: parent.top
-//        anchors.left: _gameboard_wrapper.left
         anchors.horizontalCenter: _timer.horizontalCenter
-//        anchors.horizontalCenterOffset:  - _counter_title.anchors.horizontalCenterOffset
         anchors.topMargin: parent.height / 10
     }
 
@@ -61,7 +57,6 @@ CustomPage {
         id: _timer
         anchors.left: _gameboard_wrapper.left
         anchors.leftMargin: displayWidth / 2
-//        anchors.horizontalCenter:  _timer_title.horizontalCenter
         anchors.top: _timer_title.bottom
         anchors.topMargin: displayHeight / 1.5
         displayHeight: displayWidth * 0.45
@@ -73,17 +68,12 @@ CustomPage {
         id: _counter
         anchors.right: _gameboard_wrapper.right
         anchors.rightMargin: displayWidth / 2
-//        anchors.horizontalCenter:  _counter_title.horizontalCenter
         anchors.top: _counter_title.bottom
         anchors.topMargin: displayHeight / 1.5
         displayHeight: displayWidth * 0.45
         displayWidth: parent.width * 0.35
         displayText: _gameboard.model.counter
     }
-
-
-
-
 
 
 
@@ -97,7 +87,7 @@ CustomPage {
         radius: 10
 
         Image {
-            id: _wood_5_img
+            id: _gameboard_wrapper_img
             property bool rounded: true
             property bool adapt: true
             anchors.fill: parent
@@ -106,46 +96,55 @@ CustomPage {
             layer.enabled: rounded
             layer.effect: OpacityMask {
                 maskSource: Item {
-                    width: _wood_5_img.width
-                    height: _wood_5_img.height
+                    width: _gameboard_wrapper_img.width
+                    height: _gameboard_wrapper_img.height
                     Rectangle {
                         anchors.centerIn: parent
-                        width: _wood_5_img.adapt ? _wood_5_img.width : Math.min(_wood_5_img.width, _wood_5_img.height)
-                        height: _wood_5_img.adapt ? _wood_5_img.height : width
+                        width: _gameboard_wrapper_img.adapt ? _gameboard_wrapper_img.width : Math.min(_gameboard_wrapper_img.width, _gameboard_wrapper_img.height)
+                        height: _gameboard_wrapper_img.adapt ? _gameboard_wrapper_img.height : width
                         radius: _gameboard_wrapper.radius
                     }
                 }
             }
 
-            Image {
-                id: _3D_frame
-                source: "../pics/frame_1.png"
-                anchors.fill: parent
-                anchors.centerIn: parent
-                anchors.left: parent.left
-                anchors.leftMargin: -9
-                anchors.right: parent.right
-                anchors.rightMargin: -9
-                anchors.top: parent.top
-                anchors.topMargin: -17
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: -2
-            }
+        }
 
+        GameBoard {
+            id: _gameboard
+            z:_gameboard_wrapper_frame_img.z + 1
+            anchors.fill: parent
+            anchors.margins: 3
+        }
 
-            GameBoard {
-                id: _gameboard
-                anchors.fill: parent
-                anchors.margins: 3
+        Image {
+            id: _gameboard_wrapper_frame_img
+            z: _gameboard_wrapper_img.z + 1
+            source: "../pics/frame_1.png"
+            property bool rounded: true
+            property bool adapt: true
+            anchors.fill: parent
+            fillMode: Image.Stretch
 
+            layer.enabled: rounded
+            layer.effect: OpacityMask {
+                maskSource: Item {
+                    width: _gameboard_wrapper_frame_img.width
+                    height: _gameboard_wrapper_frame_img.height
+                    Rectangle {
+                        anchors.centerIn: parent
+                        width: _gameboard_wrapper_frame_img.adapt ? _gameboard_wrapper_frame_img.width : Math.min(_gameboard_wrapper_frame_img.width, _gameboard_wrapper_frame_img.height)
+                        height: _gameboard_wrapper_frame_img.adapt ? _gameboard_wrapper_frame_img.height : width
+                        radius: _gameboard_wrapper.radius
+                    }
+                }
             }
         }
     }
 
     CustomButton {
         id: _restart_button
-        buttonWidth: _timer.displayWidth
-        buttonHeight: buttonWidth * 0.45
+        width: _timer.displayWidth
+        height: width * 0.45
         anchors.horizontalCenter:  _timer_title.horizontalCenter
 
         anchors.top: _gameboard_wrapper.bottom
@@ -158,8 +157,8 @@ CustomPage {
 
     CustomButton {
         id: _quit_game_button
-        buttonWidth: _counter.displayWidth
-        buttonHeight: buttonWidth * 0.45
+        width: _counter.displayWidth
+        height: width * 0.45
         anchors.horizontalCenter:  _counter_title.horizontalCenter
 
         anchors.top: _gameboard_wrapper.bottom
@@ -235,12 +234,12 @@ CustomPage {
 
             CustomButton {
                 id: _to_main_menu_button
-                buttonWidth: parent.width * 0.4
-                buttonHeight: buttonWidth * 0.4
+                width: parent.width * 0.35
+                height: width * 0.4
                 anchors.right: parent.right
-                anchors.rightMargin: buttonWidth / 1.5
+                anchors.rightMargin: width / 4
                 anchors.verticalCenter: parent.verticalCenter
-                anchors.verticalCenterOffset: buttonHeight / 2
+                anchors.verticalCenterOffset: height / 2
 
                 text: qsTr("Quit")
                 onClicked:  {
@@ -253,12 +252,12 @@ CustomPage {
 
             CustomButton {
                 id: _start_new_game_button
-                buttonWidth: parent.width * 0.4
-                buttonHeight: buttonWidth * 0.4
+                width: parent.width * 0.35
+                height: width * 0.4
                 anchors.left: parent.left
-                anchors.leftMargin: buttonWidth / 1.5
+                anchors.leftMargin: width / 4
                 anchors.verticalCenter: parent.verticalCenter
-                anchors.verticalCenterOffset: buttonHeight / 2
+                anchors.verticalCenterOffset: height / 2
 
                 text: qsTr("Restart")
                 onClicked:  {

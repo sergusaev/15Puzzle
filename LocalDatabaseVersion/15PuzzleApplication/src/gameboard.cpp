@@ -1,34 +1,58 @@
 #include "gameboard.h"
 #include "recordsmodel.h"
-
 #include <cmath>
 #include <numeric>
 #include <algorithm>
 #include <random>
 
 
-GameBoard::GameBoard(QObject *parent, size_t board_dimension):
+GameBoard::GameBoard(QObject *parent, int dimension):
     QAbstractListModel {parent},
-    m_dimension {board_dimension},
-    m_boardsize {board_dimension * board_dimension},
-    m_hiddenElementValue {m_boardsize},
+    m_dimension {dimension},
     m_currentElement {-1},
     m_seconds {0},
-    m_counter {0},
-    m_nickname {"Longfellow"}
-
+    m_counter {0}
 {
-    m_raw_board.resize(m_boardsize);
-    std::iota(m_raw_board.begin(), m_raw_board.end(), 1);
-    shuffle();
-    connect(&m_timer, &QTimer::timeout, this, &GameBoard::onTimeout);
 
+connect(&m_timer, &QTimer::timeout, this, &GameBoard::onTimeout);
 }
 
 
 void GameBoard::onTimeout()
 {
     setTimePoint(timePoint() + 1);
+}
+
+
+
+const QString &GameBoard::password() const
+{
+    return m_password;
+}
+
+void GameBoard::setPassword(const QString &newPassword)
+{
+    if (m_password == newPassword)
+        return;
+    m_password = newPassword;
+    emit passwordChanged();
+}
+
+void GameBoard::addUser(const QString &nickname, const QString &password)
+{
+    m_recordsHandler.addUserLogPass(nickname, password);
+}
+
+int GameBoard::boardsize() const
+{
+    return m_boardsize;
+}
+
+void GameBoard::setBoardsize(int newBoardsize)
+{
+    if (m_boardsize == newBoardsize)
+        return;
+    m_boardsize = newBoardsize;
 }
 
 const QString &GameBoard::nickname() const
@@ -93,16 +117,16 @@ void GameBoard::shuffle()
 bool GameBoard::isBoardValid() const
 {
     int inv {0};
-    for (size_t i {0}; i < m_boardsize; ++i) {
-        for (size_t j = i; j < m_boardsize; ++j) {
+    for (int i {0}; i < m_boardsize; ++i) {
+        for (int j = i; j < m_boardsize; ++j) {
             if (m_raw_board[j].value < m_raw_board[i].value && m_raw_board[i].value!=m_boardsize){
                 ++inv;
             }
         }
     }
-    const size_t start_point = 1;
+    const int start_point = 1;
 
-    for (size_t i = 0; i < m_boardsize; ++i) {
+    for (int i = 0; i < m_boardsize; ++i) {
         if (m_raw_board[i].value == m_boardsize){
             inv += start_point + i / m_dimension;
         }
@@ -111,7 +135,7 @@ bool GameBoard::isBoardValid() const
     return (inv % 2) == 0;
 }
 
-bool GameBoard::isPositionValid(const size_t position) const
+bool GameBoard::isPositionValid(const int position) const
 {
     return position < m_boardsize;
 }
@@ -127,7 +151,7 @@ QVariant GameBoard::data(const QModelIndex &index, int role) const
         return {};
     }
 
-    const auto index_row {static_cast<size_t>(index.row())};
+    const auto index_row {static_cast<int>(index.row())};
 
     if (!isPositionValid(index_row)) {
         return {};
@@ -136,9 +160,17 @@ QVariant GameBoard::data(const QModelIndex &index, int role) const
     return QVariant(static_cast<int>(m_raw_board[index_row].value));
 }
 
-size_t GameBoard::hiddenElementValue() const
+int GameBoard::hiddenElementValue() const
 {
     return m_hiddenElementValue;
+}
+
+void GameBoard::setHiddenElementValue(int value)
+{
+    if(m_hiddenElementValue == value) {
+        return;
+    }
+    m_hiddenElementValue = value;
 }
 
 
@@ -193,16 +225,22 @@ void GameBoard::setCounter(int value)
 
 QString GameBoard::getTime()
 {
-    return  QString("%1:%2").arg(timePoint()/60).arg(timePoint()%60);
+    QString min = ((timePoint() / 60) < 10) ? QString("0%1").arg(timePoint() / 60) : QString("%1").arg(timePoint() / 60);
+    QString sec = ((timePoint() % 60) < 10) ? QString("0%1").arg(timePoint() % 60) : QString("%1").arg(timePoint() % 60);
+    return min + ":" + sec;
+}
+
+QString GameBoard::getUserPassword(const QString& nickname)
+{
+    QString ret {m_recordsHandler.getPassword(nickname)};
+    return ret;
 }
 
 
-
-
-GameBoard::Position GameBoard::getRowCol(size_t index) const
+GameBoard::Position GameBoard::getRowCol(int index) const
 {
-    size_t row = index / m_dimension;
-    size_t col = index % m_dimension;
+    int row = index / m_dimension;
+    int col = index % m_dimension;
     return std::make_pair(row, col);
 }
 
@@ -213,7 +251,7 @@ namespace  {
             return false;
         }
 
-        const auto calc_distance = [](size_t pos1, size_t pos2){
+        const auto calc_distance = [](int pos1, int pos2){
             int distance = static_cast<int>(pos1);
             distance -= static_cast<int>(pos2);
             distance = std::abs(distance);
@@ -240,7 +278,7 @@ namespace  {
 
 bool GameBoard::move(int index)
 {
-    if (!isPositionValid(static_cast<size_t>(index))) {
+    if (!isPositionValid(static_cast<int>(index))) {
         return false;
     }
     Position positionOfIndex {getRowCol(index)};
@@ -261,7 +299,7 @@ bool GameBoard::checkWin()
 {
     if(isSolved()) {
         m_timer.stop();
-        m_recordsHandler.addRecord({m_nickname, m_seconds, m_counter});
+        m_recordsHandler.addRecord({m_nickname, m_seconds, m_counter, m_dimension});
         return true;
     }
     else {
@@ -277,9 +315,20 @@ void GameBoard::restart()
     shuffle();
 }
 
-size_t GameBoard::dimension() const
+int GameBoard::dimension() const
 {
     return m_dimension;
+}
+
+void GameBoard::setDimension(int dimension)
+{
+    m_dimension = static_cast<int>(dimension);
+    setBoardsize(m_dimension * m_dimension);
+    setHiddenElementValue(m_boardsize);
+    m_raw_board.resize(m_boardsize);
+    std::iota(m_raw_board.begin(), m_raw_board.end(), 1);
+    shuffle();
+
 }
 
 bool GameBoard::isSolved() const

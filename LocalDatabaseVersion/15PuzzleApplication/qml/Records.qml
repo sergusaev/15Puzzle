@@ -5,34 +5,20 @@ import QtGraphicalEffects 1.15
 CustomPage {
 
     Component.onCompleted: {
-        timeRecordsModel.getTimeRanking()
-        turnsRecordsModel.getTurnsRanking()
+        timeRecordsModel.getTimeRanking(gameBoardModel.dimension)
+        turnsRecordsModel.getTurnsRanking(gameBoardModel.dimension)
     }
 
     id: root
 
 
-    Text {
+    CustomText {
         id: _15_puzzle_text
         text: (_stack_view_records.currentItem.tableType === "time") ? qsTr("Time ranking") : qsTr("Turns ranking")
-        color: "burlywood"
-        style: Text.Outline
-        styleColor:  Qt.darker("burlywood", 2)
-        font {
-            pointSize: Math.min(root.width, root.height) / 18
-            bold : true
-        }
+        fontPointSize: Math.min(root.width, root.height) / 18
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.topMargin: parent.height / 12
-    }
-
-    DropShadow {
-        anchors.fill: _15_puzzle_text
-        horizontalOffset: 6
-        verticalOffset: 6
-        color: "black"
-        source: _15_puzzle_text
     }
 
     Rectangle {
@@ -90,12 +76,11 @@ CustomPage {
 
     CustomButton {
         id: _time_button
-        buttonWidth: parent.width * 0.25
-        buttonHeight: buttonWidth * 0.6
-        anchors.left:  parent.left
-        anchors.leftMargin: buttonWidth / 1.15
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 2 * buttonWidth
+        width: parent.width * 0.25
+        height: width * 0.5
+        anchors.left: _records_table_wrapper.left
+        anchors.top: _records_table_wrapper.bottom
+        anchors.topMargin: height / 2
         text: qsTr("Time")
         onClicked:  {
             if ( _stack_view_records.currentItem.tableType !== "time") {
@@ -111,12 +96,11 @@ CustomPage {
 
     CustomButton {
         id: _back_button
-        buttonWidth: parent.width * 0.25
-        buttonHeight: buttonWidth * 0.6
-        anchors.right:  parent.right
-        anchors.rightMargin: buttonWidth / 1.15
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 2 * buttonWidth
+        width: parent.width * 0.25
+        height: width * 0.5
+        anchors.right:  _records_table_wrapper.right
+        anchors.top: _records_table_wrapper.bottom
+        anchors.topMargin: height / 2
         text: qsTr("Back")
         onClicked:  {
             if(_stack_view.depth > 1) {
@@ -126,11 +110,11 @@ CustomPage {
     }
     CustomButton {
         id: _turns_button
-        buttonWidth: parent.width * 0.25
-        buttonHeight: buttonWidth * 0.6
+        width: parent.width * 0.25
+        height: width * 0.5
         anchors.horizontalCenter:  parent.horizontalCenter
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 2 * buttonWidth
+        anchors.top: _records_table_wrapper.bottom
+        anchors.topMargin: height / 2
         text: qsTr("Turns")
         onClicked:  {
             if ( _stack_view_records.currentItem.tableType !== "turns") {

@@ -5,10 +5,8 @@ import QtGraphicalEffects 1.15
 
 Page {
     id: root
-
     Rectangle {
         anchors.fill:parent
-
         Image {
             id: _wood_1_img
             anchors.fill:parent
@@ -20,8 +18,6 @@ Page {
                 anchors.centerIn: parent
                 anchors.margins: root.width / 20
                 radius: anchors.margins
-                clip: true
-
                 Image {
                     id: _wood_5_img
                     property bool rounded: true
@@ -62,6 +58,30 @@ Page {
                         verticalOffset: 3
                         color: "black"
                         source: _transparent_rect
+                    }
+                }
+
+                Image {
+                    id: _wood_5_frame_img
+                    z: _wood_5_img.z + 1
+                    source: "../pics/custom_page_frame.png"
+                    property bool rounded: true
+                    property bool adapt: true
+                    anchors.fill: parent
+                    fillMode: Image.Stretch
+
+                    layer.enabled: rounded
+                    layer.effect: OpacityMask {
+                        maskSource: Item {
+                            width: _wood_5_frame_img.width
+                            height: _wood_5_frame_img.height
+                            Rectangle {
+                                anchors.centerIn: parent
+                                width: _wood_5_frame_img.adapt ? _wood_5_frame_img.width : Math.min(_wood_5_frame_img.width, _wood_5_frame_img.height)
+                                height: _wood_5_frame_img.adapt ? _wood_5_frame_img.height : width
+                                radius: _main_layer.radius
+                            }
+                        }
                     }
                 }
 

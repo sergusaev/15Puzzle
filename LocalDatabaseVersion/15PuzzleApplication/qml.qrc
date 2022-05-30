@@ -17,6 +17,10 @@
         <file>qml/Records.qml</file>
         <file>qml/Tile.qml</file>
         <file>qml/RecordsTable.qml</file>
-        <file>qml/AuthorizationWindow.qml</file>
+        <file>qml/AuthorizationPage.qml</file>
+        <file>pics/custom_page_frame.png</file>
+        <file>qml/CustomBackground.qml</file>
+        <file>qml/CustomText.qml</file>
+        <file>qml/NewUserWindow.qml</file>
     </qresource>
 </RCC>

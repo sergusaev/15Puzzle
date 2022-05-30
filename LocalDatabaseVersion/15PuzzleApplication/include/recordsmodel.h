@@ -20,15 +20,15 @@ public:
 
     QVariant data(const QModelIndex &index = {}, int role = Qt::DisplayRole) const override;
 
-    Q_INVOKABLE void getTimeRanking();
+    Q_INVOKABLE void getTimeRanking(int dimension);
 
-    Q_INVOKABLE void getTurnsRanking();
+    Q_INVOKABLE void getTurnsRanking(int dimension);
 
     QString timeToString(int time) const; // func to display time in records table
 
     Q_INVOKABLE QString rankToString(int rank) const;
 
-//    QString turnsToString(int turns) const; // func to display turns in records table
+
 
 
 private:
@@ -41,6 +41,7 @@ private:
         NicknameRole = Qt::UserRole + 1,
         TimeRole,
         TurnsRole,
+        DimensionRole,
     };
 };
 

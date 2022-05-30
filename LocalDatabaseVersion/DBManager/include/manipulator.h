@@ -16,10 +16,10 @@ public:
 
 private:
     Executor m_executor;
-    std::string generateBindString(size_t paramCount) const;
-    std::string generateInsertQuery(const std::string& tableName, size_t paramCount) const;
+    std::string generateBindString(int paramCount) const;
+    std::string generateInsertQuery(const std::string& tableName, int paramCount) const;
     std::string generateRemoveQuery(const std::string &tableName) const;
-    std::string generateUpdateQuery(const std::string &tableName, size_t paramCount) const;
+    std::string generateUpdateQuery(const std::string &tableName, int paramCount) const;
 
 };
 }

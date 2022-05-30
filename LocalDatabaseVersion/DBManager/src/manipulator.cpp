@@ -34,7 +34,7 @@ DBResult Manipulator::updateRow(const std::string &tableName, const DBTypes::DBI
 }
 
 
-std::string Manipulator::generateBindString(size_t paramCount) const
+std::string Manipulator::generateBindString(int paramCount) const
 {
     std::ostringstream bindings;
     std::fill_n(std::ostream_iterator<std::string>(bindings),
@@ -45,10 +45,10 @@ std::string Manipulator::generateBindString(size_t paramCount) const
     return bindString;
 }
 
-std::string Manipulator::generateInsertQuery(const std::string& tableName, size_t paramCount) const
+std::string Manipulator::generateInsertQuery(const std::string& tableName, int paramCount) const
 {
     std::string tableColumns = tablesMapping.at(tableName)[0] + ",";
-    for(size_t i = 1; i < paramCount; ++i) {
+    for(int i = 1; i < paramCount; ++i) {
         tableColumns += " " + tablesMapping.at(tableName)[i] + ",";
     }
     tableColumns.pop_back(); //the last ","
@@ -66,10 +66,10 @@ std::string Manipulator::generateRemoveQuery(const std::string &tableName) const
     return query;
 }
 
-std::string Manipulator::generateUpdateQuery(const std::string &tableName, size_t paramCount) const
+std::string Manipulator::generateUpdateQuery(const std::string &tableName, int paramCount) const
 {
     std::string query = "UPDATE " + tableName +  " SET ";
-    for(size_t i = 0; i < paramCount; ++i) {
+    for(int i = 0; i < paramCount; ++i) {
         query += tablesMapping.at(tableName)[i] + " = ?,";
     }
     query.pop_back(); // the last ","

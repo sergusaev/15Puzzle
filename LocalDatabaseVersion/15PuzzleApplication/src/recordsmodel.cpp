@@ -12,6 +12,7 @@ QHash<int, QByteArray> RecordsModel::roleNames() const
     roles[RecordRoles::NicknameRole] = "nickname";
     roles[RecordRoles::TimeRole] = "time";
     roles[RecordRoles::TurnsRole] = "turns";
+    roles[RecordRoles::DimensionRole] = "dimension";
     return roles;
 }
 
@@ -37,6 +38,9 @@ QVariant RecordsModel::data(const QModelIndex &index, int role) const
     case RecordRoles::TurnsRole: {
         return QVariant::fromValue(record.turns());
     }
+    case RecordRoles::DimensionRole: {
+        return QVariant::fromValue(record.dimension());
+    }
     default:
     {
         return true;
@@ -45,11 +49,11 @@ QVariant RecordsModel::data(const QModelIndex &index, int role) const
 }
 
 
-void RecordsModel::getTimeRanking()
+void RecordsModel::getTimeRanking(int dimension)
 {
     bool requestResult {false};
     std::vector<Record> recordsResult;
-    std::tie(requestResult, recordsResult) = m_recordsHandler.browseBestInTime();
+    std::tie(requestResult, recordsResult) = m_recordsHandler.browseBestInTime(dimension);
     if (requestResult) {
         beginResetModel();
         m_records.swap(recordsResult);
@@ -66,11 +70,11 @@ void RecordsModel::getTimeRanking()
 
 }
 
-void RecordsModel::getTurnsRanking()
+void RecordsModel::getTurnsRanking(int dimension)
 {
     bool requestResult {false};
     std::vector<Record> recordsResult;
-    std::tie(requestResult, recordsResult) = m_recordsHandler.browseBestInTurns();
+    std::tie(requestResult, recordsResult) = m_recordsHandler.browseBestInTurns(dimension);
     if (requestResult) {
         beginResetModel();
         m_records.swap(recordsResult);
@@ -88,7 +92,10 @@ void RecordsModel::getTurnsRanking()
 
 QString RecordsModel::timeToString(int time) const
 {
-    return QString("%1:%2").arg(time / 60).arg(time % 60);
+    QString min = ((time / 60) < 10) ? QString("0%1").arg(time / 60) : QString("%1").arg(time / 60);
+    QString sec = ((time % 60) < 10) ? QString("0%1").arg(time % 60) : QString("%1").arg(time % 60);
+
+    return min + ":" + sec;
 }
 
 QString RecordsModel::rankToString(int rank) const

@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
 import "qml" as MyQml
+
 ApplicationWindow {
     id:root
     width: 300
@@ -18,7 +19,7 @@ ApplicationWindow {
 
     Component {
         id: _authorization_window_stack_page
-        MyQml.AuthorizationWindow {
+        MyQml.AuthorizationPage {
             id:_authorization_window
         }
     }

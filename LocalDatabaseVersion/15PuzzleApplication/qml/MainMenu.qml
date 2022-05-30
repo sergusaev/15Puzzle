@@ -5,39 +5,26 @@ import QtGraphicalEffects 1.15
 CustomPage {
     id: root
 
-    Text {
+    CustomText {
         id: _greetings_text
 
         text: qsTr("Hi, " + gameBoardModel.nickname + "!")
-        color: "burlywood"
-        style: Text.Outline
-        styleColor:  Qt.darker("burlywood", 2)
-        font {
-            pointSize: Math.min(root.width, root.height) / 18
-            bold : true
-        }
+
+        fontPointSize: Math.min(root.width, root.height) / 20
+
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.topMargin: parent.height / 12
     }
 
-    DropShadow {
-        anchors.fill: _greetings_text
-        horizontalOffset: 6
-        verticalOffset: 6
-        color: "black"
-        source: _greetings_text
-    }
-
-
 
     CustomButton {
         id: _new_game_button
-        buttonWidth: root.width * 0.7
-        buttonHeight: buttonWidth * 0.3
+        width: root.width * 0.7
+        height: width * 0.3
         anchors.horizontalCenter:  parent.horizontalCenter
         anchors.top: _greetings_text.bottom
-        anchors.topMargin: parent.height / 8
+        anchors.topMargin: parent.height / 6
         text: qsTr("NEW GAME")
         onClicked:  {
              gameBoardModel.restart()
@@ -47,11 +34,11 @@ CustomPage {
 
     CustomButton {
         id: _records_button
-        buttonWidth: parent.width * 0.7
-        buttonHeight: buttonWidth * 0.3
+        width: parent.width * 0.7
+        height: width * 0.3
         anchors.horizontalCenter:  parent.horizontalCenter
         anchors.top: _new_game_button.bottom
-        anchors.topMargin: parent.height / 8
+        anchors.topMargin: _new_game_button.height * 0.5
         text: qsTr("RECORDS")
         onClicked:  {
             _stack_view.push(_records_stack_page)
@@ -60,11 +47,11 @@ CustomPage {
 
     CustomButton {
         id: _back_button
-        buttonWidth: parent.width * 0.7
-        buttonHeight: buttonWidth * 0.3
+        width: parent.width * 0.7
+        height: width * 0.3
         anchors.horizontalCenter:  parent.horizontalCenter
         anchors.top: _records_button.bottom
-        anchors.topMargin: parent.height / 8
+        anchors.topMargin: _records_button.height * 0.5
         text: qsTr("BACK")
         onClicked: {
             if(_stack_view.depth > 1) {
@@ -74,15 +61,6 @@ CustomPage {
             }
         }
 }
-
-
-
-
-
-
-
-
-
 
 /*##^##
 Designer {

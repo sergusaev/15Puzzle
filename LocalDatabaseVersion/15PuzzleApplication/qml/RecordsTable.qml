@@ -17,76 +17,36 @@ Item {
             height: root.height / 10
             color: "transparent"
 
-            Text {
+            CustomText {
                 id: _rank_text
-                anchors.left: parent.left
-                anchors.verticalCenter: parent.verticalCenter
                 height: parent.height
-                width: height
-                style: Text.Outline
-                styleColor: Qt.darker("burlywood", 2)
-                font {
-                    pointSize: parent.height / 3.5
-                    bold : true
-                }
+                width: height * 0.8
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter               
+                fontPointSize: parent.height / 3.5
                 text: _records_list_view.model.rankToString(index + 1)
-                color: "darksalmon"
+                color: (index === 0) ? "gold" : (index === 1) ? "silver" : (index === 2) ? "#967444" : "darksalmon"
             }
 
-            DropShadow {
-                anchors.fill: _rank_text
-                horizontalOffset: 6
-                verticalOffset: 6
-                color: "black"
-                source: _rank_text
-            }
-
-            Text {
+            CustomText {
                 id: _nickname_text
                 anchors.left: _rank_text.right
                 anchors.right:_time_turns_text.left
                 anchors.verticalCenter: parent.verticalCenter
-                height: parent.height
-                style: Text.Outline
-                styleColor: Qt.darker("burlywood", 2)
-                font {
-                    pointSize: parent.height / 3.5
-                    bold : true
-                }
+                fontPointSize: parent.height / 3.5
                 text: nickname
-                color: "darksalmon"
+                color: (index === 0) ? "gold" : (index === 1) ? "silver" : (index === 2) ? "#967444" : "darksalmon"
             }
 
-            DropShadow {
-                anchors.fill: _nickname_text
-                horizontalOffset: 6
-                verticalOffset: 6
-                color: "black"
-                source: _nickname_text
-            }
-
-            Text {
+            CustomText {
                 id: _time_turns_text
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
                 height: parent.height
-                width: height * 1.2
-                style: Text.Outline
-                styleColor: Qt.darker("burlywood", 2)
-                font {
-                    pointSize: parent.height / 3.5
-                    bold : true
-                }
+                width: height * 1.2               
+                fontPointSize: parent.height / 3.5
                 text: tableType === "time" ? time : turns
-                color: "darksalmon"
-            }
-
-            DropShadow {
-                anchors.fill: _time_turns_text
-                horizontalOffset: 6
-                verticalOffset: 6
-                color: "black"
-                source: _time_turns_text
+                color: (index === 0) ? "gold" : (index === 1) ? "silver" : (index === 2) ? "#967444" : "darksalmon"
             }
 
         }

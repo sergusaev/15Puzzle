@@ -14,15 +14,18 @@ public:
     DBTypes::DBResult selectAll(const std::string& tableName,
                                 std::vector<QVariantList>& returnData);
     DBTypes::DBResult selectTopTime(const std::string& tableName,
-                                std::vector<QVariantList>& returnData);
-    DBTypes::DBResult selectTopTurns(const std::string& tableName,
+                                    int dimension,
                                     std::vector<QVariantList>& returnData);
-
+    DBTypes::DBResult selectTopTurns(const std::string& tableName,
+                                     int dimension,
+                                     std::vector<QVariantList>& returnData);    
+    DBTypes::DBResult selectUserPassword(const std::string& username, QVariant& returnData);
 private:
     Executor m_executor;
     std::string generateSelectAllQuery(const std::string& tableName) const;
     std::string generateSelectTopTimeQuery(const std::string& tableName) const;
     std::string generateSelectTopTurnsQuery(const std::string& tableName) const;
+
 };
 }
 

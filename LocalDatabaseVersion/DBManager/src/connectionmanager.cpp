@@ -119,9 +119,19 @@ bool ConnectionManager::DBManagerPrivate::setUpTables()
             "("
             "Nickname TEXT,"
             "Time INTEGER,"
-            "Turns INTEGER"
+            "Turns INTEGER,"
+            "Dimension INTEGER"
+            ")"
+        },
+        QSqlQuery {
+            "CREATE TABLE IF NOT EXISTS Users"
+            "("
+            "Nickname TEXT,"
+            "Password TEXT,"
+            "UNIQUE(Nickname)"
             ")"
         }
+
     };
 
     for (auto& query : creationQueries)

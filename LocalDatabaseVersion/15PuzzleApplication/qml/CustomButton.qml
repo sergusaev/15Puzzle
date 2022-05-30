@@ -3,21 +3,22 @@ import QtQuick.Controls 2.15
 import QtGraphicalEffects 1.15
 
 Item {
-    id: root
-    property alias buttonWidth: _caption.width
-    property alias buttonHeight: _caption.height
-    property alias text: _caption.text
-
-    signal clicked()
+    id: root    
+    property alias text: _caption_text.text
+    signal clicked()   
 
     Button {
         id: _caption
-        height: 20
-        width: 80
-        anchors.centerIn: parent
-
+        anchors.fill: parent
         text: ""
-        contentItem: Text {
+        background: Rectangle {
+            color: "transparent "
+        }
+
+        Text {
+            id: _caption_text
+            z: _caption_background_img.z + 1
+            anchors.centerIn: _caption_background_img
             text: _caption.text
             color: _caption.pressed ? Qt.darker("burlywood", 0.7) :  "burlywood"
             style: Text.Outline
@@ -26,23 +27,25 @@ Item {
                 pointSize: _caption.height / 4
                 bold : true
             }
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
         }
 
-        background: Image {
-            anchors.fill:parent
+        Image {
+            id:_caption_background_img
+            height:  _caption.height
+            width:  _caption.width
+            anchors.centerIn: parent
+            anchors.horizontalCenterOffset: 0
+            anchors.verticalCenterOffset: 0
             source: "../pics/button_1.png"
         }
 
         states: State {
             name: "pressed"
-            when: _caption.pressed === true
-
+            when: _caption.pressed
             PropertyChanges {
-                target: _caption
-                anchors.horizontalCenterOffset:  2
-                anchors.verticalCenterOffset:  2
+                target: _caption_background_img
+                anchors.horizontalCenterOffset: 2
+                anchors.verticalCenterOffset: 2
             }
             PropertyChanges {
                 target: _caption_shadow
@@ -56,6 +59,8 @@ Item {
             from: ""
             to: "pressed"
             reversible: true
+
+
         }
 
         onClicked: root.clicked()

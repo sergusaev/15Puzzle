@@ -18,10 +18,8 @@ Item {
             id: _wood_3_img
             property bool rounded: true
             property bool adapt: true
-
             anchors.fill:parent
             anchors.centerIn: parent
-
             source: "../pics/wood_3.png"
             layer.enabled: rounded
             layer.effect: OpacityMask {
@@ -36,21 +34,18 @@ Item {
                     }
                 }
             }
-
-
-
-            Text {
-                id: _tile_text
-                text: root.displayText
-                anchors.centerIn: parent
-                font {
-                    pointSize: Math.min(_tile_background.width, _tile_background.height) / 2
-                    bold : true
-                }
-                color: isCurrent ? "white" :"#15000000"
-                style: Text.Outline
-                styleColor: isCurrent ? "white" : "dimgrey"
+        }
+        Text {
+            id: _tile_text
+            text: root.displayText
+            anchors.centerIn: parent
+            font {
+                pointSize: _tile_background.width / 2.5
+                bold : true
             }
+            color: isCurrent ? "white" :"#15000000"
+            style: Text.Outline
+            styleColor: isCurrent ? "white" : "dimgrey"
         }
 
     }
@@ -58,9 +53,6 @@ Item {
         anchors.fill: _tile_background
         horizontalOffset: 3
         verticalOffset: 3
-        spread: 0.25
-        radius: 4.0
-        samples: 9
         color: "black"
         source: _tile_background
     }

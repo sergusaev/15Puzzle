@@ -13,12 +13,11 @@ public:
     Processor();
     ~Processor();
     std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry>> requestTableData(DBTypes::DBTables table);
-    std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry>> requestTopTimeData(DBTypes::DBTables table);
-    std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry>> requestTopTurnsData(DBTypes::DBTables table);
-
+    std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry>> requestTopTimeData(DBTypes::DBTables table, int dimension);
+    std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry>> requestTopTurnsData(DBTypes::DBTables table, int dimension);
+    QVariant getPasswordData(const QString& nickname);
     std::pair<DBTypes::DBResult, DBTypes::DBIndex> insertDataRecord(DBTypes::DBTables table, const DBTypes::DBEntry& recordData);
-    DBTypes::DBResult removeDataRecord(DBTypes::DBTables table, const DBTypes::DBIndex index);
-    DBTypes::DBResult updateDataRecord(DBTypes::DBTables table, const DBTypes::DBIndex index, const DBTypes::DBEntry& updatedRecordData);
+
 
 private:
     struct ProcessorPrivate;

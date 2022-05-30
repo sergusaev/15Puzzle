@@ -51,18 +51,25 @@ std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry>> Processor::requestTa
     return std::make_pair(resultState, std::move(result));
 }
 
-std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry> > Processor::requestTopTimeData(DBTypes::DBTables table)
+std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry> > Processor::requestTopTimeData(DBTypes::DBTables table, int dimension)
 {
     std::vector<QVariantList> result;
-    const DBTypes::DBResult resultState {m_d->selector.selectTopTime(tableMapper.at(table), result)};
+    const DBTypes::DBResult resultState {m_d->selector.selectTopTime(tableMapper.at(table), dimension, result)};
     return std::make_pair(resultState, std::move(result));
 }
 
-std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry> > Processor::requestTopTurnsData(DBTypes::DBTables table)
+std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry> > Processor::requestTopTurnsData(DBTypes::DBTables table, int dimension)
 {
     std::vector<QVariantList> result;
-    const DBTypes::DBResult resultState {m_d->selector.selectTopTurns(tableMapper.at(table), result)};
+    const DBTypes::DBResult resultState {m_d->selector.selectTopTurns(tableMapper.at(table), dimension, result)};
     return std::make_pair(resultState, std::move(result));
+}
+
+QVariant Processor::getPasswordData(const QString &nickname)
+{
+    QVariant returnData;
+    m_d->selector.selectUserPassword(nickname.toStdString(), returnData);
+    return returnData;
 }
 
 std::pair<DBTypes::DBResult, DBTypes::DBIndex> Processor::insertDataRecord(DBTypes::DBTables table, const DBTypes::DBEntry &recordData)
@@ -70,14 +77,6 @@ std::pair<DBTypes::DBResult, DBTypes::DBIndex> Processor::insertDataRecord(DBTyp
     return m_d->manipulator.insertRow(tableMapper.at(table), recordData);
 }
 
-DBTypes::DBResult Processor::removeDataRecord(DBTypes::DBTables table, const DBTypes::DBIndex index)
-{
-    return m_d->manipulator.removeRow(tableMapper.at(table), index);
-}
 
-DBTypes::DBResult Processor::updateDataRecord(DBTypes::DBTables table, const DBTypes::DBIndex index, const DBTypes::DBEntry &updatedRecordData)
-{
-    return m_d->manipulator.updateRow(tableMapper.at(table), index, updatedRecordData);
-}
 
 }
