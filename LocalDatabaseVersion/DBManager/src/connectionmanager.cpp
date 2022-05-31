@@ -117,17 +117,17 @@ bool ConnectionManager::DBManagerPrivate::setUpTables()
         QSqlQuery {
             "CREATE TABLE IF NOT EXISTS Records"
             "("
-            "Nickname TEXT,"
-            "Time INTEGER,"
-            "Turns INTEGER,"
-            "Dimension INTEGER"
+            "Nickname TEXT NOT NULL,"
+            "Time INTEGER NOT NULL,"
+            "Turns INTEGER NOT NULL,"
+            "Dimension INTEGERNOT NULL"
             ")"
         },
         QSqlQuery {
             "CREATE TABLE IF NOT EXISTS Users"
             "("
-            "Nickname TEXT,"
-            "Password TEXT,"
+            "Nickname TEXT NOT NULL,"
+            "Password TEXT NOT NULL,"
             "UNIQUE(Nickname)"
             ")"
         }
