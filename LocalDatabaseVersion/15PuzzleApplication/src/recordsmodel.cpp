@@ -3,7 +3,7 @@
 
 RecordsModel::RecordsModel()
 {
-//    connect();
+
 }
 
 QHash<int, QByteArray> RecordsModel::roleNames() const

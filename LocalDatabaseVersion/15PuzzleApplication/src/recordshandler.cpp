@@ -4,7 +4,7 @@
 RecordsHandler::RecordsHandler()
     : m_processor {new db::Processor{}}
 {
-//    connect(&model, &RecordsModel::puzzleSolved, this, addRecord());
+
 }
 
 RecordsHandler::~RecordsHandler()
