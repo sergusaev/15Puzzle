@@ -3,7 +3,12 @@ QT += core sql
 CONFIG += c++11
 TEMPLATE = lib
 
-DESTDIR = $$PWD/../shared/lib
+win32 {
+DESTDIR = $$PWD/../shared/lib/win32
+}
+android {
+DESTDIR = $$PWD/../shared/lib/android
+}
 
 INCLUDEPATH += $$PWD/include
 INCLUDEPATH += $$_PRO_FILE_PWD_/../shared/include

@@ -1,4 +1,5 @@
-QT += quick
+QT += core quick sql qml
+CONFIG += c++11
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -16,7 +17,8 @@ RESOURCES += qml.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH += $$PWD/qml
-QML2_IMPORT_PATH += $$PWD/qml
+#QML2_IMPORT_PATH += $$PWD/qml
+QML_ROOT_PATH = $$PWD/qml
 
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
@@ -36,14 +38,25 @@ HEADERS += \
 INCLUDEPATH += $$PWD/include
 INCLUDEPATH += $$PWD/../shared/include
 
-LIBS += -L$$PWD/../shared/lib/ -lDBManager
+win32 {
+LIBS += -L$$PWD/../shared/lib/win32 -lDBManager
+}
+android {
+LIBS += -L$$PWD/../shared/lib/android -lDBManager_$${ANDROID_TARGET_ARCH}
+message(lDBManager_$${ANDROID_TARGET_ARCH})
+
+for (abi, ANDROID_ABIS) {
+    ANDROID_EXTRA_LIBS += $$PWD/../shared/lib/android/libDBManager_$${abi}.so
+    message(lDBManager_$${abi})
+}
+}
 
 ITEM += \
         logo.ico
 
 win32:RC_FILE = ico_rec.rc
 
-
+android {
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 
 #QT_BINS = $$shell_path($${QT.core.bins})
@@ -60,3 +73,4 @@ DISTFILES += \
     android/gradlew \
     android/gradlew.bat \
     android/res/values/libs.xml
+    }
