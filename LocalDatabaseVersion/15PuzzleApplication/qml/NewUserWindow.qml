@@ -56,7 +56,7 @@ Item {
             CustomText {
                 id: _new_user_greetings_text
                 text: qsTr("New player:")
-                fontPointSize: Math.min(parent.width, parent.height) / 20
+                fontPointSize: 30
                 anchors.top: parent.top
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.topMargin: parent.height / 10
@@ -68,19 +68,19 @@ Item {
                 color: "lightyellow"
                 style: Text.Outline
                 styleColor: "darksalmon"
-                fontPointSize: Math.min(parent.width, parent.height) / 20
+                fontPointSize: 30
                 anchors.top: _new_user_greetings_text.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.topMargin: parent.height / 12
+                anchors.topMargin: parent.height / 10
             }
 
             CustomText {
                 id: _enter_new_password_text
                 text: qsTr("Enter password:")
-                fontPointSize: Math.min(root.width, root.height) / 30
+
                 anchors.top: _new_username_text.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.topMargin:  parent.height / 5
+                anchors.topMargin:  parent.height / 6
 
             }
 
@@ -92,7 +92,7 @@ Item {
                 validator: RegularExpressionValidator { regularExpression: /\w{0,12}/ }
                 color: "lightyellow"
                 font {
-                    pointSize: Math.min(root.width, root.height) / 20
+                    pointSize: 25
                     bold : true
                 }
                 anchors.horizontalCenter: parent.horizontalCenter

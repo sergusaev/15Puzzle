@@ -21,7 +21,7 @@ Item {
         style: Text.Outline
         styleColor:  Qt.darker("burlywood", 2)
         font {
-            pointSize: Math.min(root.width, root.height) / 30
+            pointSize: 20
             bold : true
         }
         verticalAlignment: Text.AlignVCenter

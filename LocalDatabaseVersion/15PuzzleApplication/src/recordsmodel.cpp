@@ -60,12 +60,6 @@ void RecordsModel::getTimeRanking(int dimension)
     } else {
         qCritical() << "Browsing records via time failed!";
     }
-    for(const auto& record : m_records) {
-        qDebug() <<  "Database ID: " << record.dbID() << " "
-                 <<  "Nickname: " << record.nickname() << " "
-                 <<  "Time: " << record.time() << " "
-                 <<  "Turns: " << record.turns() << "\n";
-    }
 
 }
 
@@ -80,12 +74,6 @@ void RecordsModel::getTurnsRanking(int dimension)
         endResetModel();
     } else {
         qCritical() << "Browsing records via turns failed!";
-    }
-    for(const auto& record : m_records) {
-        qDebug() <<  "Database ID: " << record.dbID() << " "
-                 <<  "Nickname: " << record.nickname() << " "
-                 <<  "Time: " << record.time() << " "
-                 <<  "Turns: " << record.turns() << "\n";
     }
 }
 

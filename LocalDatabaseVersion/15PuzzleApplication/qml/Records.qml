@@ -13,21 +13,21 @@ CustomPage {
 
 
     CustomText {
-        id: _15_puzzle_text
+        id: _ranking_text
         text: (_stack_view_records.currentItem.tableType === "time") ? qsTr("Time ranking") : qsTr("Turns ranking")
-        fontPointSize: Math.min(root.width, root.height) / 18
+        fontPointSize: 30
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.topMargin: parent.height / 12
+        anchors.topMargin: parent.height / 10
     }
 
     Rectangle {
         id: _records_table_wrapper
         anchors.top: parent.top
-        anchors.topMargin: width / 2.5
+        anchors.topMargin: width / 3.3
         anchors.horizontalCenter: parent.horizontalCenter
         width: root.width * 0.82
-        height: width * 1.5
+        height: width * 1.4
         color: "transparent"
 
         StackView {
@@ -80,10 +80,7 @@ CustomPage {
         height: width * 0.5
         anchors.left: _records_table_wrapper.left
         anchors.top: _records_table_wrapper.bottom
-        anchors.topMargin: height / 2
-//        anchors.left: parent.left
-//        anchors.leftMargin: 10
-//        anchors.verticalCenter: parent.verticalCenter
+        anchors.topMargin: height / 5
         text: qsTr("Time")
         onClicked:  {
             if ( _stack_view_records.currentItem.tableType !== "time") {
@@ -103,10 +100,7 @@ CustomPage {
         height: width * 0.5
         anchors.right:  _records_table_wrapper.right
         anchors.top: _records_table_wrapper.bottom
-        anchors.topMargin: height / 2
-//        anchors.right: parent.right
-//        anchors.rightMargin: 10
-//        anchors.verticalCenter: parent.verticalCenter
+        anchors.topMargin: height / 5
         text: qsTr("Back")
         onClicked:  {
             if(_stack_view.depth > 1) {
@@ -119,8 +113,7 @@ CustomPage {
         width: parent.width * 0.25
         height: width * 0.5
         anchors.top: _records_table_wrapper.bottom
-        anchors.topMargin: height / 2
-//        anchors.verticalCenter: parent.verticalCenter
+        anchors.topMargin: height / 5
         anchors.horizontalCenter:  parent.horizontalCenter
         text: qsTr("Turns")
         onClicked:  {

@@ -25,7 +25,7 @@ CustomPage {
     CustomText {
         id: _15_puzzle_text
         text: qsTr("15-Puzzle")
-        fontPointSize: Math.min(root.width, root.height) / 12
+        fontPointSize: 50
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.topMargin: parent.height / 9
@@ -34,10 +34,9 @@ CustomPage {
     CustomText {
         id: _enter_nickname_text
         text: qsTr("Enter your nickname:")
-        fontPointSize: Math.min(root.width, root.height) / 30
         anchors.top: _15_puzzle_text.bottom
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.topMargin: parent.height / 9
+        anchors.topMargin: parent.height / 12
     }
 
     TextField {
@@ -48,7 +47,7 @@ CustomPage {
         validator: RegularExpressionValidator { regularExpression: /\w{0,12}/ }
         color: "lightyellow"
         font {
-            pointSize: Math.min(root.width, root.height) / 20
+            pointSize: 25
             bold : true
         }
         anchors.horizontalCenter: parent.horizontalCenter
@@ -72,7 +71,6 @@ CustomPage {
     CustomText {
         id: _enter_password_text
         text: qsTr("Enter password:")
-        fontPointSize: Math.min(root.width, root.height) / 30
         anchors.top: _nickname_text_field.bottom
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.topMargin: _nickname_text_field.height / 2
@@ -87,7 +85,7 @@ CustomPage {
         validator: RegularExpressionValidator { regularExpression: /\w{0,12}/ }
         color: "lightyellow"
         font {
-            pointSize: Math.min(root.width, root.height) / 20
+            pointSize: 25
             bold : true
         }
         anchors.horizontalCenter: parent.horizontalCenter
@@ -115,7 +113,6 @@ CustomPage {
     CustomText {
         id: _select_puzzle_size_text
         text: qsTr("Select 15-puzzle size:")
-        fontPointSize: Math.min(root.width, root.height) / 30
         anchors.top: _password_text_field.bottom
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.topMargin: _password_text_field.height / 2
@@ -139,7 +136,7 @@ CustomPage {
             height: _puzzle_size_selection_combobox.height
             contentItem: CustomText {
                 text: modelData
-                fontPointSize: Math.min(root.width, root.height) / 25
+                fontPointSize: 15
                 color: _combobox_delegate.pressed ? "lightyellow" : "burlywood"
             }
             background: CustomBackground {
@@ -164,7 +161,7 @@ CustomPage {
             id: _combobox_text
             anchors.fill:parent
             text: _puzzle_size_selection_combobox.displayText
-            fontPointSize: Math.min(root.width, root.height) / 25
+            fontPointSize: 25
             color: _puzzle_size_selection_combobox.pressed ? "lightyellow" : "burlywood"
         }
 
@@ -334,7 +331,7 @@ CustomPage {
             CustomText {
                 id: _new_user_greetings_text
                 text: qsTr("Wrong password!")
-                fontPointSize: Math.min(parent.width, parent.height) / 16
+                fontPointSize: 30
                 anchors.top: parent.top
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.topMargin: parent.height / 3

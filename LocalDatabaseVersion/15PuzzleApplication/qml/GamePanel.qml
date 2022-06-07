@@ -14,12 +14,12 @@ CustomPage {
         style: Text.Outline
         styleColor: "darksalmon"
         font {
-            pointSize: Math.min(parent.width, parent.height) / 20
+            pointSize: 16
             bold : true
         }
         anchors.top: parent.top
         anchors.horizontalCenter: _counter.horizontalCenter
-        anchors.topMargin: parent.height / 10
+        anchors.topMargin: parent.height / 12
     }
 
     DropShadow {
@@ -37,12 +37,12 @@ CustomPage {
         style: Text.Outline
         styleColor: "darksalmon"
         font {
-            pointSize: Math.min(parent.width, parent.height) / 20
+            pointSize: 16
             bold : true
         }
         anchors.top: parent.top
         anchors.horizontalCenter: _timer.horizontalCenter
-        anchors.topMargin: parent.height / 10
+        anchors.topMargin: parent.height / 12
     }
 
     DropShadow {
@@ -146,9 +146,8 @@ CustomPage {
         width: _timer.displayWidth
         height: width * 0.45
         anchors.horizontalCenter:  _timer_title.horizontalCenter
-
         anchors.top: _gameboard_wrapper.bottom
-        anchors.topMargin: _gameboard_wrapper.height / 4
+        anchors.topMargin: _gameboard_wrapper.height / 5
         text: qsTr("Restart")
         onClicked:  {
             _gameboard.model.restart()
@@ -160,9 +159,8 @@ CustomPage {
         width: _counter.displayWidth
         height: width * 0.45
         anchors.horizontalCenter:  _counter_title.horizontalCenter
-
         anchors.top: _gameboard_wrapper.bottom
-        anchors.topMargin: _gameboard_wrapper.height / 4
+        anchors.topMargin: _gameboard_wrapper.height / 5
         text: qsTr("Quit")
         onClicked:  {
             if(_stack_view.depth > 1){
@@ -214,7 +212,7 @@ CustomPage {
                     style: Text.Outline
                     styleColor: "darksalmon"
                     font {
-                        pointSize: Math.min(parent.width, parent.height) / 12
+                        pointSize: 50
                         bold : true
                     }
                     anchors.top: parent.top
@@ -235,12 +233,11 @@ CustomPage {
             CustomButton {
                 id: _to_main_menu_button
                 width: parent.width * 0.35
-                height: width * 0.4
+                height: width * 0.5
                 anchors.right: parent.right
                 anchors.rightMargin: width / 4
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.verticalCenterOffset: height / 2
-
                 text: qsTr("Quit")
                 onClicked:  {
                     parent.visible = false
@@ -253,12 +250,11 @@ CustomPage {
             CustomButton {
                 id: _start_new_game_button
                 width: parent.width * 0.35
-                height: width * 0.4
+                height: width * 0.5
                 anchors.left: parent.left
                 anchors.leftMargin: width / 4
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.verticalCenterOffset: height / 2
-
                 text: qsTr("Restart")
                 onClicked:  {
                     parent.visible = false

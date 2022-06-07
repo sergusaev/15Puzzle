@@ -10,11 +10,11 @@ CustomPage {
 
         text: qsTr("Hi, " + gameBoardModel.nickname + "!")
 
-        fontPointSize: Math.min(root.width, root.height) / 20
+        fontPointSize: 40
 
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.topMargin: parent.height / 12
+        anchors.topMargin: parent.height / 6
     }
 
 
@@ -24,7 +24,8 @@ CustomPage {
         height: width * 0.3
         anchors.horizontalCenter:  parent.horizontalCenter
         anchors.top: _greetings_text.bottom
-        anchors.topMargin: parent.height / 6
+        anchors.topMargin: parent.height / 10
+        fontPointSize: 30
         text: qsTr("NEW GAME")
         onClicked:  {
              gameBoardModel.restart()
@@ -39,6 +40,7 @@ CustomPage {
         anchors.horizontalCenter:  parent.horizontalCenter
         anchors.top: _new_game_button.bottom
         anchors.topMargin: _new_game_button.height * 0.5
+        fontPointSize: 30
         text: qsTr("RECORDS")
         onClicked:  {
             _stack_view.push(_records_stack_page)
@@ -52,6 +54,7 @@ CustomPage {
         anchors.horizontalCenter:  parent.horizontalCenter
         anchors.top: _records_button.bottom
         anchors.topMargin: _records_button.height * 0.5
+        fontPointSize: 30
         text: qsTr("BACK")
         onClicked: {
             if(_stack_view.depth > 1) {

@@ -5,6 +5,7 @@ import QtGraphicalEffects 1.15
 Item {
     id: root    
     property alias text: _caption_text.text
+    property alias fontPointSize: _caption_text.font.pointSize
     signal clicked()   
 
     Button {
@@ -24,7 +25,7 @@ Item {
             style: Text.Outline
             styleColor: "dimgrey"
             font {
-                pointSize: _caption.height / 4
+                pointSize: 20
                 bold : true
             }
         }

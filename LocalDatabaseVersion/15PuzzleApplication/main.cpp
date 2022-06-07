@@ -24,9 +24,9 @@ int main(int argc, char *argv[])
     RecordsModel timeRecordsModel;
     RecordsModel turnsRecordsModel;
 
-
-//    qmlRegisterType<GameBoard>("Game", 1, 0, "GameBoardModel");
-//    qmlRegisterType<RecordsModel>("Records", 1, 0, "RecordsModel");
+//  register QML type from qml, importing as module
+//  qmlRegisterType<GameBoard>("Game", 1, 0, "GameBoardModel");
+//  qmlRegisterType<RecordsModel>("Records", 1, 0, "RecordsModel");
 
 
     QQmlApplicationEngine engine;
@@ -37,19 +37,12 @@ int main(int argc, char *argv[])
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
 
+//  register QML type from C++, using as an object known all over QML
     engine.rootContext()->setContextProperty("gameBoardModel", &model);
     engine.rootContext()->setContextProperty("timeRecordsModel", &timeRecordsModel);
     engine.rootContext()->setContextProperty("turnsRecordsModel", &turnsRecordsModel);
     engine.rootContext()->setContextProperty("userSettings", &settings);
 
-
-
     engine.load(url);
-
-    settings.writeSettings("Stupid", "Asshole", 4);
-    qDebug() << settings.readNickname();
-    qDebug() << settings.readPassword();
-    qDebug() << settings.readDimension();
-
     return app.exec();
 }
