@@ -1,0 +1,26 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>pics/button_1.png</file>
+        <file>pics/wood_1.png</file>
+        <file>pics/wood_5.png</file>
+        <file>pics/wood_3.png</file>
+        <file>pics/frame_1.png</file>
+        <file>logo.ico</file>
+        <file>ico_rec.rc</file>
+        <file>qml/CustomButton.qml</file>
+        <file>qml/CustomDisplay.qml</file>
+        <file>qml/CustomPage.qml</file>
+        <file>qml/GameBoard.qml</file>
+        <file>qml/GamePanel.qml</file>
+        <file>qml/MainMenu.qml</file>
+        <file>qml/Records.qml</file>
+        <file>qml/Tile.qml</file>
+        <file>pics/custom_page_frame.png</file>
+        <file>qml/CustomBackground.qml</file>
+        <file>qml/CustomText.qml</file>
+        <file>qml/RecordsTable.qml</file>
+        <file>qml/AuthorizationPage.qml</file>
+        <file>qml/NewUserWindow.qml</file>
+    </qresource>
+</RCC>
