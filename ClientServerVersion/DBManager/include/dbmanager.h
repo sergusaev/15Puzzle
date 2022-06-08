@@ -5,7 +5,8 @@
 #include <QSqlDatabase>
 #include <dbtypes.h>
 
-
+namespace db
+{
 namespace
 {
     class DBCloser {
@@ -37,6 +38,6 @@ public:
     std::vector<QSqlQuery> m_creationQueries;
 };
 
-
+}
 
 #endif //DBMANAGER_H

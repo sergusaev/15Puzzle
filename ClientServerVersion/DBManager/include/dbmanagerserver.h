@@ -4,6 +4,10 @@
 #include "dbmanager.h"
 #include <QSqlQuery>
 
+namespace db
+{
+
+
 class DBManagerServer : public DBManager {
     virtual void setDatabaseName() override;
     virtual void setCreationQueries() override;
@@ -37,5 +41,5 @@ void DBManagerServer::setCreationQueries()
     };
 }
 
-
+}
 #endif // DBMANAGERSERVER_H

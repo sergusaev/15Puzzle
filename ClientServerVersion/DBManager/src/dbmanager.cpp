@@ -1,4 +1,11 @@
 #include "dbmanager.h"
+#include <QDebug>
+#include <QSqlError>
+#include <QSqlQuery>
+#include <QStandardPaths>
+#include <QDir>
+
+namespace db{
 
 bool DBManager::setUp()
 {
@@ -6,14 +13,14 @@ bool DBManager::setUp()
 
     if (!QSqlDatabase::isDriverAvailable(driver))
     {
-        m_state = DBState::ERROR_NO_DRIVER;
+        m_state = DBTypes::DBState::ERROR_NO_DRIVER;
         qWarning() << "Driver " << driver << " is not available.";
         return false;
     }
 
     if (!setUpWorkspace())
     {
-        m_state = DBState::ERROR_WORKSPACE;
+        m_state = DBTypes::DBState::ERROR_WORKSPACE;
         qCritical() << "Workspace setup failed!";
         return false;
     }
@@ -26,7 +33,7 @@ bool DBManager::setUp()
 
     if (!m_database->open())
     {
-        m_state = DBState::ERROR_OPENING;
+        m_state = DBTypes::DBState::ERROR_OPENING;
         qCritical() << "Error in opening DB " << m_database->databaseName()
                    << " reason: " <<  m_database->lastError().text();
         return false;
@@ -64,7 +71,7 @@ bool DBManager::setUpTables()
         if (!query.exec())
         {
             result = false;
-            m_state = DBState::ERROR_TABLES;
+            m_state = DBTypes::DBState::ERROR_TABLES;
             qWarning() << "Table creation failed. Reason: "
                        << query.lastError();
         }
@@ -82,4 +89,4 @@ void DBManager::setIsValid(bool isValid)
     m_isValid = isValid;
 }
 
-
+}

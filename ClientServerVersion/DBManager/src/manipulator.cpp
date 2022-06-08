@@ -14,26 +14,6 @@ std::pair<DBResult, DBIndex> Manipulator::insertRow(const std::string& tableName
     return std::make_pair(result.first, result.second.lastInsertId().toInt());
 }
 
-DBResult Manipulator::removeRow(const std::string& tableName, const DBTypes::DBIndex index)
-{
-
-    const std::string& query {generateRemoveQuery(tableName)};
-    const std::pair<DBResult, QSqlQuery>& result {m_executor.execute(query, {index})};
-    return result.first;
-}
-
-DBResult Manipulator::updateRow(const std::string &tableName, const DBTypes::DBIndex indexToUpdate, const DBTypes::DBEntry &updatedRecordData)
-{
-    const std::string& query {generateUpdateQuery(tableName,updatedRecordData.size())};
-    const std::pair<DBResult, QSqlQuery>& result {m_executor.execute(query,
-                                                 {updatedRecordData[0],
-                                                  updatedRecordData[1],
-                                                  updatedRecordData[2],
-                                                  indexToUpdate})};
-    return result.first;
-}
-
-
 std::string Manipulator::generateBindString(int paramCount) const
 {
     std::ostringstream bindings;
@@ -59,25 +39,6 @@ std::string Manipulator::generateInsertQuery(const std::string& tableName, int p
     query += ")";
     return query;
 }
-
-std::string Manipulator::generateRemoveQuery(const std::string &tableName) const
-{
-    std::string query = "DELETE FROM " + tableName +  " WHERE rowid = ?";
-    return query;
-}
-
-std::string Manipulator::generateUpdateQuery(const std::string &tableName, int paramCount) const
-{
-    std::string query = "UPDATE " + tableName +  " SET ";
-    for(int i = 0; i < paramCount; ++i) {
-        query += tablesMapping.at(tableName)[i] + " = ?,";
-    }
-    query.pop_back(); // the last ","
-    query += " WHERE rowid = ?";
-    return query;
-}
-
-
 
 
 }

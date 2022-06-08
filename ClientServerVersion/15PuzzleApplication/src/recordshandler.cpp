@@ -2,7 +2,7 @@
 #include "processor.h"
 
 RecordsHandler::RecordsHandler()
-    : m_processor {new db::Processor{}}
+    : m_processor {new db::Processor(DBTypes::DBManagerType::CLIENT)}
 {
 
 }

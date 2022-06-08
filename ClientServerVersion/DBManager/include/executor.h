@@ -11,13 +11,13 @@ namespace db
 class Executor
 {
 public:
-    Executor();
+    Executor(DBTypes::DBManagerType managerType);
     Q_DISABLE_COPY(Executor)
 
     std::pair<DBTypes::DBResult, QSqlQuery> execute(const std::string& queryText, const QVariantList& args = {});
 
 private:
-    ConnectionManager& m_connectionManager;
+    ConnectionManager m_connectionManager;
 };
 }
 

@@ -11,6 +11,8 @@
 namespace db
 {
 
+
+
 std::string ConnectionManager::databasePath() const
 {
     return m_d->m_dbPath;
@@ -31,11 +33,11 @@ ConnectionManager::ConnectionManager(DBTypes::DBManagerType managerType)
 
 {
     switch (managerType) {
-    case DBTypes::DBManagerType::CLIENT :
-        m_d = new DBManagerClient {};
+    case DBTypes::DBManagerType::CLIENT:
+        m_d = std::unique_ptr<DBManager>(new DBManagerClient {});
         break;
     case DBTypes::DBManagerType::SERVER:
-        m_d  = new DBManagerServer {};
+        m_d  = std::unique_ptr<DBManager>(new DBManagerServer {});
         break;
     }
 

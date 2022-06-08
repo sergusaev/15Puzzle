@@ -1,4 +1,6 @@
 #include "executor.h"
+#include "dbmanagerclient.h"
+#include "dbmanagerserver.h"
 #include <QSqlError>
 #include <QDebug>
 
@@ -6,8 +8,8 @@ using namespace DBTypes;
 
 namespace db
 {
-Executor::Executor()
-    : m_connectionManager {ConnectionManager::instance()}
+Executor::Executor(DBTypes::DBManagerType managerType)
+    : m_connectionManager(ConnectionManager(managerType))
 {
 
 }

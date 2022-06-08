@@ -21,4 +21,4 @@ private:
     std::unique_ptr<DBManager> m_d;
 };
 }
-#endif // DBMDBCONNECTIONANAGER_H
+#endif // DBCONNECTIONMANAGER_H
