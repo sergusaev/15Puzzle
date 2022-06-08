@@ -120,7 +120,7 @@ bool ConnectionManager::DBManagerPrivate::setUpTables()
             "Nickname TEXT NOT NULL,"
             "Time INTEGER NOT NULL,"
             "Turns INTEGER NOT NULL,"
-            "Dimension INTEGERNOT NULL"
+            "Dimension INTEGER NOT NULL"
             ")"
         },
         QSqlQuery {
