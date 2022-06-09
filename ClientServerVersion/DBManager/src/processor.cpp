@@ -8,11 +8,14 @@
 namespace db
 {
 
-//manipulator methods
+
 Processor::Processor(DBTypes::DBManagerType managerType)
+    : m_executor(managerType)
 {
 
 }
+
+//manipulator methods
 
 std::pair<DBTypes::DBResult, DBTypes::DBIndex> Processor::insertRow(const std::string& tableName, const DBTypes::DBEntry& recordData)
 {
@@ -171,57 +174,3 @@ std::string Processor::generateSelectTopTurnsQuery(const std::string &tableName)
 
 
 }
-//namespace db
-//{
-//struct Processor::ProcessorPrivate
-//{
-//    Selector selector;
-//    Manipulator manipulator;
-//};
-
-//db::Processor::Processor()
-//    : m_d {new ProcessorPrivate {}}
-//{
-
-//}
-
-//Processor::~Processor()
-//{
-//}
-
-//std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry>> Processor::requestTableData(DBTypes::DBTables table)
-//{
-//    std::vector<QVariantList> result;
-//    const DBTypes::DBResult resultState {m_d->selector.selectAll(tableMapper.at(table), result)};
-//    return std::make_pair(resultState, std::move(result));
-//}
-
-//std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry> > Processor::requestTopTimeData(DBTypes::DBTables table, int dimension)
-//{
-//    std::vector<QVariantList> result;
-//    const DBTypes::DBResult resultState {m_d->selector.selectTopTime(tableMapper.at(table), dimension, result)};
-//    return std::make_pair(resultState, std::move(result));
-//}
-
-//std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry> > Processor::requestTopTurnsData(DBTypes::DBTables table, int dimension)
-//{
-//    std::vector<QVariantList> result;
-//    const DBTypes::DBResult resultState {m_d->selector.selectTopTurns(tableMapper.at(table), dimension, result)};
-//    return std::make_pair(resultState, std::move(result));
-//}
-
-//QVariant Processor::getPasswordData(const QString &nickname)
-//{
-//    QVariant returnData;
-//    m_d->selector.selectUserPassword(nickname.toStdString(), returnData);
-//    return returnData;
-//}
-
-//std::pair<DBTypes::DBResult, DBTypes::DBIndex> Processor::insertDataRecord(DBTypes::DBTables table, const DBTypes::DBEntry &recordData)
-//{
-//    return m_d->manipulator.insertRow(tableMapper.at(table), recordData);
-//}
-
-
-
-//}

@@ -1,6 +1,4 @@
 #include "executor.h"
-#include "dbmanagerclient.h"
-#include "dbmanagerserver.h"
 #include <QSqlError>
 #include <QDebug>
 
@@ -9,7 +7,7 @@ using namespace DBTypes;
 namespace db
 {
 Executor::Executor(DBTypes::DBManagerType managerType)
-    : m_connectionManager(ConnectionManager(managerType))
+    : m_connectionManager(managerType)
 {
 
 }
@@ -34,12 +32,6 @@ std::pair<DBResult, QSqlQuery> Executor::execute(const std::string& queryText, c
         qCritical() << query.lastError().text()<< query.lastQuery();
         result = DBResult::FAIL;
     }
-#ifdef DEBUG_OUTPUT
-    qDebug() <<"";
-    qDebug() << "In function Executor::execute(const std::string& queryText, const QVariantList& args) incoming query text:";
-    qDebug() << QString::fromStdString(queryText);
-    qDebug() << "Database request result:" << (result == DBResult::OK);
-#endif
 
     return std::make_pair(result, query);
 }

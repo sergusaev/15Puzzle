@@ -23,9 +23,9 @@ HEADERS += \
     include/dbmanagerserver.h \
     include/executor.h \
     $$_PRO_FILE_PWD_/../shared/include/dbtypes.h \
-    include/manipulator.h \
-    include/selector.h \
-    $$_PRO_FILE_PWD_/../shared/include/processor.h
+    $$_PRO_FILE_PWD_/../shared/include/processor.h \
+    $$_PRO_FILE_PWD_/../shared/include/processorclient.h \
+    $$_PRO_FILE_PWD_/../shared/include/processorserver.h
 
 
 #QMAKE_POST_LINK += "$$QMAKE_COPY $$shell_quote($$shell_path($$_PRO_FILE_PWD_/include/processor.h)) $$shell_quote($$shell_path($$_PRO_FILE_PWD_/../shared/include/))"
@@ -34,9 +34,10 @@ HEADERS += \
 
 SOURCES += \
     src/connectionmanager.cpp \
-    src/manipulator.cpp \
     src/processor.cpp \
-    src/selector.cpp \
+    src/processorclient.cpp \
+    src/processorserver.cpp \
     src/dbmanager.cpp \
+    src/dbmanagerclient.cpp \
     src/dbmanagerserver.cpp \
     src/executor.cpp

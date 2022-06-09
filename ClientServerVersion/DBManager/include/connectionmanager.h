@@ -1,5 +1,6 @@
 #ifndef DBCONNECTIONMANAGER_H
 #define DBCONNECTIONMANAGER_H
+
 #include <memory>
 #include <QObject>
 #include <dbtypes.h>
