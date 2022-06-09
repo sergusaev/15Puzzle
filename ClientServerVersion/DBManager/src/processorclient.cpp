@@ -14,11 +14,16 @@ ProcessorClient::~ProcessorClient()
 {
 }
 
-std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry>> ProcessorClient::requestTableData(DBTypes::DBTables table)
+std::pair<DBTypes::DBResult, DBTypes::DBEntry> ProcessorClient::requestFirstRecordData(DBTypes::DBTables table)
 {
-    std::vector<QVariantList> result;
-    const DBTypes::DBResult resultState {m_d->selectAll(tableMapper.at(table), result)};
+    QVariantList result;
+    const DBTypes::DBResult resultState {m_d->selectFirst(tableMapper.at(table), result)};
     return std::make_pair(resultState, std::move(result));
+}
+
+DBTypes::DBResult ProcessorClient::deleteFirstRecord(DBTypes::DBTables table)
+{
+    return m_d->deleteFirst(tableMapper.at(table));
 }
 
 

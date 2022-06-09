@@ -5,8 +5,8 @@
 #include <vector>
 #include <utility>
 #include <QTimer>
-#include "recordshandler.h"
-
+#include "cachehandler.h"
+#include "recordshandlerclient.h"
 
 class GameBoard : public QAbstractListModel
 {
@@ -97,7 +97,8 @@ private:
     QString m_nickname;
     QString m_password;
     QTimer m_timer;
-    RecordsHandler m_recordsHandler;
+    CacheHandler m_cacheHandler;
+    RecordsHandlerClient m_recordsHandler;
     bool isBoardValid() const;
     bool isPositionValid(const int position) const;
     bool isSolved() const;

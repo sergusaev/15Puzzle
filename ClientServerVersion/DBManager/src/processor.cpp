@@ -22,6 +22,13 @@ std::pair<DBTypes::DBResult, DBTypes::DBIndex> Processor::insertRow(const std::s
     return std::make_pair(result.first, result.second.lastInsertId().toInt());
 }
 
+DBTypes::DBResult Processor::deleteFirst(const std::string &tableName)
+{
+    const std::string& query {"DELETE FROM " + tableName + " WHERE rowid = 1"};
+    const std::pair<DBTypes::DBResult, QSqlQuery>& result {m_executor.execute(query)};
+    return result.first;
+}
+
 std::string Processor::generateBindString(int paramCount) const
 {
     std::ostringstream bindings;
@@ -42,7 +49,6 @@ std::string Processor::generateInsertQuery(const std::string& tableName, int par
     tableColumns.pop_back(); //the last ","
     std::string query = "INSERT INTO " + tableName +  " (" + tableColumns + ")" +
                         " VALUES (";
-
     query += generateBindString(paramCount);
     query += ")";
     return query;
@@ -57,7 +63,6 @@ DBTypes::DBResult Processor::selectAll(const std::string& tableName, std::vector
     DBTypes::DBResult result;
     QSqlQuery resultQuery;
     std::tie(result, resultQuery) = m_executor.execute(query);
-
     if (result == DBTypes::DBResult::OK)
     {
         while (resultQuery.next())
@@ -71,8 +76,27 @@ DBTypes::DBResult Processor::selectAll(const std::string& tableName, std::vector
             returnData.push_back(std::move(resultList));
         }
     }
-
     return result;
+}
+
+DBTypes::DBResult Processor::selectFirst(const std::string &tableName, QVariantList &returnData)
+{
+    const std::string query {"SELECT * FROM " + tableName +  " WHERE rowid = 1"};
+    DBTypes::DBResult result;
+    QSqlQuery resultQuery;
+    std::tie(result, resultQuery) = m_executor.execute(query);
+    if (result == DBTypes::DBResult::OK) {
+        resultQuery.first();
+        const QSqlRecord& resultRecord = resultQuery.record();
+        QVariantList resultList;
+        for (int i = 0; i < resultRecord.count(); ++i)
+        {
+            resultList.push_back(resultRecord.value(i));
+        }
+        returnData.push_back(std::move(resultList));
+    }
+    return result;
+
 }
 
 DBTypes::DBResult Processor::selectTopTime(const std::string &tableName, int dimension, std::vector<QVariantList> &returnData)

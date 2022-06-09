@@ -41,7 +41,7 @@ void GameBoard::setPassword(const QString &newPassword)
 
 void GameBoard::addUser(const QString &nickname, const QString &password)
 {
-    m_recordsHandler.addUserLogPass(nickname, password);
+    m_cacheHandler.addUserLogPass(nickname, password);
 }
 
 int GameBoard::boardsize() const
@@ -233,7 +233,7 @@ QString GameBoard::getTime()
 
 QString GameBoard::getUserPassword(const QString& nickname)
 {
-    QString ret {m_recordsHandler.getPassword(nickname)};
+    QString ret {m_recordsHandler.requestPassword(nickname)};
     return ret;
 }
 
@@ -300,7 +300,9 @@ bool GameBoard::checkWin()
 {
     if(isSolved()) {
         m_timer.stop();
-        m_recordsHandler.addRecord({m_nickname, m_seconds, m_counter, m_dimension});
+        if(!m_recordsHandler.requestRecordAddition({m_nickname, m_seconds, m_counter, m_dimension})) {
+            m_cacheHandler.addRecord({m_nickname, m_seconds, m_counter, m_dimension});
+        }
         return true;
     }
     else {

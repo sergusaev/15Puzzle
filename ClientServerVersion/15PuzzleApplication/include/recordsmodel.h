@@ -5,7 +5,8 @@
 #include <vector>
 #include <utility>
 #include "record.h"
-#include "recordshandler.h"
+#include "cachehandler.h"
+#include "recordshandlerclient.h"
 
 class RecordsModel: public QAbstractListModel
 {
@@ -34,8 +35,8 @@ public:
 private:
 
     std::vector<Record> m_records;
-
-    RecordsHandler m_recordsHandler;
+    RecordsHandlerClient m_recordsHandler;
+    CacheHandler m_cacheHandler;
 
     enum RecordRoles {
         NicknameRole = Qt::UserRole + 1,

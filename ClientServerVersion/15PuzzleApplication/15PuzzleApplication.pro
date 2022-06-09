@@ -6,7 +6,9 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        src/recordshandler.cpp \
+        src/recordshandlerclient.cpp \
+        src/cachehandler.cpp \
+        src/clientmanager.cpp \
         src/recordsmodel.cpp \
         src/record.cpp \
         src/gameboard.cpp \
@@ -29,25 +31,28 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    include/cachehandler.h \
+    include/clientmanager.h \
     include/gameboard.h \
     include/record.h \
     include/recordsmodel.h \
-    include/recordshandler.h \
-    include/usersettings.h
+    include/usersettings.h \
+    include/recordshandlerclient.h
 
 INCLUDEPATH += $$PWD/include
 INCLUDEPATH += $$PWD/../shared/include
 
 win32 {
 LIBS += -L$$PWD/../shared/lib/win32 -lDBManager
+LIBS += -L$$PWD/../shared/lib/win32 -lNetworkLib
 }
 android {
 LIBS += -L$$PWD/../shared/lib/android -lDBManager_$${ANDROID_TARGET_ARCH}
-message(lDBManager_$${ANDROID_TARGET_ARCH})
+LIBS += -L$$PWD/../shared/lib/android -lNetworkLib_$${ANDROID_TARGET_ARCH}
 
 for (abi, ANDROID_ABIS) {
     ANDROID_EXTRA_LIBS += $$PWD/../shared/lib/android/libDBManager_$${abi}.so
-    message(lDBManager_$${abi})
+    ANDROID_EXTRA_LIBS += $$PWD/../shared/lib/android/libNetworkLib_$${abi}.so
 }
 }
 

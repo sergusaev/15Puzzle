@@ -52,7 +52,7 @@ void RecordsModel::getTimeRanking(int dimension)
 {
     bool requestResult {false};
     std::vector<Record> recordsResult;
-    std::tie(requestResult, recordsResult) = m_recordsHandler.browseBestInTime(dimension);
+    std::tie(requestResult, recordsResult) = m_recordsHandler.requestTopTime(dimension);
     if (requestResult) {
         beginResetModel();
         m_records.swap(recordsResult);
@@ -67,7 +67,7 @@ void RecordsModel::getTurnsRanking(int dimension)
 {
     bool requestResult {false};
     std::vector<Record> recordsResult;
-    std::tie(requestResult, recordsResult) = m_recordsHandler.browseBestInTurns(dimension);
+    std::tie(requestResult, recordsResult) = m_recordsHandler.requestTopTurns(dimension);
     if (requestResult) {
         beginResetModel();
         m_records.swap(recordsResult);

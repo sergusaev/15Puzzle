@@ -3,7 +3,7 @@
 
 
 #include "dbtypes.h"
-#include "executor.h"
+#include <executor.h>
 #include <memory>
 
 namespace db
@@ -15,17 +15,14 @@ public:
     Processor(DBTypes::DBManagerType managerType);
 
     //manipulator methods
-    std::pair<DBTypes::DBResult, DBTypes::DBIndex> insertRow(const std::string& tableName, const DBTypes::DBEntry& recordData);
+    std::pair<DBTypes::DBResult, DBTypes::DBIndex> insertRow(const std::string& tableName, const DBTypes::DBEntry& recordData);    
+    DBTypes::DBResult deleteFirst(const std::string& tableName);
 
     //selector methods
-    DBTypes::DBResult selectAll(const std::string& tableName,
-                                std::vector<QVariantList>& returnData);
-    DBTypes::DBResult selectTopTime(const std::string& tableName,
-                                    int dimension,
-                                    std::vector<QVariantList>& returnData);
-    DBTypes::DBResult selectTopTurns(const std::string& tableName,
-                                     int dimension,
-                                     std::vector<QVariantList>& returnData);
+    DBTypes::DBResult selectAll(const std::string& tableName, std::vector<QVariantList>& returnData);
+    DBTypes::DBResult selectFirst(const std::string& tableName, QVariantList& returnData);
+    DBTypes::DBResult selectTopTime(const std::string& tableName, int dimension, std::vector<QVariantList>& returnData);
+    DBTypes::DBResult selectTopTurns(const std::string& tableName, int dimension, std::vector<QVariantList>& returnData);
     DBTypes::DBResult selectUserPassword(const std::string& username, QVariant& returnData);
 private:
     Executor m_executor;
