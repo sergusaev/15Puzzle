@@ -8,11 +8,9 @@
 namespace db
 {
 
-
 Processor::Processor(DBTypes::DBManagerType managerType)
     : m_executor(managerType)
 {
-
 }
 
 //manipulator methods
