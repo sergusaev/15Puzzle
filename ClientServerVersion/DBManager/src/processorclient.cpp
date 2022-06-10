@@ -27,7 +27,7 @@ DBTypes::DBResult ProcessorClient::deleteFirstRecord(DBTypes::DBTables table)
 }
 
 
-std::pair<DBTypes::DBResult, DBTypes::DBIndex> ProcessorClient::insertDataRecord(DBTypes::DBTables table, const DBTypes::DBEntry &recordData)
+DBTypes::DBResult ProcessorClient::insertDataRecord(DBTypes::DBTables table, const DBTypes::DBEntry &recordData)
 {
     return m_d->insertRow(tableMapper.at(table), recordData);
 }

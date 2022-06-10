@@ -15,11 +15,11 @@ Processor::Processor(DBTypes::DBManagerType managerType)
 
 //manipulator methods
 
-std::pair<DBTypes::DBResult, DBTypes::DBIndex> Processor::insertRow(const std::string& tableName, const DBTypes::DBEntry& recordData)
+DBTypes::DBResult Processor::insertRow(const std::string& tableName, const DBTypes::DBEntry& recordData)
 {
     const std::string& query {Processor::generateInsertQuery(tableName, recordData.size())};
     const std::pair<DBTypes::DBResult, QSqlQuery>& result {m_executor.execute(query, recordData)};
-    return std::make_pair(result.first, result.second.lastInsertId().toInt());
+    return result.first;
 }
 
 DBTypes::DBResult Processor::deleteFirst(const std::string &tableName)

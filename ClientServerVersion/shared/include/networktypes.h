@@ -17,6 +17,7 @@ enum class PackageType : qint32 {
     TOP_TURNS_RESPONSE,
     ADD_RECORD_REQUEST,
     ADD_RECORD_RESPONSE,
+    INTERNAL_SERVER_ERROR
 };
 
 enum class ConnectionState {

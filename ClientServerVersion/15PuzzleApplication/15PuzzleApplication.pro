@@ -6,13 +6,13 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        src/recordshandlerclient.cpp \
         src/cachehandler.cpp \
         src/clientmanager.cpp \
         src/recordsmodel.cpp \
         src/record.cpp \
         src/gameboard.cpp \
         main.cpp \
+        src/requestshandlerclient.cpp \
         src/usersettings.cpp
 
 RESOURCES += qml.qrc
@@ -36,8 +36,8 @@ HEADERS += \
     include/gameboard.h \
     include/record.h \
     include/recordsmodel.h \
-    include/usersettings.h \
-    include/recordshandlerclient.h
+    include/requestshandlerclient.h \
+    include/usersettings.h
 
 INCLUDEPATH += $$PWD/include
 INCLUDEPATH += $$PWD/../shared/include

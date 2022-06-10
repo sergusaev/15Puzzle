@@ -1,38 +1,38 @@
-#include "recordshandlerclient.h"
+#include "requestshandlerclient.h"
 
 
-RecordsHandlerClient::RecordsHandlerClient()
+RequestsHandlerClient::RequestsHandlerClient()
     : m_clientManager {ClientManager::instance()}
 {
     connect(&m_clientManager, &ClientManager::connectionStateChanged,
-            this, &RecordsHandlerClient::onConnectionStateChanged);
+            this, &RequestsHandlerClient::onConnectionStateChanged);
     connect(&m_clientManager, &ClientManager::topTimeResponse,
-            this, &RecordsHandlerClient::onTopTimeDownloadSucceed);
+            this, &RequestsHandlerClient::onTopTimeDownloadSucceed);
     connect(&m_clientManager, &ClientManager::topTurnsResponse,
-            this, &RecordsHandlerClient::onTopTurnsDownloadSucceed);
+            this, &RequestsHandlerClient::onTopTurnsDownloadSucceed);
     connect(&m_clientManager, &ClientManager::addRecordResponse,
-            this, &RecordsHandlerClient::onRecordAdditionSucceed);
+            this, &RequestsHandlerClient::onRecordAdditionSucceed);
     connect(&m_clientManager, &ClientManager::addUserResponse,
-            this, &RecordsHandlerClient::onUserAdditionSucceed);
+            this, &RequestsHandlerClient::onUserAdditionSucceed);
     connect(&m_clientManager, &ClientManager::passwordResponse,
-            this, &RecordsHandlerClient::onPasswordDownloadSucceed);
+            this, &RequestsHandlerClient::onPasswordDownloadSucceed);
 }
 
-bool RecordsHandlerClient::requestTopTime(int dimension)
+bool RequestsHandlerClient::requestTopTime(int dimension)
 {
     QVariant data {QVariant::fromValue(dimension)};
     const net::Package package {data, net::PackageType::TOP_TIME_REQUEST};
     return m_clientManager.sendPackage(package);
 }
 
-bool RecordsHandlerClient::requestTopTurns(int dimension)
+bool RequestsHandlerClient::requestTopTurns(int dimension)
 {
     QVariant data {QVariant::fromValue(dimension)};
     const net::Package package {data, net::PackageType::TOP_TURNS_REQUEST};
     return m_clientManager.sendPackage(package);
 }
 
-bool RecordsHandlerClient::requestRecordAddition(const Record &record)
+bool RequestsHandlerClient::requestRecordAddition(const Record &record)
 {
     QVariantList dataList {QVariant::fromValue(record.nickname()),
                            QVariant::fromValue(record.time()),
@@ -42,21 +42,21 @@ bool RecordsHandlerClient::requestRecordAddition(const Record &record)
     return m_clientManager.sendPackage(package);
 }
 
-bool RecordsHandlerClient::requestUserAddition(const QString &nickname, const QString &password)
+bool RequestsHandlerClient::requestUserAddition(const QString &nickname, const QString &password)
 {
     QVariantList dataList {QVariant::fromValue(nickname),QVariant::fromValue(password)};
     const net::Package package {QVariant::fromValue(dataList), net::PackageType::ADD_USER_REQUEST};
     return m_clientManager.sendPackage(package);
 }
 
-bool RecordsHandlerClient::requestPassword(const QString &nickname)
+bool RequestsHandlerClient::requestPassword(const QString &nickname)
 {
     QVariant data {QVariant::fromValue(nickname)};
     const net::Package package {data, net::PackageType::PASSWORD_REQUEST};
     return m_clientManager.sendPackage(package);
 }
 
-void RecordsHandlerClient::onConnectionStateChanged(net::ConnectionState state)
+void RequestsHandlerClient::onConnectionStateChanged(net::ConnectionState state)
 {
 //    if (state == net::ConnectionState::Connected)
 //    {
@@ -91,29 +91,29 @@ static std::vector<Record> transform(const std::vector<QVariant>& source)
 }
 
 
-void RecordsHandlerClient::onTopTimeDownloadSucceed(const std::vector<QVariant> &data)
+void RequestsHandlerClient::onTopTimeDownloadSucceed(const std::vector<QVariant> &data)
 {
     emit topTimeRequestCompleted(transform(data));
 }
 
 
-void RecordsHandlerClient::onTopTurnsDownloadSucceed(const std::vector<QVariant> &data)
+void RequestsHandlerClient::onTopTurnsDownloadSucceed(const std::vector<QVariant> &data)
 {
     emit topTurnsRequestCompleted(transform(data));
 }
 
 
-void RecordsHandlerClient::onRecordAdditionSucceed()
+void RequestsHandlerClient::onRecordAdditionSucceed()
 {
     emit recordAdditionCompleted();
 }
 
-void RecordsHandlerClient::onUserAdditionSucceed()
+void RequestsHandlerClient::onUserAdditionSucceed()
 {
     emit userAdditionCompleted();
 }
 
-void RecordsHandlerClient::onPasswordDownloadSucceed(const QVariant &data)
+void RequestsHandlerClient::onPasswordDownloadSucceed(const QVariant &data)
 {
     emit passwordRequestCompleted(data.toString());
 }

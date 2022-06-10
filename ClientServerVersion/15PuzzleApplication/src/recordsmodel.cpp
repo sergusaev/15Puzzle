@@ -3,6 +3,16 @@
 
 RecordsModel::RecordsModel()
 {
+    connect(&m_recordsHandler, &RequestsHandlerClient::topTimeRequestCompleted,
+                this, &RecordsModel::onTopTimeDownloaded);
+    connect(&m_recordsHandler, &RequestsHandlerClient::topTurnsRequestCompleted,
+            this, &RecordsModel::onTopTurnsDownloaded);
+    connect(&m_recordsHandler, &RequestsHandlerClient::recordAdditionCompleted,
+            this, &RecordsModel::onRecordAdded);
+    connect(&m_recordsHandler, &RequestsHandlerClient::userAdditionCompleted,
+            this, &RecordsModel::onUserAdded);
+    connect(&m_recordsHandler, &RequestsHandlerClient::passwordRequestCompleted,
+            this, &RecordsModel::onPasswordDownloaded);
 }
 
 QHash<int, QByteArray> RecordsModel::roleNames() const
@@ -50,30 +60,22 @@ QVariant RecordsModel::data(const QModelIndex &index, int role) const
 
 void RecordsModel::getTimeRanking(int dimension)
 {
-    bool requestResult {false};
-    std::vector<Record> recordsResult;
-    std::tie(requestResult, recordsResult) = m_recordsHandler.requestTopTime(dimension);
+    bool requestResult {m_recordsHandler.requestTopTime(dimension)};
     if (requestResult) {
-        beginResetModel();
-        m_records.swap(recordsResult);
-        endResetModel();
+        qDebug() << "Sending request of records via time succeed!";
     } else {
-        qCritical() << "Browsing records via time failed!";
+        qCritical() << "Sending request of records via time failed!";
     }
 
 }
 
 void RecordsModel::getTurnsRanking(int dimension)
 {
-    bool requestResult {false};
-    std::vector<Record> recordsResult;
-    std::tie(requestResult, recordsResult) = m_recordsHandler.requestTopTurns(dimension);
+    bool requestResult {m_recordsHandler.requestTopTurns(dimension)};
     if (requestResult) {
-        beginResetModel();
-        m_records.swap(recordsResult);
-        endResetModel();
+        qDebug() << "Sending request of records via turns succeed!";
     } else {
-        qCritical() << "Browsing records via turns failed!";
+        qCritical() << "Sending request of records via turns failed!";
     }
 }
 
@@ -88,4 +90,35 @@ QString RecordsModel::timeToString(int time) const
 QString RecordsModel::rankToString(int rank) const
 {
     return QString("%1.").arg(rank);
+}
+
+void RecordsModel::onTopTimeDownloaded(const std::vector<Record> &data)
+{
+    beginResetModel();
+    std::vector<Record> topTimeResult {data};
+    m_records.swap(topTimeResult);
+    endResetModel();
+}
+
+void RecordsModel::onTopTurnsDownloaded(const std::vector<Record> &data)
+{
+    beginResetModel();
+    std::vector<Record> topTurnsResult {data};
+    m_records.swap(topTurnsResult);
+    endResetModel();
+}
+
+void RecordsModel::onRecordAdded()
+{
+
+}
+
+void RecordsModel::onUserAdded()
+{
+
+}
+
+void RecordsModel::onPasswordDownloaded(const QString &password)
+{
+
 }

@@ -29,14 +29,14 @@ std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry> > ProcessorServer::re
     return std::make_pair(resultState, std::move(result));
 }
 
-QVariant ProcessorServer::getPasswordData(const QString &nickname)
+std::pair<DBTypes::DBResult,QVariant> ProcessorServer::getPasswordData(const QString &nickname)
 {
     QVariant returnData;
-    m_d->selectUserPassword(nickname.toStdString(), returnData);
-    return returnData;
+    DBTypes::DBResult resultState {m_d->selectUserPassword(nickname.toStdString(), returnData)};
+    return std::make_pair(resultState, std::move(returnData));
 }
 
-std::pair<DBTypes::DBResult, DBTypes::DBIndex> ProcessorServer::insertDataRecord(DBTypes::DBTables table, const DBTypes::DBEntry &recordData)
+DBTypes::DBResult ProcessorServer::insertDataRecord(DBTypes::DBTables table, const DBTypes::DBEntry &recordData)
 {
     return m_d->insertRow(tableMapper.at(table), recordData);
 }

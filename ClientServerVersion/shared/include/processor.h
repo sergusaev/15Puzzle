@@ -15,7 +15,7 @@ public:
     Processor(DBTypes::DBManagerType managerType);
 
     //manipulator methods
-    std::pair<DBTypes::DBResult, DBTypes::DBIndex> insertRow(const std::string& tableName, const DBTypes::DBEntry& recordData);    
+    DBTypes::DBResult insertRow(const std::string& tableName, const DBTypes::DBEntry& recordData);
     DBTypes::DBResult deleteFirst(const std::string& tableName);
 
     //selector methods

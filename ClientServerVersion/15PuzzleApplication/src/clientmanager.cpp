@@ -108,24 +108,29 @@ void ClientManager::handlePackage(net::Package &package)
 {
     switch (package.type())
     {
-    case net::PackageType::CONTACTS_RESPONSE:
+    case net::PackageType::TOP_TIME_RESPONSE:
     {
-        handleContactsResponsePackage(package);
+        handleTopTimeResponsePackage(package);
         break;
     }
-    case net::PackageType::ADD_CONTACT_RESPONSE:
+    case net::PackageType::TOP_TURNS_RESPONSE:
     {
-        handleAddContactResponsePackage(package);
+        handleTopTurnsResponsePackage(package);
         break;
     }
-    case net::PackageType::REMOVE_CONTACT_RESPONSE:
+    case net::PackageType::ADD_RECORD_RESPONSE:
     {
-        handleRemoveContactResponsePackage(package);
+        handleAddRecordResponsePackage(package);
         break;
     }
-    case net::PackageType::UPDATE_CONTACT_RESPONSE:
+    case net::PackageType::ADD_USER_RESPONSE:
     {
-        handleUpdateContactResponsePackage(package);
+        handleAddUserResponsePackage(package);
+        break;
+    }
+    case net::PackageType::PASSWORD_RESPONSE:
+    {
+        handlePasswordResponsePackage(package);
         break;
     }
     default: {
@@ -134,7 +139,7 @@ void ClientManager::handlePackage(net::Package &package)
     }
 }
 
-void ClientManager::handleRecordsResponsePackage(const net::Package &package)
+void ClientManager::handleTopTimeResponsePackage(const net::Package &package)
 {
     std::vector<QVariant> data;
     QVariant packageData {package.data()};
@@ -145,13 +150,38 @@ void ClientManager::handleRecordsResponsePackage(const net::Package &package)
         data.push_back(std::move(entry));
     }
 
-    emit contactsResponse(data);
+    emit topTimeResponse(data);
 }
+
+void ClientManager::handleTopTurnsResponsePackage(const net::Package &package)
+{
+    std::vector<QVariant> data;
+    QVariant packageData {package.data()};
+    QSequentialIterable recordsData {packageData.value<QSequentialIterable>()};
+
+    for (auto& entry : recordsData)
+    {
+        data.push_back(std::move(entry));
+    }
+
+    emit topTurnsResponse(data);
+}
+
 
 void ClientManager::handleAddRecordResponsePackage(const net::Package &package)
 {
 
-    emit addRecordResponse(package.data());
+    emit addRecordResponse(/*package.data()*/);
+}
+
+void ClientManager::handleAddUserResponsePackage(const net::Package &package)
+{
+    emit addUserResponse();
+}
+
+void ClientManager::handlePasswordResponsePackage(const net::Package &package)
+{
+    emit passwordResponse(package.data());
 }
 
 

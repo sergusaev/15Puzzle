@@ -11,8 +11,8 @@ public:
     ~ProcessorServer();
     std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry>> requestTopTimeData(DBTypes::DBTables table, int dimension);
     std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry>> requestTopTurnsData(DBTypes::DBTables table, int dimension);
-    QVariant getPasswordData(const QString& nickname);
-    std::pair<DBTypes::DBResult, DBTypes::DBIndex> insertDataRecord(DBTypes::DBTables table, const DBTypes::DBEntry& recordData);
+    std::pair<DBTypes::DBResult, QVariant> getPasswordData(const QString& nickname);
+    DBTypes::DBResult insertDataRecord(DBTypes::DBTables table, const DBTypes::DBEntry& recordData);
 
 private:
     std::unique_ptr<db::Processor> m_d;

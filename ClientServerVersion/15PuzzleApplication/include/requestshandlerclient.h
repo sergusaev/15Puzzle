@@ -1,16 +1,16 @@
-#ifndef RECORDSHANDLERCLIENT_H
-#define RECORDSHANDLERCLIENT_H
+#ifndef REQUESTSHANDLERCLIENT_H
+#define REQUESTSHANDLERCLIENT_H
 
 #include <QObject>
 #include "record.h"
 #include <networktypes.h>
 #include "clientmanager.h"
 
-class RecordsHandlerClient : public QObject
+class RequestsHandlerClient : public QObject
 {
     Q_OBJECT
 public:
-    RecordsHandlerClient();
+    RequestsHandlerClient();
     bool requestTopTime(int dimension);
     bool requestTopTurns(int dimension);
     bool requestRecordAddition (const Record& record);
@@ -36,4 +36,4 @@ private:
     ClientManager& m_clientManager;
 };
 
-#endif // RECORDSHANDLERCLIENT_H
+#endif // REQUESTSHANDLERCLIENT_H

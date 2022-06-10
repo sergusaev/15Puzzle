@@ -6,7 +6,7 @@
 #include <utility>
 #include "record.h"
 #include "cachehandler.h"
-#include "recordshandlerclient.h"
+#include "requestshandlerclient.h"
 
 class RecordsModel: public QAbstractListModel
 {
@@ -29,13 +29,19 @@ public:
 
     Q_INVOKABLE QString rankToString(int rank) const;
 
+private slots:
+    void onTopTimeDownloaded(const std::vector<Record> &data);
+    void onTopTurnsDownloaded(const std::vector<Record> &data);
+    void onRecordAdded();
+    void onUserAdded();
+    void onPasswordDownloaded(const QString &password);
 
 
 
 private:
 
     std::vector<Record> m_records;
-    RecordsHandlerClient m_recordsHandler;
+    RequestsHandlerClient m_recordsHandler;
     CacheHandler m_cacheHandler;
 
     enum RecordRoles {

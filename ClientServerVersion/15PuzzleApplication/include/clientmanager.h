@@ -45,8 +45,11 @@ private:
     void connectSocketSignals();
 
     void handlePackage(net::Package& package);
-    void handleRecordsResponsePackage(const net::Package& package);
+    void handleTopTimeResponsePackage(const net::Package& package);
+    void handleTopTurnsResponsePackage(const net::Package& package);
     void handleAddRecordResponsePackage(const net::Package& package);
+    void handleAddUserResponsePackage(const net::Package& package);
+    void handlePasswordResponsePackage(const net::Package& package);
 
     const net::ConnectionArgumentsParser* m_connectionSettings {nullptr};
     net::ConnectionState m_state;
