@@ -1,7 +1,6 @@
 #ifndef RECORDSHANDLERCLIENT_H
 #define RECORDSHANDLERCLIENT_H
 
-
 #include <QObject>
 #include "record.h"
 #include <networktypes.h>
@@ -17,8 +16,6 @@ public:
     bool requestRecordAddition (const Record& record);
     bool requestUserAddition (const QString &nickname, const QString &password);
     bool requestPassword (const QString &nickname);
-
-
 
 signals:
     void topTimeRequestCompleted(const std::vector<Record>& data);

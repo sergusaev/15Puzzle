@@ -1,7 +1,6 @@
 #include "recordshandlerclient.h"
 
 
-
 RecordsHandlerClient::RecordsHandlerClient()
     : m_clientManager {ClientManager::instance()}
 {
