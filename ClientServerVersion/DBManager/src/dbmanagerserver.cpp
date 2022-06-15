@@ -2,14 +2,15 @@
 
 namespace db {
 
-void DBManagerServer::setDatabaseName()
+
+QString DBManagerServer::getDatabaseName()
 {
-    m_databaseName  = "ServerDB";
+    return "ServerDB";
 }
 
-void DBManagerServer::setCreationQueries()
+std::vector<QSqlQuery> DBManagerServer::getCreationQueries()
 {
-    m_creationQueries = {
+    return {
         QSqlQuery {
             "CREATE TABLE IF NOT EXISTS Records"
             "("

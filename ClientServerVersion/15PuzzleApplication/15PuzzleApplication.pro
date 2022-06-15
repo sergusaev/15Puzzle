@@ -1,11 +1,19 @@
 QT += core quick sql qml
 CONFIG += c++11
 
+QML_IMPORT_NAME = AuthorizationManager
+QML_IMPORT_MAJOR_VERSION = 1
+
+
+
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+        signalshandler.cpp \
+        src/authorizationmanager.cpp \
+        src/errorhandler.cpp \
         src/cachehandler.cpp \
         src/clientmanager.cpp \
         src/recordsmodel.cpp \
@@ -31,13 +39,16 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    include/authorizationmanager.h \
+    include/errorhandler.h \
     include/cachehandler.h \
     include/clientmanager.h \
     include/gameboard.h \
     include/record.h \
     include/recordsmodel.h \
     include/requestshandlerclient.h \
-    include/usersettings.h
+    include/usersettings.h \
+    signalshandler.h
 
 INCLUDEPATH += $$PWD/include
 INCLUDEPATH += $$PWD/../shared/include
@@ -56,8 +67,10 @@ for (abi, ANDROID_ABIS) {
 }
 }
 
-ITEM += \
-        logo.ico
+#ITEM += \
+#        logo.ico
+
+DEFINES += DEBUG_OUTPUT
 
 win32:RC_FILE = ico_rec.rc
 

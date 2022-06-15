@@ -32,17 +32,9 @@ public:
 private slots:
     void onTopTimeDownloaded(const std::vector<Record> &data);
     void onTopTurnsDownloaded(const std::vector<Record> &data);
-    void onRecordAdded();
-    void onUserAdded();
-    void onPasswordDownloaded(const QString &password);
-
-
 
 private:
-
     std::vector<Record> m_records;
-    RequestsHandlerClient m_recordsHandler;
-    CacheHandler m_cacheHandler;
 
     enum RecordRoles {
         NicknameRole = Qt::UserRole + 1,

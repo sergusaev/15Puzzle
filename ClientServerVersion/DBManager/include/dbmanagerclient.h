@@ -6,9 +6,10 @@
 
 namespace db
 {
+
 class DBManagerClient : public DBManager {
-    virtual void setDatabaseName() override;
-    virtual void setCreationQueries() override;
+    virtual QString getDatabaseName() override;
+    virtual std::vector<QSqlQuery> getCreationQueries() override;
 };
 
 

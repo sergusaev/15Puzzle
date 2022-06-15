@@ -7,8 +7,7 @@
 
 namespace db
 {
-namespace
-{
+
     class DBCloser {
     public:
         void operator() (QSqlDatabase* db) {
@@ -16,10 +15,11 @@ namespace
             QSqlDatabase::removeDatabase(QSqlDatabase::defaultConnection);
         }
     };
-}
+
 
 class DBManager {
 public:
+
     std::unique_ptr<QSqlDatabase, DBCloser> m_database;
 
     DBTypes::DBState m_state {DBTypes::DBState::OK};
@@ -30,12 +30,11 @@ public:
     bool setUpTables();
     void setIsValid(bool isValid);
 
-    virtual void setDatabaseName() = 0;
-    virtual void setCreationQueries() = 0;
+    virtual QString getDatabaseName() = 0;
+    virtual std::vector<QSqlQuery> getCreationQueries() = 0;
 
     std::string m_dbPath;
-    QString m_databaseName;
-    std::vector<QSqlQuery> m_creationQueries;
+
 };
 
 }

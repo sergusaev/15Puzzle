@@ -1,4 +1,4 @@
-QT += core network
+QT += core network sql
 QT -= gui
 
 SOURCES += main.cpp \
@@ -11,6 +11,7 @@ HEADERS += \
            include/requestshandlerserver.h \
            include/servermanager.h
 
+DEFINES += DEBUG_OUTPUT
 
 INCLUDEPATH += $$_PRO_FILE_PWD_/include
 INCLUDEPATH += $$_PRO_FILE_PWD_/../shared/include

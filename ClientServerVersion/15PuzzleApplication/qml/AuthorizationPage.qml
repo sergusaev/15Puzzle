@@ -3,22 +3,43 @@ import QtQuick.Controls 2.15
 import QtQuick.Controls.Styles 1.4
 import QtGraphicalEffects 1.15
 import QtQuick.Dialogs 1.3
+import AuthorizationManager 1.0
+
 
 
 CustomPage {
     id: root
     property string authorizationState: "NicknameInput"
-    property string ethalonPassword: ""
     property bool newUser: true
     property string newUserPassword: ""
+    property string ethalonPassword: ""
     property int currDimension: 2
 
+
+
+//    onEthalonPasswordChanged: {
+//        console.log("On root.ethalonPassword changed")
+//        console.log ("ethalon password changed!")
+//        root.ethalonPassword = AuthorizationManager.ethalonPassword
+//        console.log ("New ethalon password: " + root.ethalonPassword)
+//    }
+
+
+
+
     Component.onCompleted: {
-        gameBoardModel.nickname = userSettings.readNickname()
-        gameBoardModel.password = userSettings.readPassword()
-        gameBoardModel.dimension = userSettings.readDimension()
-        root.newUser = gameBoardModel.nickname === ""
-        _puzzle_size_selection_combobox.currentIndex = gameBoardModel.dimension - 2
+        AuthorizationManager.setNickname (userSettings.readNickname())
+        AuthorizationManager.setPassword (userSettings.readPassword())
+        root.ethalonPassword = AuthorizationManager.password
+        if((userSettings.readDimension() > 2)) {
+            AuthorizationManager.setDimension (userSettings.readDimension())
+        }
+        root.newUser = AuthorizationManager.nickname === ""
+        _puzzle_size_selection_combobox.currentIndex = AuthorizationManager.dimension - 2
+
+        console.log("On AuthorizationPage creation")
+        console.log("QSettings password: " + AuthorizationManager.password)
+        console.log("Root ethalon password: " + root.ethalonPassword)
 
     }
 
@@ -43,7 +64,7 @@ CustomPage {
         id: _nickname_text_field
         width: root.width * 0.76
         height:width / 5
-        text: gameBoardModel.nickname
+        text: AuthorizationManager.nickname
         validator: RegularExpressionValidator { regularExpression: /\w{0,12}/ }
         color: "lightyellow"
         font {
@@ -57,6 +78,9 @@ CustomPage {
             radius: 10
         }
         enabled: root.authorizationState === "NicknameInput"
+        onFocusChanged: {
+            AuthorizationManager.requestUserPassword(_nickname_text_field.text)
+        }
     }
     Rectangle {
         id: _nickname_text_field_darkener
@@ -81,7 +105,7 @@ CustomPage {
         id: _password_text_field
         width: root.width * 0.76
         height:width / 5
-        text: root.newUserPassword === "" ? gameBoardModel.password : root.newUserPassword
+        text: root.newUserPassword === "" ? AuthorizationManager.password : root.newUserPassword
         validator: RegularExpressionValidator { regularExpression: /\w{0,12}/ }
         color: "lightyellow"
         font {
@@ -208,19 +232,29 @@ CustomPage {
             }
         ]
         onClicked:  {
-
             if (state === "NickInput") {
-                root.ethalonPassword = gameBoardModel.getUserPassword(_nickname_text_field.text)
-                if(root.ethalonPassword === "") {
-                    gameBoardModel.setNickname(_nickname_text_field.text)
-                    gameBoardModel.setPassword("")
-                    gameBoardModel.setDimension(2)
-                    root.newUser = true
-                    _new_user_popup_window.windowVisible = true
+                if(!AuthorizationManager.connectionState) {
+                    _no_server_connection_popup.open()
                 } else {
-                    root.authorizationState = "PasswordInput"
+
+                    console.log("Clicking OK-button (NickInput state)")
+                    console.log("root.ethalonPassword: " + root.ethalonPassword)
+
+                    if(root.ethalonPassword === "") {
+                        AuthorizationManager.setNickname(_nickname_text_field.text)
+                        AuthorizationManager.setPassword("")
+                        root.newUser = true
+                        _new_user_popup_window.windowVisible = true
+                    } else {
+                        root.authorizationState = "PasswordInput"
+                    }
                 }
             } else if (state === "PassInput"){
+
+                console.log("Clicking OK-button (PassInput state)")
+                console.log("root.ethalonPassword: " + root.ethalonPassword)
+                console.log("_password_text_field.text: " + _password_text_field.text)
+
                 if(root.ethalonPassword === _password_text_field.text) {
                     root.authorizationState = "DimensionSelection"
                 } else {
@@ -229,13 +263,17 @@ CustomPage {
             }
 
             else if (state === "DimSelect") {
-                gameBoardModel.setNickname(_nickname_text_field.text)
-                gameBoardModel.setPassword(_password_text_field.text)
-                gameBoardModel.setDimension(root.currDimension)
-                gameBoardModel.addUser(gameBoardModel.nickname, gameBoardModel.password)
-                userSettings.writeSettings(gameBoardModel.nickname, gameBoardModel.password, gameBoardModel.dimension)
-                root.authorizationState === "NicknameInput"
-                _stack_view.push(_main_menu_stack_page)
+                if(!AuthorizationManager.connectionState) {
+                    _no_server_connection_popup.open()
+                } else {
+                    AuthorizationManager.setNickname(_nickname_text_field.text)
+                    AuthorizationManager.setPassword(_password_text_field.text)
+                    AuthorizationManager.setDimension(root.currDimension)
+                    AuthorizationManager.addNewUser(AuthorizationManager.nickname, AuthorizationManager.password)
+                    userSettings.writeSettings(AuthorizationManager.nickname, AuthorizationManager.password, AuthorizationManager.dimension)
+                    root.authorizationState === "NicknameInput"
+                    _stack_view.push(_main_menu_stack_page)
+                }
             }
 
         }
@@ -329,7 +367,7 @@ CustomPage {
             }
 
             CustomText {
-                id: _new_user_greetings_text
+                id: _wrong_password_text
                 text: qsTr("Wrong password!")
                 fontPointSize: 30
                 anchors.top: parent.top
@@ -342,7 +380,7 @@ CustomPage {
                 width: parent.width * 0.5
                 height: width * 0.4
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: _new_user_greetings_text.bottom
+                anchors.top: _wrong_password_text.bottom
                 anchors.topMargin: parent.height / 4
                 text: qsTr("Try again")
                 onClicked: _wrong_password_popup.close()
@@ -352,5 +390,143 @@ CustomPage {
         }
 
     }
-}
 
+    Popup
+    {
+        id: _internal_server_error_popup
+        width: parent.width * 0.9
+        height: width
+        anchors.centerIn: parent
+        padding: 0
+
+
+        background: Rectangle {
+            id:_inner_internal_server_error_popup_rect
+            anchors.fill:parent
+            radius: 10
+
+            Image {
+                id:_inner_internal_server_error_popup_rect_background
+                property bool rounded: true
+                property bool adapt: true
+                anchors.fill: parent
+
+                source: "../pics/wood_5.png"
+                layer.enabled: rounded
+                layer.effect: OpacityMask {
+                    maskSource: Item {
+                        width: _inner_internal_server_error_popup_rect_background.width
+                        height: _inner_internal_server_error_popup_rect_background.height
+                        Rectangle {
+                            anchors.centerIn: parent
+                            width: _inner_internal_server_error_popup_rect_background.adapt
+                                   ? _inner_internal_server_error_popup_rect_background.width
+                                   : Math.min(_inner_internal_server_error_popup_rect_background.width, _inner_internal_server_error_popup_rect_background.height)
+                            height: _inner_internal_server_error_popup_rect_background.adapt ? _inner_internal_server_error_popup_rect_background.height : width
+                            radius: _inner_internal_server_error_popup_rect.radius
+                        }
+                    }
+                }
+
+            }
+
+            CustomText {
+                id: _internal_server_error_text
+                text: qsTr("Internal server error!")
+                fontPointSize: 30
+                anchors.top: parent.top
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.topMargin: parent.height / 3
+            }
+
+            CustomButton {
+                id: _internal_server_error_try_again_button
+                width: parent.width * 0.5
+                height: width * 0.4
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: _internal_server_error_text.bottom
+                anchors.topMargin: parent.height / 4
+                text: qsTr("Try again")
+                onClicked: _internal_server_error_popup.close()
+            }
+
+
+        }
+
+    }
+    Popup
+    {
+        id: _no_server_connection_popup
+        width: parent.width * 0.9
+        height: width
+        anchors.centerIn: parent
+        padding: 0
+
+
+        background: Rectangle {
+            id:_no_server_connection_popup_rect
+            anchors.fill:parent
+            radius: 10
+
+            Image {
+                id:_no_server_connection_popup_rect_background
+                property bool rounded: true
+                property bool adapt: true
+                anchors.fill: parent
+
+                source: "../pics/wood_5.png"
+                layer.enabled: rounded
+                layer.effect: OpacityMask {
+                    maskSource: Item {
+                        width: _no_server_connection_popup_rect_background.width
+                        height: _no_server_connection_popup_rect_background.height
+                        Rectangle {
+                            anchors.centerIn: parent
+                            width: _no_server_connection_popup_rect_background.adapt
+                                   ? _no_server_connection_popup_rect_background.width
+                                   : Math.min(_no_server_connection_popup_rect_background.width, _no_server_connection_popup_rect_background.height)
+                            height: _no_server_connection_popup_rect_background.adapt ? _no_server_connection_popup_rect_background.height : width
+                            radius: _no_server_connection_popup_rect.radius
+                        }
+                    }
+                }
+
+            }
+
+            CustomText {
+                id: _no_server_connection_text
+                text: qsTr("No server connection!")
+                fontPointSize: 30
+                anchors.top: parent.top
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.topMargin: parent.height / 3
+            }
+            CustomText {
+                id: _cache_adding_text
+                text: qsTr("Record added into cache.")
+                anchors.top: _no_server_connection_text.top
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.topMargin: parent.height / 6
+                //                visible: ErrorHandler.cacheAddingTextVisible
+            }
+
+            CustomButton {
+                id: _no_server_connection_try_again_button
+                width: parent.width * 0.5
+                height: width * 0.4
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: _cache_adding_text.bottom
+                anchors.topMargin: parent.height / 4
+                text: qsTr("Try again")
+                onClicked:  {
+                    ErrorHandler.setCacheAddingTextVisible(false)
+                    _no_server_connection_popup.close()
+                }
+
+
+            }
+
+        }
+    }
+
+}

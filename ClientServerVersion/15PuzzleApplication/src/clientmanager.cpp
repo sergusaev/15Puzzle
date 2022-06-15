@@ -6,9 +6,9 @@ ClientManager::ClientManager()
     connectSocketSignals();
 }
 
-ClientManager &ClientManager::instance()
+ClientManager *ClientManager::instance()
 {
-    static ClientManager instance;
+    static ClientManager *instance = new ClientManager();
     return instance;
 }
 
@@ -106,6 +106,34 @@ void ClientManager::connectSocketSignals()
 
 void ClientManager::handlePackage(net::Package &package)
 {
+#ifdef DEBUG_OUTPUT
+    QString currPackageType;
+    switch(package.type()){
+    case net::PackageType::PASSWORD_RESPONSE:
+        currPackageType = "PASSWORD_RESPONCE";
+        break;
+    case net::PackageType::ADD_USER_RESPONSE:
+        currPackageType = "ADD_USER_RESPONCE";
+        break;
+    case net::PackageType::TOP_TIME_RESPONSE:
+        currPackageType = "TOP_TIME_RESPONCE";
+        break;
+    case net::PackageType::TOP_TURNS_RESPONSE:
+        currPackageType = "TOP_TURNS_RESPONCE";
+        break;
+    case net::PackageType::ADD_RECORD_RESPONSE:
+        currPackageType = "ADD_RECORD_RESPONCE";
+        break;
+    case net::PackageType::INTERNAL_SERVER_ERROR:
+        currPackageType = "INTERNAL_SERVER_ERROR";
+        break;
+    default:
+        currPackageType = "INVALID";
+        break;
+    }
+    qDebug() << "Recieved package with type " << currPackageType;
+#endif
+
     switch (package.type())
     {
     case net::PackageType::TOP_TIME_RESPONSE:
@@ -131,6 +159,11 @@ void ClientManager::handlePackage(net::Package &package)
     case net::PackageType::PASSWORD_RESPONSE:
     {
         handlePasswordResponsePackage(package);
+        break;
+    }
+    case net::PackageType::INTERNAL_SERVER_ERROR:
+    {
+        handleInternalServerErrorPackage(package);
         break;
     }
     default: {
@@ -171,17 +204,22 @@ void ClientManager::handleTopTurnsResponsePackage(const net::Package &package)
 void ClientManager::handleAddRecordResponsePackage(const net::Package &package)
 {
 
-    emit addRecordResponse(/*package.data()*/);
+    emit addRecordResponse(package.data());
 }
 
 void ClientManager::handleAddUserResponsePackage(const net::Package &package)
 {
-    emit addUserResponse();
+    emit addUserResponse(package.data());
 }
 
 void ClientManager::handlePasswordResponsePackage(const net::Package &package)
 {
     emit passwordResponse(package.data());
+}
+
+void ClientManager::handleInternalServerErrorPackage(const net::Package &package)
+{
+    emit internalServerErrorResponse(package.data());
 }
 
 

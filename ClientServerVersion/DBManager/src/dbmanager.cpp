@@ -45,7 +45,7 @@ bool DBManager::setUp()
 bool DBManager::setUpWorkspace()
 {
     const QString location {QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)};
-    const QString fullPath {location + "/" + m_databaseName};
+    const QString fullPath {location + "/" + getDatabaseName()};
 
     m_dbPath = fullPath.toStdString();
 
@@ -66,7 +66,7 @@ bool DBManager::setUpTables()
 {
     bool result {true};
 
-    for (auto& query : m_creationQueries)
+    for (auto& query : getCreationQueries())
     {
         if (!query.exec())
         {

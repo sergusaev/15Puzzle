@@ -12,7 +12,8 @@ enum class DBResult {
 enum class DBTables {
     Records = 1,
     Users,
-    RecordsCache
+    RecordsCache,
+    UsersCahe
 };
 
 enum class DBState {

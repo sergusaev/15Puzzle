@@ -11,6 +11,9 @@ class RequestHandlerServer:public QObject {
     Q_OBJECT
 
 public:
+    RequestHandlerServer();
+    ~RequestHandlerServer();
+
     void handlePasswordRequest(const net::Package& packageData,QTcpSocket* socket);
     void handleAddUserRequest(const net::Package& packageData, QTcpSocket* socket);
     void handleTopTimeRequest(const net::Package& packageData, QTcpSocket* socket);

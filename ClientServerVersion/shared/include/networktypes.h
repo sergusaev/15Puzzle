@@ -25,6 +25,14 @@ enum class ConnectionState {
     Disconnected,
     Connecting
 };
+
+enum class InternalServerError {
+    PASSWORD_ERROR,
+    USER_ADDITION_ERROR,
+    RECORD_ADDITION_ERROR,
+    TOP_TIME_ERROR,
+    TOP_TURNS_ERROR
+};
 }
 
 #endif // NETWORKTYPES_H

@@ -10,7 +10,7 @@ class Record
 public:
     Record() = default;
 
-    Record(const QString& newNickname, const int newTime, const int newTurns,  const int newDimension = - 1, const DBTypes::DBIndex newDbID = -1);
+    Record(const QString& newNickname, const int newTime, const int newTurns,  const int newDimension = - 1);
 
     const QString &nickname() const;
     void setNickname(const QString &newNickname);
@@ -24,9 +24,6 @@ public:
     int dimension() const;
     void setDimension(int newDimension);
 
-    DBTypes::DBIndex dbID() const;
-    void setDbID(DBTypes::DBIndex newDbID);
-
     bool operator==(const Record& other) const{
         return (other.nickname() == nickname()
                 && other.time() == time()
@@ -35,13 +32,11 @@ public:
     }
 
 
-
 private:
     QString m_nickname;
     int m_time;
     int m_turns;
     int m_dimension;
-    DBTypes::DBIndex m_dbID;
 };
 
 #endif // RECORD_H

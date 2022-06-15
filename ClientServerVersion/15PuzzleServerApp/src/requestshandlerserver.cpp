@@ -1,6 +1,16 @@
 #include "requestshandlerserver.h"
 #include <QDebug>
 
+RequestHandlerServer::RequestHandlerServer()
+{
+
+}
+
+RequestHandlerServer::~RequestHandlerServer()
+{
+
+}
+
 void RequestHandlerServer::handlePasswordRequest(const net::Package &packageData, QTcpSocket *socket)
 {
     bool requestResult;
@@ -8,64 +18,127 @@ void RequestHandlerServer::handlePasswordRequest(const net::Package &packageData
     std::tie(requestResult, data) = m_recordsManager.getPassword(packageData.data());
     if(requestResult) {
         net::Package resultPackage {data, net::PackageType::PASSWORD_RESPONSE};
-        emit passwordRequestCompleted(resultPackage, socket);
+        emit passwordRequestCompleted(resultPackage, socket);      
     } else {
-        net::Package resultPackage {QVariant::fromValue("Error while getting password"), net::PackageType::INTERNAL_SERVER_ERROR};
+        net::Package resultPackage {QVariant::fromValue(static_cast<int>(net::InternalServerError::PASSWORD_ERROR)),
+                                    net::PackageType::INTERNAL_SERVER_ERROR};
         emit passwordRequestCompleted(resultPackage, socket);
     }
 
-    //    if (browseResult)
-    //    {
-    //        QVariant dataList;
-    //        std::copy (std::make_move_iterator(data.begin()),
-    //                   std::make_move_iterator(data.end()),
-    //                   std::back_inserter(dataList));
+#ifdef DEBUG_OUTPUT
+    if(requestResult) {
+        qDebug() << "Requested password successfully sent";
+        qDebug() << data;
+    } else {
+        qDebug() << "Internal server error";
+    }
+#endif
 }
 
 
 void RequestHandlerServer::handleAddUserRequest(const net::Package& packageData, QTcpSocket *socket)
 {
     QVariantList dataList = packageData.data().toList();
-    DBTypes::DBIndex index = m_recordsManager.requestContactAddition(dataList);
-    dataList.push_front(index);
-    net::Package resultPackage {QVariant::fromValue(dataList), net::PackageType::ADD_USER_RESPONSE};
-    emit userAdditionRequestCompleted(resultPackage, socket);
+    bool additionResult {m_recordsManager.addUser(dataList)};
+    if(additionResult) {
+        net::Package resultPackage {QVariant::fromValue(additionResult), net::PackageType::ADD_USER_RESPONSE};
+        emit userAdditionRequestCompleted(resultPackage, socket);
+    } else {
+        net::Package resultPackage {QVariant::fromValue(static_cast<int>(net::InternalServerError::USER_ADDITION_ERROR)), net::PackageType::INTERNAL_SERVER_ERROR};
+        emit userAdditionRequestCompleted(resultPackage, socket);
+    }
+
+#ifdef DEBUG_OUTPUT
+    if(additionResult) {
+        qDebug() << "User successfully added";
+        qDebug() << dataList;
+    } else {
+        qDebug() << "Internal server error";
+    }
+#endif
+
 }
 
 void RequestHandlerServer::handleTopTimeRequest(const net::Package &packageData, QTcpSocket *socket)
 {
-    DBTypes::DBIndex index = packageData.data().toInt();
-    bool removalResult = m_recordsManager.requestContactRemoval(index);
-    if(removalResult) {
-        net::Package resultPackage {QVariant::fromValue(index), net::PackageType::TOP_TIME_RESPONSE};
+
+    bool result;
+    std::vector<QVariant> entries;
+    std::tie(result, entries) = m_recordsManager.getTopTime(packageData.data());
+    if(result) {
+        QVariantList dataList;
+        std::copy (std::make_move_iterator(entries.begin()),
+                   std::make_move_iterator(entries.end()),
+                   std::back_inserter(dataList));
+        net::Package resultPackage {QVariant::fromValue(dataList), net::PackageType::TOP_TIME_RESPONSE};
         emit topTimeRequestCompleted(resultPackage, socket);
-        qWarning() << "Contact removal succeed! DB index of deleted contact:" << index;
     } else {
-        qCritical() << "Contact removal failed! DB index of contact failed to delete:" << index;
+        net::Package resultPackage {QVariant::fromValue(static_cast<int>(net::InternalServerError::TOP_TIME_ERROR)),
+                                    net::PackageType::INTERNAL_SERVER_ERROR};
+        emit topTimeRequestCompleted(resultPackage, socket);
         return;
     }
+
+#ifdef DEBUG_OUTPUT
+    if(result) {
+        qDebug() << "Top time successfully sent";
+    } else {
+        qDebug() << "Internal server error";
+    }
+#endif
 }
+
 void RequestHandlerServer::handleTopTurnsRequest(const net::Package &packageData, QTcpSocket *socket)
 {
-    DBTypes::DBIndex index = packageData.data().toInt();
-    bool removalResult = m_recordsManager.requestContactRemoval(index);
-    if(removalResult) {
-        net::Package resultPackage {QVariant::fromValue(index), net::PackageType::TOP_TURNS_RESPONSE};
-        emit topTurnsRequestCompleted(resultPackage, socket);
-        qWarning() << "Contact removal succeed! DB index of deleted contact:" << index;
+    bool result;
+    std::vector<QVariant> entries;
+    std::tie(result, entries) = m_recordsManager.getTopTurns(packageData.data());
+    if(result) {
+        QVariantList dataList;
+        std::copy (std::make_move_iterator(entries.begin()),
+                   std::make_move_iterator(entries.end()),
+                   std::back_inserter(dataList));
+        net::Package resultPackage {QVariant::fromValue(dataList), net::PackageType::TOP_TURNS_RESPONSE};
+        emit topTimeRequestCompleted(resultPackage, socket);
     } else {
-        qCritical() << "Contact removal failed! DB index of contact failed to delete:" << index;
+        net::Package resultPackage {QVariant::fromValue(static_cast<int>(net::InternalServerError::TOP_TURNS_ERROR)),
+                                    net::PackageType::INTERNAL_SERVER_ERROR};
+        emit topTimeRequestCompleted(resultPackage, socket);
         return;
     }
+
+#ifdef DEBUG_OUTPUT
+    if(result) {
+        qDebug() << "Top turns successfully sent";
+    } else {
+        qDebug() << "Internal server error";
+    }
+#endif
+
 }
 
 void RequestHandlerServer::handleAddRecordRequest(const net::Package& packageData, QTcpSocket *socket)
 {
     QVariantList dataList = packageData.data().toList();
-    DBTypes::DBIndex index = m_recordsManager.requestContactAddition(dataList);
-    dataList.push_front(index);
-    net::Package resultPackage {QVariant::fromValue(dataList), net::PackageType::ADD_RECORD_RESPONSE};
-    emit recordAdditionRequestCompleted(resultPackage, socket);
+    bool additionResult {m_recordsManager.addRecord(dataList)};
+    if(additionResult) {
+        net::Package resultPackage {QVariant::fromValue(additionResult), net::PackageType::ADD_RECORD_RESPONSE};
+        emit userAdditionRequestCompleted(resultPackage, socket);
+    } else {
+        dataList.push_front(QVariant::fromValue(static_cast<int>(net::InternalServerError::RECORD_ADDITION_ERROR)));
+        net::Package resultPackage {QVariant::fromValue(dataList), net::PackageType::INTERNAL_SERVER_ERROR};
+        emit userAdditionRequestCompleted(resultPackage, socket);
+    }
+
+#ifdef DEBUG_OUTPUT
+    if(additionResult) {
+        qDebug() << "Record successfully added";
+        qDebug() << dataList;
+    } else {
+        qDebug() << "Internal server error";
+    }
+#endif
+
 }
 
 

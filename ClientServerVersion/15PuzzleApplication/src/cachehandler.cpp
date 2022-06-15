@@ -12,25 +12,19 @@ CacheHandler::~CacheHandler()
 
 }
 
+CacheHandler *CacheHandler::instance()
+{
+    static CacheHandler *instance = new CacheHandler;
+    return instance;
+}
 
-//std::vector<Record> transform (const std::vector<DBTypes::DBEntry>& source) {
-//    std::vector<Record> target;
-//    std::transform(source.begin(), source.end(), std::back_inserter(target), [](const DBTypes::DBEntry& entry){
-//        return Record  {entry[0].toString(),
-//                        entry[1].toInt(),
-//                        entry[2].toInt(),
-//                        entry[3].toInt()
-//        };
-//    });
-//    return target;
-//}
 
-std::pair<bool, Record> CacheHandler::browseFirstCacheRecord()
+std::pair<bool, DBTypes::DBEntry> CacheHandler::browseFirstCacheRecord()
 {
     DBTypes::DBResult result;
-    Record record;
-    std::tie(result, record) = m_processor->requestFirstRecordData(DBTypes::DBTables::RecordsCache);
-    return {result == DBTypes::DBResult::OK, record};
+    DBTypes::DBEntry dataList;
+    std::tie(result, dataList) = m_processor->requestFirstRecordData(DBTypes::DBTables::RecordsCache);
+    return {result == DBTypes::DBResult::OK, dataList};
 }
 
 bool CacheHandler::deleteFirstCacheRecord()
@@ -39,44 +33,18 @@ bool CacheHandler::deleteFirstCacheRecord()
 
 }
 
-//std::pair<bool, std::vector<Record> > CacheHandler::browseBestInTime(int dimension)
-//{
-//    DBTypes::DBResult result;
-//    std::vector<DBTypes::DBEntry> entries;
-//    std::tie(result, entries) = m_processor->requestTopTimeData(DBTypes::DBTables::Records, dimension);
-//    return {result == DBTypes::DBResult::OK, transform(entries)};
-//}
 
-//std::pair<bool, std::vector<Record> > CacheHandler::browseBestInTurns(int dimension)
-//{
-//    DBTypes::DBResult result;
-//    std::vector<DBTypes::DBEntry> entries;
-//    std::tie(result, entries) = m_processor->requestTopTurnsData(DBTypes::DBTables::Records, dimension);
-//    return {result == DBTypes::DBResult::OK, transform(entries)};
-//}
-
-
-DBTypes::DBIndex CacheHandler::addRecord(const Record &record)
+bool CacheHandler::addRecord(const Record &record)
 {
-    DBTypes::DBResult result;
-    DBTypes::DBIndex index;
-    std::tie(result, index) = m_processor->insertDataRecord(DBTypes::DBTables::RecordsCache,
+    DBTypes::DBResult result = m_processor->insertDataRecord(DBTypes::DBTables::RecordsCache,
                                                             {record.nickname(), record.time(), record.turns(), record.dimension()});
-    return (result == DBTypes::DBResult::OK) ? index : -1;
+    return (result == DBTypes::DBResult::OK);
 }
 
-//DBTypes::DBIndex CacheHandler::addUserLogPass(const QString &nickname, const QString &password)
-//{
-//    DBTypes::DBResult result;
-//    DBTypes::DBIndex index;
-//    std::tie(result, index) = m_processor->insertDataRecord(DBTypes::DBTables::Users,
-//                                                            {nickname, password});
-//    return (result == DBTypes::DBResult::OK) ? index : -1;
-//}
+bool CacheHandler::addUser(const QString &nickname, const QString &password)
+{
+    DBTypes::DBResult result = m_processor->insertDataRecord(DBTypes::DBTables::Users, {nickname, password});
+    return (result == DBTypes::DBResult::OK);
+}
 
-//QString CacheHandler::getPassword(const QString &nickname)
-//{
-//    QString ret = m_processor->getPasswordData(nickname).toString();
-//    return ret;
-//}
 

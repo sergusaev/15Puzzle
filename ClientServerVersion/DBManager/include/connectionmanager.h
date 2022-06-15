@@ -4,7 +4,7 @@
 #include <memory>
 #include <QObject>
 #include <dbtypes.h>
-#include <dbmanager.h>
+#include "dbmanager.h"
 
 namespace db
 {

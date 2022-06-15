@@ -2,14 +2,14 @@
 
 namespace db {
 
-void DBManagerClient::setDatabaseName()
+QString DBManagerClient::getDatabaseName()
 {
-    m_databaseName  = "ClientDB";
+    return "ClientDB";
 }
 
-void DBManagerClient::setCreationQueries()
+std::vector<QSqlQuery> DBManagerClient::getCreationQueries()
 {
-    m_creationQueries = {
+    return {
         QSqlQuery {
             "CREATE TABLE IF NOT EXISTS RecordsCache"
             "("

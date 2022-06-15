@@ -4,6 +4,7 @@
 #include "gameboard.h"
 #include "recordsmodel.h"
 #include "usersettings.h"
+#include "clientmanager.h"
 
 
 int main(int argc, char *argv[])
@@ -24,10 +25,16 @@ int main(int argc, char *argv[])
     RecordsModel timeRecordsModel;
     RecordsModel turnsRecordsModel;
 
-//  register QML type from qml, importing as module
+
+//  register QML type, importing as module (deprecated)
 //  qmlRegisterType<GameBoard>("Game", 1, 0, "GameBoardModel");
 //  qmlRegisterType<RecordsModel>("Records", 1, 0, "RecordsModel");
 
+    net::ConnectionArgumentsParser parser (*QCoreApplication::instance());
+    ClientManager::instance()->setConnectionSettings(parser);
+
+//  register C++ singlton as singlton in QML
+    qmlRegisterSingletonInstance("AuthorizationManager", 1, 0, "AuthorizationManager", AuthorizationManager::instance());
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));
@@ -37,11 +44,13 @@ int main(int argc, char *argv[])
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
 
-//  register QML type from C++, using as an object known all over QML
+//  register QML object from C++ via rootContext(), using it an object known all over QML
     engine.rootContext()->setContextProperty("gameBoardModel", &model);
     engine.rootContext()->setContextProperty("timeRecordsModel", &timeRecordsModel);
     engine.rootContext()->setContextProperty("turnsRecordsModel", &turnsRecordsModel);
     engine.rootContext()->setContextProperty("userSettings", &settings);
+
+
 
     engine.load(url);
     return app.exec();

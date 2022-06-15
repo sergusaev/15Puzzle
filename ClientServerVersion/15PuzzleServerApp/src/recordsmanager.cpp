@@ -40,7 +40,7 @@ std::pair<bool, std::vector<QVariant>> RecordsManager::getTopTime(const QVariant
 
     DBTypes::DBResult result;
     std::vector<DBTypes::DBEntry> entries;
-    std::tie(result, entries) = m_processor->requestTopTimeData(DBTypes::DBTables::Records, dimensionData);
+    std::tie(result, entries) = m_processor->requestTopTimeData(DBTypes::DBTables::Records, dimensionData.toInt());
     return {result == DBTypes::DBResult::OK, transform(entries)};
 }
 
@@ -48,7 +48,7 @@ std::pair<bool, std::vector<QVariant>> RecordsManager::getTopTurns(const QVarian
 {
     DBTypes::DBResult result;
     std::vector<DBTypes::DBEntry> entries;
-    std::tie(result, entries) = m_processor->requestRopTurnsData(DBTypes::DBTables::Records, dimensionData);
+    std::tie(result, entries) = m_processor->requestTopTurnsData(DBTypes::DBTables::Records, dimensionData.toInt());
     return {result == DBTypes::DBResult::OK, transform(entries)};
 }
 
@@ -64,19 +64,4 @@ bool RecordsManager::addRecord(const DBTypes::DBEntry &entry)
     return result == DBTypes::DBResult::OK;
 }
 
-bool RecordsManager::requestContactUpdate(const DBTypes::DBIndex index, const DBTypes::DBEntry& entry)
-{
-    DBTypes::DBResult result;
-    result = m_processor->updateDataRecord(DBTypes::DBTables::Contacts, index, entry);
-
-#ifdef DEBUG_OUTPUT
-    qDebug() << "";
-    qDebug() << "In function ContactsHandler::requestContactUpdate(<args>) ID of contact to update:" << index;
-    qDebug() << "In function ContactsHandler::requestContactUpdate(<args>) contact data to update:";
-    qDebug() << entry;
-    qDebug() << "In function ContactsHandler::updateContact(<args>) contact update state:" << (result == DBTypes::DBResult::OK);
-#endif
-
-    return result == DBTypes::DBResult::OK;
-}
 

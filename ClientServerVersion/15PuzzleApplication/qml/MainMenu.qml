@@ -1,17 +1,15 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtGraphicalEffects 1.15
+import AuthorizationManager 1.0
 
 CustomPage {
     id: root
 
     CustomText {
         id: _greetings_text
-
-        text: qsTr("Hi, " + gameBoardModel.nickname + "!")
-
+        text: qsTr("Hi, " + AuthorizationManager.nickname + "!")
         fontPointSize: 40
-
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.topMargin: parent.height / 6

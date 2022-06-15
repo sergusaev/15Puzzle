@@ -13,8 +13,9 @@ GameBoard::GameBoard(QObject *parent, int dimension):
     m_seconds {0},
     m_counter {0}
 {
-
     connect(&m_timer, &QTimer::timeout, this, &GameBoard::onTimeout);
+    connect(AuthorizationManager::instance(), &AuthorizationManager::dimensionChanged,
+            this, &GameBoard::onDimensionChanged);
 
 }
 
@@ -24,25 +25,14 @@ void GameBoard::onTimeout()
     setTimePoint(timePoint() + 1);
 }
 
-
-
-const QString &GameBoard::password() const
+void GameBoard::onDimensionChanged(int dimension)
 {
-    return m_password;
+    GameBoard::setDimension(dimension);
 }
 
-void GameBoard::setPassword(const QString &newPassword)
-{
-    if (m_password == newPassword)
-        return;
-    m_password = newPassword;
-    emit passwordChanged();
-}
 
-void GameBoard::addUser(const QString &nickname, const QString &password)
-{
-    m_cacheHandler.addUserLogPass(nickname, password);
-}
+
+
 
 int GameBoard::boardsize() const
 {
@@ -56,18 +46,6 @@ void GameBoard::setBoardsize(int newBoardsize)
     m_boardsize = newBoardsize;
 }
 
-const QString &GameBoard::nickname() const
-{
-    return m_nickname;
-}
-
-void GameBoard::setNickname(const QString &newNickname)
-{
-    if (m_nickname == newNickname)
-        return;
-    m_nickname = newNickname;
-    emit nicknameChanged();
-}
 
 bool GameBoard::moveRows(const QModelIndex & sourceParent, int sourceRow, int count, const QModelIndex & destinationParent, int destinationChild)
 {
@@ -231,13 +209,6 @@ QString GameBoard::getTime()
     return min + ":" + sec;
 }
 
-QString GameBoard::getUserPassword(const QString& nickname)
-{
-    QString ret {m_recordsHandler.requestPassword(nickname)};
-    return ret;
-}
-
-
 GameBoard::Position GameBoard::getRowCol(int index) const
 {
     int row = index / m_dimension;
@@ -300,8 +271,8 @@ bool GameBoard::checkWin()
 {
     if(isSolved()) {
         m_timer.stop();
-        if(!m_recordsHandler.requestRecordAddition({m_nickname, m_seconds, m_counter, m_dimension})) {
-            m_cacheHandler.addRecord({m_nickname, m_seconds, m_counter, m_dimension});
+        if(!RequestsHandlerClient::instance()->requestRecordAddition({m_nickname, m_seconds, m_counter, m_dimension})) {
+            CacheHandler::instance()->addRecord({m_nickname, m_seconds, m_counter, m_dimension});
         }
         return true;
     }

@@ -2,34 +2,47 @@
 
 
 RequestsHandlerClient::RequestsHandlerClient()
-    : m_clientManager {ClientManager::instance()}
 {
-    connect(&m_clientManager, &ClientManager::connectionStateChanged,
+    connect(ClientManager::instance(), &ClientManager::connectionStateChanged,
             this, &RequestsHandlerClient::onConnectionStateChanged);
-    connect(&m_clientManager, &ClientManager::topTimeResponse,
+    connect(ClientManager::instance(), &ClientManager::topTimeResponse,
             this, &RequestsHandlerClient::onTopTimeDownloadSucceed);
-    connect(&m_clientManager, &ClientManager::topTurnsResponse,
+    connect(ClientManager::instance(), &ClientManager::topTurnsResponse,
             this, &RequestsHandlerClient::onTopTurnsDownloadSucceed);
-    connect(&m_clientManager, &ClientManager::addRecordResponse,
+    connect(ClientManager::instance(), &ClientManager::addRecordResponse,
             this, &RequestsHandlerClient::onRecordAdditionSucceed);
-    connect(&m_clientManager, &ClientManager::addUserResponse,
+    connect(ClientManager::instance(), &ClientManager::addUserResponse,
             this, &RequestsHandlerClient::onUserAdditionSucceed);
-    connect(&m_clientManager, &ClientManager::passwordResponse,
+    connect(ClientManager::instance(), &ClientManager::passwordResponse,
             this, &RequestsHandlerClient::onPasswordDownloadSucceed);
+    connect(ClientManager::instance(), &ClientManager::internalServerErrorResponse,
+            this, &RequestsHandlerClient::onInternalServerError);
+}
+
+
+RequestsHandlerClient::~RequestsHandlerClient()
+{
+
+}
+
+RequestsHandlerClient *RequestsHandlerClient::instance()
+{
+    static RequestsHandlerClient *instance = new RequestsHandlerClient;
+    return instance;
 }
 
 bool RequestsHandlerClient::requestTopTime(int dimension)
 {
     QVariant data {QVariant::fromValue(dimension)};
     const net::Package package {data, net::PackageType::TOP_TIME_REQUEST};
-    return m_clientManager.sendPackage(package);
+    return ClientManager::instance()->sendPackage(package);
 }
 
 bool RequestsHandlerClient::requestTopTurns(int dimension)
 {
     QVariant data {QVariant::fromValue(dimension)};
     const net::Package package {data, net::PackageType::TOP_TURNS_REQUEST};
-    return m_clientManager.sendPackage(package);
+    return ClientManager::instance()->sendPackage(package);
 }
 
 bool RequestsHandlerClient::requestRecordAddition(const Record &record)
@@ -39,21 +52,21 @@ bool RequestsHandlerClient::requestRecordAddition(const Record &record)
                            QVariant::fromValue(record.turns()),
                            QVariant::fromValue(record.dimension())};
     const net::Package package {QVariant::fromValue(dataList), net::PackageType::ADD_RECORD_REQUEST};
-    return m_clientManager.sendPackage(package);
+    return ClientManager::instance()->sendPackage(package);
 }
 
 bool RequestsHandlerClient::requestUserAddition(const QString &nickname, const QString &password)
 {
     QVariantList dataList {QVariant::fromValue(nickname),QVariant::fromValue(password)};
     const net::Package package {QVariant::fromValue(dataList), net::PackageType::ADD_USER_REQUEST};
-    return m_clientManager.sendPackage(package);
+    return ClientManager::instance()->sendPackage(package);
 }
 
 bool RequestsHandlerClient::requestPassword(const QString &nickname)
 {
     QVariant data {QVariant::fromValue(nickname)};
     const net::Package package {data, net::PackageType::PASSWORD_REQUEST};
-    return m_clientManager.sendPackage(package);
+    return ClientManager::instance()->sendPackage(package);
 }
 
 void RequestsHandlerClient::onConnectionStateChanged(net::ConnectionState state)
@@ -103,17 +116,25 @@ void RequestsHandlerClient::onTopTurnsDownloadSucceed(const std::vector<QVariant
 }
 
 
-void RequestsHandlerClient::onRecordAdditionSucceed()
+void RequestsHandlerClient::onRecordAdditionSucceed(const QVariant &data)
 {
-    emit recordAdditionCompleted();
+    emit recordAdditionRequestCompleted(data.toBool());
 }
 
-void RequestsHandlerClient::onUserAdditionSucceed()
+void RequestsHandlerClient::onUserAdditionSucceed(const QVariant &data)
 {
-    emit userAdditionCompleted();
+    emit userAdditionRequestCompleted(data.toBool());
 }
 
 void RequestsHandlerClient::onPasswordDownloadSucceed(const QVariant &data)
 {
+    qDebug() << "Recieved password: ";
+    qDebug() << data;
     emit passwordRequestCompleted(data.toString());
+}
+
+void RequestsHandlerClient::onInternalServerError(const QVariant &data)
+{
+    emit internalServerErrorOccured(data);
+
 }

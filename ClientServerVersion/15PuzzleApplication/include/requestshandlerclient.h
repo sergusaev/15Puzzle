@@ -10,7 +10,8 @@ class RequestsHandlerClient : public QObject
 {
     Q_OBJECT
 public:
-    RequestsHandlerClient();
+    ~RequestsHandlerClient();
+    static RequestsHandlerClient *instance();
     bool requestTopTime(int dimension);
     bool requestTopTurns(int dimension);
     bool requestRecordAddition (const Record& record);
@@ -20,20 +21,22 @@ public:
 signals:
     void topTimeRequestCompleted(const std::vector<Record>& data);
     void topTurnsRequestCompleted(const std::vector<Record>& data);
-    void recordAdditionCompleted();
-    void userAdditionCompleted();
+    void recordAdditionRequestCompleted(bool additionResult);
+    void userAdditionRequestCompleted(bool additionResult);
     void passwordRequestCompleted(const QString& password);
+    void internalServerErrorOccured(const QVariant& data);
 
 private slots:
     void onConnectionStateChanged(net::ConnectionState state);
     void onTopTimeDownloadSucceed(const std::vector<QVariant>& data);
     void onTopTurnsDownloadSucceed(const std::vector<QVariant>& data);
-    void onRecordAdditionSucceed();
-    void onUserAdditionSucceed();
+    void onRecordAdditionSucceed(const QVariant &data);
+    void onUserAdditionSucceed(const QVariant &data);
     void onPasswordDownloadSucceed(const QVariant& data);
+    void onInternalServerError(const QVariant& data);
 
 private:
-    ClientManager& m_clientManager;
+    RequestsHandlerClient();
 };
 
 #endif // REQUESTSHANDLERCLIENT_H

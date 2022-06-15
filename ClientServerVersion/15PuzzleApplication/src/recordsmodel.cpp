@@ -3,16 +3,10 @@
 
 RecordsModel::RecordsModel()
 {
-    connect(&m_recordsHandler, &RequestsHandlerClient::topTimeRequestCompleted,
+    connect(RequestsHandlerClient::instance(), &RequestsHandlerClient::topTimeRequestCompleted,
                 this, &RecordsModel::onTopTimeDownloaded);
-    connect(&m_recordsHandler, &RequestsHandlerClient::topTurnsRequestCompleted,
+    connect(RequestsHandlerClient::instance(), &RequestsHandlerClient::topTurnsRequestCompleted,
             this, &RecordsModel::onTopTurnsDownloaded);
-    connect(&m_recordsHandler, &RequestsHandlerClient::recordAdditionCompleted,
-            this, &RecordsModel::onRecordAdded);
-    connect(&m_recordsHandler, &RequestsHandlerClient::userAdditionCompleted,
-            this, &RecordsModel::onUserAdded);
-    connect(&m_recordsHandler, &RequestsHandlerClient::passwordRequestCompleted,
-            this, &RecordsModel::onPasswordDownloaded);
 }
 
 QHash<int, QByteArray> RecordsModel::roleNames() const
@@ -60,7 +54,7 @@ QVariant RecordsModel::data(const QModelIndex &index, int role) const
 
 void RecordsModel::getTimeRanking(int dimension)
 {
-    bool requestResult {m_recordsHandler.requestTopTime(dimension)};
+    bool requestResult {RequestsHandlerClient::instance()->requestTopTime(dimension)};
     if (requestResult) {
         qDebug() << "Sending request of records via time succeed!";
     } else {
@@ -71,7 +65,7 @@ void RecordsModel::getTimeRanking(int dimension)
 
 void RecordsModel::getTurnsRanking(int dimension)
 {
-    bool requestResult {m_recordsHandler.requestTopTurns(dimension)};
+    bool requestResult {RequestsHandlerClient::instance()->requestTopTurns(dimension)};
     if (requestResult) {
         qDebug() << "Sending request of records via turns succeed!";
     } else {
@@ -108,17 +102,4 @@ void RecordsModel::onTopTurnsDownloaded(const std::vector<Record> &data)
     endResetModel();
 }
 
-void RecordsModel::onRecordAdded()
-{
 
-}
-
-void RecordsModel::onUserAdded()
-{
-
-}
-
-void RecordsModel::onPasswordDownloaded(const QString &password)
-{
-
-}

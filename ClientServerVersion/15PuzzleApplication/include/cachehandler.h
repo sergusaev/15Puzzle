@@ -13,16 +13,14 @@ class ProcessorClient;
 class CacheHandler
 {
 public:
-    CacheHandler();
     ~CacheHandler();
-    DBTypes::DBIndex addRecord (const Record& record);   
-    std::pair<bool, Record> browseFirstCacheRecord();
+    static CacheHandler *instance();
+    bool addRecord(const Record& record);
+    bool addUser(const QString& nickname, const QString& password);
+    std::pair<bool, DBTypes::DBEntry> browseFirstCacheRecord();
     bool deleteFirstCacheRecord();
-
-//    DBTypes::DBIndex addUserLogPass (const QString& nickname, const QString& password);
-//    QString getPassword(const QString& nickname);
-
 private:
+    CacheHandler();
     std::unique_ptr<db::ProcessorClient> m_processor;
 };
 

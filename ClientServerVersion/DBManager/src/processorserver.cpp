@@ -17,14 +17,14 @@ ProcessorServer::~ProcessorServer()
 
 std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry> > ProcessorServer::requestTopTimeData(DBTypes::DBTables table, int dimension)
 {
-    std::vector<QVariantList> result;
+    std::vector<DBTypes::DBEntry> result;
     const DBTypes::DBResult resultState {m_d->selectTopTime(tableMapper.at(table), dimension, result)};
     return std::make_pair(resultState, std::move(result));
 }
 
 std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry> > ProcessorServer::requestTopTurnsData(DBTypes::DBTables table, int dimension)
 {
-    std::vector<QVariantList> result;
+    std::vector<DBTypes::DBEntry> result;
     const DBTypes::DBResult resultState {m_d->selectTopTurns(tableMapper.at(table), dimension, result)};
     return std::make_pair(resultState, std::move(result));
 }

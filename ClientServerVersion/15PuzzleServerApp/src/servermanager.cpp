@@ -3,7 +3,7 @@
 
 
 ServerManager::ServerManager(const net::ConnectionArgumentsParser &parser)
-                            : m_parser {parser}
+    : m_parser {parser}
 {
     connectSignals();
     const bool listenResult {m_server.listen(QHostAddress {m_parser.hostArgument()},
@@ -90,17 +90,20 @@ void ServerManager::handlePackage(net::Package &package, QTcpSocket *socket)
 #ifdef DEBUG_OUTPUT
     QString currPackageType;
     switch(package.type()){
-    case net::PackageType::CONTACTS_REQUEST:
-        currPackageType = "CONTACT_REQUEST";
+    case net::PackageType::PASSWORD_REQUEST:
+        currPackageType = "PASSWORD_REQUEST";
         break;
-    case net::PackageType::ADD_CONTACT_REQUEST:
-        currPackageType = "ADD_CONTACT_REQUEST";
+    case net::PackageType::ADD_USER_REQUEST:
+        currPackageType = "ADD_USER_REQUEST";
         break;
-    case net::PackageType::REMOVE_CONTACT_REQUEST:
-        currPackageType = "DELETE_CONTACT_REQUEST";
+    case net::PackageType::TOP_TIME_REQUEST:
+        currPackageType = "TOP_TIME_REQUEST";
         break;
-    case net::PackageType::UPDATE_CONTACT_REQUEST:
-        currPackageType = "UPDATE_CONTACT_REQUEST";
+    case net::PackageType::TOP_TURNS_REQUEST:
+        currPackageType = "TOP_TURNS_REQUEST";
+        break;
+    case net::PackageType::ADD_RECORD_REQUEST:
+        currPackageType = "ADD_RECORD_REQUEST";
         break;
     default:
         currPackageType = "INVALID";
@@ -111,11 +114,11 @@ void ServerManager::handlePackage(net::Package &package, QTcpSocket *socket)
 
     switch (package.type())
     {
-        case net::PackageType::PASSWORD_REQUEST:
-        {
-            m_requestHandler.handlePasswordRequest(socket);
-            break;
-        }
+    case net::PackageType::PASSWORD_REQUEST:
+    {
+        m_requestHandler.handlePasswordRequest(package,socket);
+        break;
+    }
     case net::PackageType::ADD_USER_REQUEST:
     {
         m_requestHandler.handleAddUserRequest(package, socket);
@@ -136,9 +139,9 @@ void ServerManager::handlePackage(net::Package &package, QTcpSocket *socket)
         m_requestHandler.handleAddRecordRequest(package, socket);
         break;
     }
-        default: {
-            qWarning() << "Invalid package recieved!";
-        }
+    default: {
+        qWarning() << "Invalid package recieved!";
+    }
     }
 }
 
