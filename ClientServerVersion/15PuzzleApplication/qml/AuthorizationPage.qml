@@ -10,37 +10,35 @@ import AuthorizationManager 1.0
 CustomPage {
     id: root
     property string authorizationState: "NicknameInput"
-    property bool newUser: true
-    property string newUserPassword: ""
-    property string ethalonPassword: ""
-    property int currDimension: 2
 
-
-
-//    onEthalonPasswordChanged: {
-//        console.log("On root.ethalonPassword changed")
-//        console.log ("ethalon password changed!")
-//        root.ethalonPassword = AuthorizationManager.ethalonPassword
-//        console.log ("New ethalon password: " + root.ethalonPassword)
-//    }
-
-
+    Connections {
+        id: _authorization_page_connections
+        target: signalsHandler
+        function onNoServerConnection() {
+            _no_server_connection_popup.open()
+        }
+        function onEthalonPasswordChanged() {
+            if(AuthorizationManager.ethalonPassword === "")  {
+                _invalid_nickname_window.windowVisible = true
+            } else {
+                _ok_button.clicked()
+            }
+        }
+    }
 
 
     Component.onCompleted: {
         AuthorizationManager.setNickname (userSettings.readNickname())
         AuthorizationManager.setPassword (userSettings.readPassword())
-        root.ethalonPassword = AuthorizationManager.password
         if((userSettings.readDimension() > 2)) {
             AuthorizationManager.setDimension (userSettings.readDimension())
         }
-        root.newUser = AuthorizationManager.nickname === ""
         _puzzle_size_selection_combobox.currentIndex = AuthorizationManager.dimension - 2
 
         console.log("On AuthorizationPage creation")
         console.log("QSettings password: " + AuthorizationManager.password)
-        console.log("Root ethalon password: " + root.ethalonPassword)
-
+        console.log("AuthorizationManager ethalon password: " + AuthorizationManager.ethalonPassword)
+        //        userSettings.clearSettings()
     }
 
     CustomText {
@@ -78,9 +76,11 @@ CustomPage {
             radius: 10
         }
         enabled: root.authorizationState === "NicknameInput"
-        onFocusChanged: {
+
+        onTextChanged: {
             AuthorizationManager.requestUserPassword(_nickname_text_field.text)
         }
+
     }
     Rectangle {
         id: _nickname_text_field_darkener
@@ -105,7 +105,7 @@ CustomPage {
         id: _password_text_field
         width: root.width * 0.76
         height:width / 5
-        text: root.newUserPassword === "" ? AuthorizationManager.password : root.newUserPassword
+        text:  AuthorizationManager.password
         validator: RegularExpressionValidator { regularExpression: /\w{0,12}/ }
         color: "lightyellow"
         font {
@@ -120,6 +120,8 @@ CustomPage {
         }
         visible:  root.authorizationState === "PasswordInput" || root.authorizationState === "DimensionSelection" ? true : false
         enabled: root.authorizationState === "PasswordInput"
+
+
     }
 
     Rectangle {
@@ -167,7 +169,7 @@ CustomPage {
                 radius: 10
             }
             onClicked:  {
-                root.currDimension = (index + 2)
+//                root.currDimension = (index + 2)
 
             }
         }
@@ -229,33 +231,31 @@ CustomPage {
             State {
                 name: "DimSelect"
                 when: root.authorizationState === "DimensionSelection"
+            },
+            State {
+                name: "ProcessingPasswordRequest"
             }
+
         ]
+
+
         onClicked:  {
             if (state === "NickInput") {
-                if(!AuthorizationManager.connectionState) {
-                    _no_server_connection_popup.open()
-                } else {
-
-                    console.log("Clicking OK-button (NickInput state)")
-                    console.log("root.ethalonPassword: " + root.ethalonPassword)
-
-                    if(root.ethalonPassword === "") {
-                        AuthorizationManager.setNickname(_nickname_text_field.text)
-                        AuthorizationManager.setPassword("")
-                        root.newUser = true
-                        _new_user_popup_window.windowVisible = true
-                    } else {
-                        root.authorizationState = "PasswordInput"
-                    }
-                }
-            } else if (state === "PassInput"){
+                AuthorizationManager.requestUserPassword(_nickname_text_field.text)
+                state = "ProcessingPasswordRequest"
+            }
+            else if (state === "ProcessingPasswordRequest") {
+                console.log("Clicking OK-button (ProcessingPasswordRequest state)")
+                console.log("ethalonPassword: " + AuthorizationManager.ethalonPassword)
+                root.authorizationState = "PasswordInput"
+            }
+            else if (state === "PassInput"){
 
                 console.log("Clicking OK-button (PassInput state)")
-                console.log("root.ethalonPassword: " + root.ethalonPassword)
+                console.log("ethalonPassword: " + AuthorizationManager.ethalonPassword)
                 console.log("_password_text_field.text: " + _password_text_field.text)
 
-                if(root.ethalonPassword === _password_text_field.text) {
+                if(AuthorizationManager.ethalonPassword === _password_text_field.text) {
                     root.authorizationState = "DimensionSelection"
                 } else {
                     _wrong_password_popup.open()
@@ -263,18 +263,16 @@ CustomPage {
             }
 
             else if (state === "DimSelect") {
-                if(!AuthorizationManager.connectionState) {
-                    _no_server_connection_popup.open()
-                } else {
-                    AuthorizationManager.setNickname(_nickname_text_field.text)
-                    AuthorizationManager.setPassword(_password_text_field.text)
-                    AuthorizationManager.setDimension(root.currDimension)
-                    AuthorizationManager.addNewUser(AuthorizationManager.nickname, AuthorizationManager.password)
-                    userSettings.writeSettings(AuthorizationManager.nickname, AuthorizationManager.password, AuthorizationManager.dimension)
-                    root.authorizationState === "NicknameInput"
-                    _stack_view.push(_main_menu_stack_page)
-                }
+                AuthorizationManager.setNickname(_nickname_text_field.text)
+                AuthorizationManager.setPassword(_password_text_field.text)
+                AuthorizationManager.setDimension(_puzzle_size_selection_combobox.currentIndex + 2)
+                console.log("GameBoard dimension: " + gameBoardModel.dimension)
+                AuthorizationManager.addNewUser(AuthorizationManager.nickname, AuthorizationManager.password)
+                userSettings.writeSettings(AuthorizationManager.nickname, AuthorizationManager.password, AuthorizationManager.dimension)
+                _stack_view.push(_main_menu_stack_page)
+
             }
+
 
         }
         Rectangle {
@@ -287,6 +285,8 @@ CustomPage {
         }
 
     }
+
+
 
     CustomButton {
         id: _quit_or_back_button
@@ -314,11 +314,33 @@ CustomPage {
             } else {
                 if(root.authorizationState === "PasswordInput") {
                     root.authorizationState = "NicknameInput"
+                    _password_text_field.text = ""
                 } else {
                     root.authorizationState = "PasswordInput"
-                    root.currDimension = 2
+                    AuthorizationManager.setDimension (2)
                 }
             }
+    }
+
+    CustomButton {
+        id: _new_player_button
+        width: root.width * 0.76
+        height: _ok_button.height * 1.1
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: _ok_button.bottom
+        anchors.topMargin: _puzzle_size_selection_combobox.height / 3
+        text:  qsTr("New player")
+        enabled: root.authorizationState === "NicknameInput"
+        onClicked: _new_user_popup_window.windowVisible = true
+
+        Rectangle {
+            id: _new_player_button_darkener
+            z: _new_player_button.z + 1
+            anchors.fill: parent
+            color: "#45000000"
+            radius: 10
+            visible: parent.enabled ? false : true
+        }
     }
 
     NewUserWindow {
@@ -328,6 +350,20 @@ CustomPage {
         username: _nickname_text_field.text
         windowVisible: false
 
+        onPasswordSaved: {
+            root.authorizationState = "DimensionSelection"
+            _password_text_field.text = password
+        }
+    }
+
+    InvalidNicknameWindow {
+        id: _invalid_nickname_window
+        z: root.z + 1
+        anchors.fill: parent
+        windowVisible: false
+        onNewUserButtonClicked: {
+            _new_player_button.clicked()
+        }
     }
 
     Popup

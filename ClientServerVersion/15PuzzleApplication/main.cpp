@@ -3,6 +3,7 @@
 #include <QQmlContext>
 #include "gameboard.h"
 #include "recordsmodel.h"
+#include "signalshandler.h"
 #include "usersettings.h"
 #include "clientmanager.h"
 
@@ -24,6 +25,7 @@ int main(int argc, char *argv[])
     GameBoard model;
     RecordsModel timeRecordsModel;
     RecordsModel turnsRecordsModel;
+    SignalsHandler signalsHandler;
 
 
 //  register QML type, importing as module (deprecated)
@@ -49,6 +51,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("timeRecordsModel", &timeRecordsModel);
     engine.rootContext()->setContextProperty("turnsRecordsModel", &turnsRecordsModel);
     engine.rootContext()->setContextProperty("userSettings", &settings);
+    engine.rootContext()->setContextProperty("signalsHandler", &signalsHandler);
 
 
 

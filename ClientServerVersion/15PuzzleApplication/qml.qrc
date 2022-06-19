@@ -22,5 +22,6 @@
         <file>qml/RecordsTable.qml</file>
         <file>qml/AuthorizationPage.qml</file>
         <file>qml/NewUserWindow.qml</file>
+        <file>qml/InvalidNicknameWindow.qml</file>
     </qresource>
 </RCC>

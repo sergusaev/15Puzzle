@@ -19,6 +19,8 @@ public:
 
     Q_INVOKABLE int readDimension();
 
+    Q_INVOKABLE void clearSettings();
+
 private:   
      QSettings m_userSettings;
 };

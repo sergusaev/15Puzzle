@@ -7,13 +7,7 @@ Item {
     id:root
     property string username: ""
     property alias windowVisible: _new_user_window_wrapper.visible
-    signal passwordSaved()
-
-    onPasswordSaved: {
-        _stack_view.currentItem.authorizationState = "DimensionSelection"
-        _stack_view.currentItem.newUserPassword = _new_password_text_field.text
-        _new_password_text_field.text = ""
-    }
+    signal passwordSaved(string password)
 
     Rectangle {
         id: _new_user_window_wrapper
@@ -78,7 +72,6 @@ Item {
             CustomText {
                 id: _enter_new_password_text
                 text: qsTr("Enter password:")
-
                 anchors.top: _new_username_text.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.topMargin:  parent.height / 6
@@ -124,8 +117,8 @@ Item {
                 }
                 onClicked:  {
                     root.windowVisible = false
-                    _stack_view.currentItem.ethalonPassword = _new_password_text_field.text
-                    root.passwordSaved()
+                    root.passwordSaved(_new_password_text_field.text)
+                    _new_password_text_field.text = ""
                 }
             }
 

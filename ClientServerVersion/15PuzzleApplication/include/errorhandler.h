@@ -39,7 +39,6 @@ private slots:
 
 private:
 
-
     bool m_noServerConnection;
     bool m_internalServerError;
     bool m_cacheAddingTextVisible;

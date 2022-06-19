@@ -38,5 +38,12 @@ int UserSettings::readDimension()
     return ret;
 }
 
+void UserSettings::clearSettings()
+{
+    m_userSettings.setValue("nickname", "");
+    m_userSettings.setValue("password", "");
+    m_userSettings.setValue("dimension", 2);
+}
+
 
 

@@ -13,6 +13,7 @@
 class GameBoard : public QAbstractListModel
 {
     Q_OBJECT
+    Q_PROPERTY(int dimension READ dimension WRITE setDimension NOTIFY dimensionChanged)
     Q_PROPERTY(int hiddenElementValue READ hiddenElementValue CONSTANT)
     Q_PROPERTY(int currentElement READ currentElement WRITE setCurrentElement NOTIFY currentElementChanged)
     Q_PROPERTY(int timePoint READ timePoint NOTIFY timePointChanged)
@@ -96,6 +97,8 @@ private:
     bool isPositionValid(const int position) const;
     bool isSolved() const;
     Position getRowCol(int index) const;
+
+
 
 
 

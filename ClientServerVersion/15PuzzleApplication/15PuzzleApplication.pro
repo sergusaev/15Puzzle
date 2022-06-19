@@ -11,7 +11,7 @@ QML_IMPORT_MAJOR_VERSION = 1
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        signalshandler.cpp \
+        src/signalshandler.cpp \
         src/authorizationmanager.cpp \
         src/errorhandler.cpp \
         src/cachehandler.cpp \
@@ -48,7 +48,7 @@ HEADERS += \
     include/recordsmodel.h \
     include/requestshandlerclient.h \
     include/usersettings.h \
-    signalshandler.h
+    include/signalshandler.h
 
 INCLUDEPATH += $$PWD/include
 INCLUDEPATH += $$PWD/../shared/include

@@ -13,10 +13,10 @@ GameBoard::GameBoard(QObject *parent, int dimension):
     m_seconds {0},
     m_counter {0}
 {
+    setDimension(dimension);
     connect(&m_timer, &QTimer::timeout, this, &GameBoard::onTimeout);
     connect(AuthorizationManager::instance(), &AuthorizationManager::dimensionChanged,
             this, &GameBoard::onDimensionChanged);
-
 }
 
 

@@ -136,8 +136,10 @@ void AuthorizationManager::onPasswordDownloaded(const QString &password)
 {
     qDebug() << "In AuthorizationManager recieved password: " + password;
 
+    if(password == ethalonPassword()) {
+        return;
+    }
     setEthalonPassword(password);
-    emit ethalonPasswordChanged(password);
 }
 
 
