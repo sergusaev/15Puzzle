@@ -16,7 +16,6 @@ public:
     ~CacheHandler();
     static CacheHandler *instance();
     bool addRecord(const Record& record);
-    bool addUser(const QString& nickname, const QString& password);
     std::pair<bool, DBTypes::DBEntry> browseFirstCacheRecord();
     bool deleteFirstCacheRecord();
 private:

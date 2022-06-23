@@ -15,6 +15,8 @@ RequestsHandlerClient::RequestsHandlerClient()
             this, &RequestsHandlerClient::onUserAdditionSucceed);
     connect(ClientManager::instance(), &ClientManager::passwordResponse,
             this, &RequestsHandlerClient::onPasswordDownloadSucceed);
+    connect(ClientManager::instance(), &ClientManager::nicknameExistanceResponse,
+            this, &RequestsHandlerClient::onNicknameExistanceRequestSucceed);
     connect(ClientManager::instance(), &ClientManager::internalServerErrorResponse,
             this, &RequestsHandlerClient::onInternalServerError);
 }
@@ -66,6 +68,13 @@ bool RequestsHandlerClient::requestPassword(const QString &nickname)
 {
     QVariant data {QVariant::fromValue(nickname)};
     const net::Package package {data, net::PackageType::PASSWORD_REQUEST};
+    return ClientManager::instance()->sendPackage(package);
+}
+
+bool RequestsHandlerClient::requestNicknameExistance(const QString &nickname)
+{
+    QVariant data {QVariant::fromValue(nickname)};
+    const net::Package package {data, net::PackageType::NICKNAME_EXISTANCE_REQUEST};
     return ClientManager::instance()->sendPackage(package);
 }
 
@@ -133,8 +142,15 @@ void RequestsHandlerClient::onPasswordDownloadSucceed(const QVariant &data)
     emit passwordRequestCompleted(data.toString());
 }
 
+void RequestsHandlerClient::onNicknameExistanceRequestSucceed(const QVariant &data)
+{
+    qDebug() << "Recieved user existance responce: ";
+    qDebug() << data;
+    emit nicknameExistanceRequestCompleted(data.toBool());
+}
+
 void RequestsHandlerClient::onInternalServerError(const QVariant &data)
 {
-    emit internalServerErrorOccured(data);
+    emit internalServerErrorOccured(static_cast<net::InternalServerError>(data.toInt()));
 
 }

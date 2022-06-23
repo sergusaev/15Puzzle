@@ -13,6 +13,8 @@ RecordsManager::~RecordsManager()
 
 }
 
+
+
 std::vector<QVariant> transform (const std::vector<DBTypes::DBEntry>& source) {
     std::vector<QVariant> target;
     std::transform(source.begin(),
@@ -24,6 +26,21 @@ std::vector<QVariant> transform (const std::vector<DBTypes::DBEntry>& source) {
     return target;
 }
 
+std::pair<bool, QVariant> RecordsManager::findNickname(const QVariant &nicknameData)
+{
+    DBTypes::DBResult resultState;
+    QVariant returnData;
+    std::tie(resultState, returnData) = m_processor->getPasswordData(nicknameData.toString());
+    if(returnData.isNull()){
+        returnData.clear();
+        returnData = QVariant::fromValue(false);
+    } else {
+        returnData.clear();
+        returnData = QVariant::fromValue(true);
+    }
+
+    return {resultState == DBTypes::DBResult::OK, returnData};
+}
 
 std::pair<bool,QVariant> RecordsManager::getPassword(const QVariant &nicknameData)
 {

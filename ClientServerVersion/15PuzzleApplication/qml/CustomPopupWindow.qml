@@ -1,24 +1,22 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtGraphicalEffects 1.15
-
+import AuthorizationManager 1.0
 
 Item {
     id:root
 
+    property alias windowVisible: _inner_window_wrapper.visible
     signal newUserButtonClicked()
 
     Rectangle {
-        id: _invalid_nickname_window_wrapper
+        id: _inner_window_wrapper
         anchors.fill: parent
         visible: true
         color: "#80ffffff"
-        MouseArea {
-            anchors.fill: parent
-        }
 
         Rectangle {
-            id:_invalid_nickname_window
+            id:_popup_window
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.margins: 10
@@ -27,7 +25,7 @@ Item {
             radius: 10
 
             Image {
-                id: _invalid_nickname_window_background
+                id: _popup_window_background
                 property bool rounded: true
                 property bool adapt: true
                 anchors.fill: parent
@@ -36,13 +34,13 @@ Item {
                 layer.enabled: rounded
                 layer.effect: OpacityMask {
                     maskSource: Item {
-                        width: _invalid_nickname_window_background.width
-                        height: _invalid_nickname_window_background.height
+                        width: _popup_window_background.width
+                        height: _popup_window_background.height
                         Rectangle {
                             anchors.centerIn: parent
-                            width: _invalid_nickname_window_background.adapt ? _invalid_nickname_window_background.width : Math.min(_invalid_nickname_window_background.width, _invalid_nickname_window_background.height)
-                            height: _invalid_nickname_window_background.adapt ? _invalid_nickname_window_background.height : width
-                            radius: _invalid_nickname_window.radius
+                            width: _popup_window_background.adapt ? _popup_window_background.width : Math.min(_popup_window_background.width, _popup_window_background.height)
+                            height: _popup_window_background.adapt ? _popup_window_background.height : width
+                            radius: _popup_window.radius
                         }
                     }
                 }
@@ -71,7 +69,7 @@ Item {
                 text: qsTr("New player")
 
                 onClicked:  {
-                    root.visible = false
+                    root.windowVisible = false
                     root.newUserButtonClicked()
                 }
             }
@@ -86,21 +84,25 @@ Item {
                 anchors.topMargin: parent.height / 14
                 text: qsTr("Back")
                 onClicked:  {
-                    root.visible = false
-
+                    root.windowVisible = false
+                    if(_stack_view.depth > 1) {
+                        _stack_view.pop()
+                    }
                 }
             }
 
         }
         DropShadow {
-            anchors.fill: _invalid_nickname_window
+            anchors.fill: _popup_window
             horizontalOffset: 6
             verticalOffset: 6
             color: "black"
-            source: _invalid_nickname_window
+            source: _popup_window
         }
 
 
     }
 
 }
+
+

@@ -21,6 +21,15 @@ ApplicationWindow {
         MyQml.AuthorizationPage {
             id:_authorization_window
         }
+
+    }
+
+    Component {
+        id:  _new_user_stack_page
+        MyQml.NewUserPage {
+        }
+
+
     }
     Component {
         id: _main_menu_stack_page

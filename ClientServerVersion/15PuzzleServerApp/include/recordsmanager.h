@@ -16,6 +16,7 @@ public:
     RecordsManager();
     ~RecordsManager();
 
+    std::pair<bool,QVariant> findNickname(const QVariant &nicknameData);
     std::pair<bool,QVariant> getPassword(const QVariant &nicknameData);
     bool addUser (const DBTypes::DBEntry& entry);
     bool addRecord (const DBTypes::DBEntry& entry);

@@ -6,7 +6,6 @@
 #include <utility>
 #include <QTimer>
 #include "cachehandler.h"
-#include "errorhandler.h"
 #include "requestshandlerclient.h"
 #include "authorizationmanager.h"
 

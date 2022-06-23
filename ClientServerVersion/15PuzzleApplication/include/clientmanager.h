@@ -28,6 +28,7 @@ signals:
     void addRecordResponse(const QVariant& data);
     void addUserResponse(const QVariant& data);
     void passwordResponse(const QVariant& data);
+    void nicknameExistanceResponse(const QVariant& data);
     void internalServerErrorResponse(const QVariant& data);
 
 
@@ -51,6 +52,7 @@ private:
     void handleAddRecordResponsePackage(const net::Package& package);
     void handleAddUserResponsePackage(const net::Package& package);
     void handlePasswordResponsePackage(const net::Package& package);
+    void handleNicknameExistanceResponsePackage(const net::Package& package);
     void handleInternalServerErrorPackage(const net::Package& package);
 
     const net::ConnectionArgumentsParser* m_connectionSettings {nullptr};

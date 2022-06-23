@@ -21,7 +21,9 @@
         <file>qml/CustomText.qml</file>
         <file>qml/RecordsTable.qml</file>
         <file>qml/AuthorizationPage.qml</file>
-        <file>qml/NewUserWindow.qml</file>
+        <file>qml/NewUserPage.qml</file>
         <file>qml/InvalidNicknameWindow.qml</file>
+        <file>qml/InvalidPasswordWindow.qml</file>
+        <file>qml/ConnectingToServerWindow.qml</file>
     </qresource>
 </RCC>

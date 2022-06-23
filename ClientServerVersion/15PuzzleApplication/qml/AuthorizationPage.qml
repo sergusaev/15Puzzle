@@ -5,40 +5,72 @@ import QtGraphicalEffects 1.15
 import QtQuick.Dialogs 1.3
 import AuthorizationManager 1.0
 
-
-
 CustomPage {
     id: root
-    property string authorizationState: "NicknameInput"
+    property string authorizationState: ""
+    property string ethalonPasswordOnAuthorizationPage : ""
 
     Connections {
         id: _authorization_page_connections
         target: signalsHandler
-        function onNoServerConnection() {
-            _no_server_connection_popup.open()
+
+        function onConnectionStateChanged(connectionState) {
+            _connecting_to_server_window.visible = !connectionState
         }
-        function onEthalonPasswordChanged() {
-            if(AuthorizationManager.ethalonPassword === "")  {
-                _invalid_nickname_window.windowVisible = true
-            } else {
-                _ok_button.clicked()
+
+        function onAuthorizationPageStateChanged(newAuthorizationPageState) {
+            console.log(newAuthorizationPageState)
+            switch(newAuthorizationPageState){
+            case 1:
+                root.authorizationState = "NicknameInput"
+                break;
+            case 2:
+                root.authorizationState = "PasswordInput"
+                break;
+            case 3:
+                root.authorizationState = "DimensionSelection"
+                break;
+            default:
+                break;
             }
         }
+
+//        function onEthalonPasswordChanged() {
+//            root.ethalonPasswordOnAuthorizationPage = AuthorizationManager.ethalonPassword
+//            if(root.ethalonPasswordOnAuthorizationPage === "")  {
+//                _invalid_nickname_window.visible = true
+//            } else {
+//                _ok_button.clicked()
+//            }
+//        }
     }
 
 
+
     Component.onCompleted: {
+
+        console.log("On AuthorizationPage creation")
+
         AuthorizationManager.setNickname (userSettings.readNickname())
         AuthorizationManager.setPassword (userSettings.readPassword())
         if((userSettings.readDimension() > 2)) {
             AuthorizationManager.setDimension (userSettings.readDimension())
         }
+        console.log("QSettings authorizationPageState:" + userSettings.readAuthorizationPageState())
+        if((1 < userSettings.readAuthorizationPageState() && userSettings.readAuthorizationPageState() < 4)) {
+            AuthorizationManager.setAuthorizationPageState (userSettings.readAuthorizationPageState())
+        } else {
+            AuthorizationManager.setAuthorizationPageState(1)
+        }
+
         _puzzle_size_selection_combobox.currentIndex = AuthorizationManager.dimension - 2
 
-        console.log("On AuthorizationPage creation")
-        console.log("QSettings password: " + AuthorizationManager.password)
+        console.log("nickname: " + AuthorizationManager.nickname)
+        console.log("password: " + AuthorizationManager.password)
+        console.log("dimension: " + AuthorizationManager.dimension)
+        console.log("authorizationPageState: " + AuthorizationManager.authorizationPageState)
         console.log("AuthorizationManager ethalon password: " + AuthorizationManager.ethalonPassword)
-        //        userSettings.clearSettings()
+//                userSettings.clearSettings()
     }
 
     CustomText {
@@ -247,18 +279,18 @@ CustomPage {
             else if (state === "ProcessingPasswordRequest") {
                 console.log("Clicking OK-button (ProcessingPasswordRequest state)")
                 console.log("ethalonPassword: " + AuthorizationManager.ethalonPassword)
-                root.authorizationState = "PasswordInput"
+                AuthorizationManager.setAuthorizationPageState(2)
             }
             else if (state === "PassInput"){
 
                 console.log("Clicking OK-button (PassInput state)")
-                console.log("ethalonPassword: " + AuthorizationManager.ethalonPassword)
+                console.log("ethalonPassword: " + root.ethalonPasswordOnAuthorizationPage)
                 console.log("_password_text_field.text: " + _password_text_field.text)
 
-                if(AuthorizationManager.ethalonPassword === _password_text_field.text) {
-                    root.authorizationState = "DimensionSelection"
+                if(root.ethalonPasswordOnAuthorizationPage === _password_text_field.text) {
+                    AuthorizationManager.setAuthorizationPageState(3)
                 } else {
-                    _wrong_password_popup.open()
+                   _invalid_password_window.visible = true
                 }
             }
 
@@ -266,10 +298,10 @@ CustomPage {
                 AuthorizationManager.setNickname(_nickname_text_field.text)
                 AuthorizationManager.setPassword(_password_text_field.text)
                 AuthorizationManager.setDimension(_puzzle_size_selection_combobox.currentIndex + 2)
-                console.log("GameBoard dimension: " + gameBoardModel.dimension)
                 AuthorizationManager.addNewUser(AuthorizationManager.nickname, AuthorizationManager.password)
-                userSettings.writeSettings(AuthorizationManager.nickname, AuthorizationManager.password, AuthorizationManager.dimension)
+                userSettings.writeSettings(AuthorizationManager.nickname, AuthorizationManager.password, AuthorizationManager.dimension, AuthorizationManager.authorizationPageState)
                 _stack_view.push(_main_menu_stack_page)
+
 
             }
 
@@ -331,8 +363,13 @@ CustomPage {
         anchors.topMargin: _puzzle_size_selection_combobox.height / 3
         text:  qsTr("New player")
         enabled: root.authorizationState === "NicknameInput"
-        onClicked: _new_user_popup_window.windowVisible = true
-
+        onClicked:  {
+            _stack_view.push(_new_user_stack_page)
+            AuthorizationManager.setNickname("")
+            AuthorizationManager.setPassword("")
+            AuthorizationManager.setDimension(2)
+            AuthorizationManager.requestUserPassword("")
+        }
         Rectangle {
             id: _new_player_button_darkener
             z: _new_player_button.z + 1
@@ -343,226 +380,176 @@ CustomPage {
         }
     }
 
-    NewUserWindow {
-        id: _new_user_popup_window
-        z: root.z + 1
-        anchors.fill: parent
-        username: _nickname_text_field.text
-        windowVisible: false
 
-        onPasswordSaved: {
-            root.authorizationState = "DimensionSelection"
-            _password_text_field.text = password
-        }
-    }
 
     InvalidNicknameWindow {
         id: _invalid_nickname_window
-        z: root.z + 1
+        z: parent.z + 1
         anchors.fill: parent
-        windowVisible: false
+        visible: false
+
+
         onNewUserButtonClicked: {
             _new_player_button.clicked()
         }
     }
 
-    Popup
-    {
-        id: _wrong_password_popup
-        width: parent.width * 0.9
-        height: width
-        anchors.centerIn: parent
-        padding: 0
 
-        background: Rectangle {
-            id:_inner_rect
-            anchors.fill:parent
-            radius: 10
-
-            Image {
-                id: _inner_rect_background
-                property bool rounded: true
-                property bool adapt: true
-                anchors.fill: parent
-
-                source: "../pics/wood_5.png"
-                layer.enabled: rounded
-                layer.effect: OpacityMask {
-                    maskSource: Item {
-                        width: _inner_rect_background.width
-                        height: _inner_rect_background.height
-                        Rectangle {
-                            anchors.centerIn: parent
-                            width: _inner_rect_background.adapt ? _inner_rect_background.width : Math.min(_inner_rect_background.width, _inner_rect_background.height)
-                            height: _inner_rect_background.adapt ? _inner_rect_background.height : width
-                            radius: _inner_rect.radius
-                        }
-                    }
-                }
-
-            }
-
-            CustomText {
-                id: _wrong_password_text
-                text: qsTr("Wrong password!")
-                fontPointSize: 30
-                anchors.top: parent.top
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.topMargin: parent.height / 3
-            }
-
-            CustomButton {
-                id: _try_again_button
-                width: parent.width * 0.5
-                height: width * 0.4
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: _wrong_password_text.bottom
-                anchors.topMargin: parent.height / 4
-                text: qsTr("Try again")
-                onClicked: _wrong_password_popup.close()
-            }
+    InvalidPasswordWindow {
+        id: _invalid_password_window
+        z: parent.z + 2
+        anchors.fill: parent
+        visible: false
 
 
-        }
 
     }
 
-    Popup
-    {
-        id: _internal_server_error_popup
-        width: parent.width * 0.9
-        height: width
-        anchors.centerIn: parent
-        padding: 0
-
-
-        background: Rectangle {
-            id:_inner_internal_server_error_popup_rect
-            anchors.fill:parent
-            radius: 10
-
-            Image {
-                id:_inner_internal_server_error_popup_rect_background
-                property bool rounded: true
-                property bool adapt: true
-                anchors.fill: parent
-
-                source: "../pics/wood_5.png"
-                layer.enabled: rounded
-                layer.effect: OpacityMask {
-                    maskSource: Item {
-                        width: _inner_internal_server_error_popup_rect_background.width
-                        height: _inner_internal_server_error_popup_rect_background.height
-                        Rectangle {
-                            anchors.centerIn: parent
-                            width: _inner_internal_server_error_popup_rect_background.adapt
-                                   ? _inner_internal_server_error_popup_rect_background.width
-                                   : Math.min(_inner_internal_server_error_popup_rect_background.width, _inner_internal_server_error_popup_rect_background.height)
-                            height: _inner_internal_server_error_popup_rect_background.adapt ? _inner_internal_server_error_popup_rect_background.height : width
-                            radius: _inner_internal_server_error_popup_rect.radius
-                        }
-                    }
-                }
-
-            }
-
-            CustomText {
-                id: _internal_server_error_text
-                text: qsTr("Internal server error!")
-                fontPointSize: 30
-                anchors.top: parent.top
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.topMargin: parent.height / 3
-            }
-
-            CustomButton {
-                id: _internal_server_error_try_again_button
-                width: parent.width * 0.5
-                height: width * 0.4
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: _internal_server_error_text.bottom
-                anchors.topMargin: parent.height / 4
-                text: qsTr("Try again")
-                onClicked: _internal_server_error_popup.close()
-            }
-
-
-        }
+    ConnectingToServerWindow {
+        id: _connecting_to_server_window
+        z: parent.z + 2
+        anchors.fill: parent
+        visible: false
 
     }
-    Popup
-    {
-        id: _no_server_connection_popup
-        width: parent.width * 0.9
-        height: width
-        anchors.centerIn: parent
-        padding: 0
 
 
-        background: Rectangle {
-            id:_no_server_connection_popup_rect
-            anchors.fill:parent
-            radius: 10
-
-            Image {
-                id:_no_server_connection_popup_rect_background
-                property bool rounded: true
-                property bool adapt: true
-                anchors.fill: parent
-
-                source: "../pics/wood_5.png"
-                layer.enabled: rounded
-                layer.effect: OpacityMask {
-                    maskSource: Item {
-                        width: _no_server_connection_popup_rect_background.width
-                        height: _no_server_connection_popup_rect_background.height
-                        Rectangle {
-                            anchors.centerIn: parent
-                            width: _no_server_connection_popup_rect_background.adapt
-                                   ? _no_server_connection_popup_rect_background.width
-                                   : Math.min(_no_server_connection_popup_rect_background.width, _no_server_connection_popup_rect_background.height)
-                            height: _no_server_connection_popup_rect_background.adapt ? _no_server_connection_popup_rect_background.height : width
-                            radius: _no_server_connection_popup_rect.radius
-                        }
-                    }
-                }
-
-            }
-
-            CustomText {
-                id: _no_server_connection_text
-                text: qsTr("No server connection!")
-                fontPointSize: 30
-                anchors.top: parent.top
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.topMargin: parent.height / 3
-            }
-            CustomText {
-                id: _cache_adding_text
-                text: qsTr("Record added into cache.")
-                anchors.top: _no_server_connection_text.top
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.topMargin: parent.height / 6
-                //                visible: ErrorHandler.cacheAddingTextVisible
-            }
-
-            CustomButton {
-                id: _no_server_connection_try_again_button
-                width: parent.width * 0.5
-                height: width * 0.4
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: _cache_adding_text.bottom
-                anchors.topMargin: parent.height / 4
-                text: qsTr("Try again")
-                onClicked:  {
-                    ErrorHandler.setCacheAddingTextVisible(false)
-                    _no_server_connection_popup.close()
-                }
+//    Popup
+//    {
+//        id: _internal_server_error_popup
+//        width: parent.width * 0.9
+//        height: width
+//        anchors.centerIn: parent
+//        padding: 0
 
 
-            }
+//        background: Rectangle {
+//            id:_inner_internal_server_error_popup_rect
+//            anchors.fill:parent
+//            radius: 10
 
-        }
-    }
+//            Image {
+//                id:_inner_internal_server_error_popup_rect_background
+//                property bool rounded: true
+//                property bool adapt: true
+//                anchors.fill: parent
+
+//                source: "../pics/wood_5.png"
+//                layer.enabled: rounded
+//                layer.effect: OpacityMask {
+//                    maskSource: Item {
+//                        width: _inner_internal_server_error_popup_rect_background.width
+//                        height: _inner_internal_server_error_popup_rect_background.height
+//                        Rectangle {
+//                            anchors.centerIn: parent
+//                            width: _inner_internal_server_error_popup_rect_background.adapt
+//                                   ? _inner_internal_server_error_popup_rect_background.width
+//                                   : Math.min(_inner_internal_server_error_popup_rect_background.width, _inner_internal_server_error_popup_rect_background.height)
+//                            height: _inner_internal_server_error_popup_rect_background.adapt ? _inner_internal_server_error_popup_rect_background.height : width
+//                            radius: _inner_internal_server_error_popup_rect.radius
+//                        }
+//                    }
+//                }
+
+//            }
+
+//            CustomText {
+//                id: _internal_server_error_text
+//                text: qsTr("Internal server error!")
+//                fontPointSize: 30
+//                anchors.top: parent.top
+//                anchors.horizontalCenter: parent.horizontalCenter
+//                anchors.topMargin: parent.height / 3
+//            }
+
+//            CustomButton {
+//                id: _internal_server_error_try_again_button
+//                width: parent.width * 0.5
+//                height: width * 0.4
+//                anchors.horizontalCenter: parent.horizontalCenter
+//                anchors.top: _internal_server_error_text.bottom
+//                anchors.topMargin: parent.height / 4
+//                text: qsTr("Try again")
+//                onClicked: _internal_server_error_popup.close()
+//            }
+
+
+//        }
+
+//    }
+//    Popup
+//    {
+//        id: _no_server_connection_popup
+//        width: parent.width * 0.9
+//        height: width
+//        anchors.centerIn: parent
+//        padding: 0
+
+
+//        background: Rectangle {
+//            id:_no_server_connection_popup_rect
+//            anchors.fill:parent
+//            radius: 10
+
+//            Image {
+//                id:_no_server_connection_popup_rect_background
+//                property bool rounded: true
+//                property bool adapt: true
+//                anchors.fill: parent
+
+//                source: "../pics/wood_5.png"
+//                layer.enabled: rounded
+//                layer.effect: OpacityMask {
+//                    maskSource: Item {
+//                        width: _no_server_connection_popup_rect_background.width
+//                        height: _no_server_connection_popup_rect_background.height
+//                        Rectangle {
+//                            anchors.centerIn: parent
+//                            width: _no_server_connection_popup_rect_background.adapt
+//                                   ? _no_server_connection_popup_rect_background.width
+//                                   : Math.min(_no_server_connection_popup_rect_background.width, _no_server_connection_popup_rect_background.height)
+//                            height: _no_server_connection_popup_rect_background.adapt ? _no_server_connection_popup_rect_background.height : width
+//                            radius: _no_server_connection_popup_rect.radius
+//                        }
+//                    }
+//                }
+
+//            }
+
+//            CustomText {
+//                id: _no_server_connection_text
+//                text: qsTr("No server connection!")
+//                fontPointSize: 30
+//                anchors.top: parent.top
+//                anchors.horizontalCenter: parent.horizontalCenter
+//                anchors.topMargin: parent.height / 3
+//            }
+//            CustomText {
+//                id: _cache_adding_text
+//                text: qsTr("Record added into cache.")
+//                anchors.top: _no_server_connection_text.top
+//                anchors.horizontalCenter: parent.horizontalCenter
+//                anchors.topMargin: parent.height / 6
+//                //                visible: ErrorHandler.cacheAddingTextVisible
+//            }
+
+//            CustomButton {
+//                id: _no_server_connection_try_again_button
+//                width: parent.width * 0.5
+//                height: width * 0.4
+//                anchors.horizontalCenter: parent.horizontalCenter
+//                anchors.top: _cache_adding_text.bottom
+//                anchors.topMargin: parent.height / 4
+//                text: qsTr("Try again")
+//                onClicked:  {
+//                    ErrorHandler.setCacheAddingTextVisible(false)
+//                    _no_server_connection_popup.close()
+//                }
+
+
+//            }
+
+//        }
+//    }
 
 }

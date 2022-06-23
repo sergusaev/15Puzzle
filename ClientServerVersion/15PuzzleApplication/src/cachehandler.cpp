@@ -41,10 +41,5 @@ bool CacheHandler::addRecord(const Record &record)
     return (result == DBTypes::DBResult::OK);
 }
 
-bool CacheHandler::addUser(const QString &nickname, const QString &password)
-{
-    DBTypes::DBResult result = m_processor->insertDataRecord(DBTypes::DBTables::Users, {nickname, password});
-    return (result == DBTypes::DBResult::OK);
-}
 
 

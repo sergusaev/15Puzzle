@@ -11,6 +11,21 @@ RequestHandlerServer::~RequestHandlerServer()
 
 }
 
+void RequestHandlerServer::handleNicknameExistanceRequest(const net::Package &packageData, QTcpSocket *socket)
+{
+    bool requestResult;
+    QVariant data;
+    std::tie(requestResult, data) = m_recordsManager.findNickname(packageData.data());
+    if(requestResult) {
+        net::Package resultPackage {data, net::PackageType::NICKNAME_EXISTANCE_RESPONSE};
+        emit nicknameExistanceRequestCompleted(resultPackage, socket);
+    } else {
+        net::Package resultPackage {QVariant::fromValue(static_cast<int>(net::InternalServerError::NICKNAME_EXISTANCE_ERROR)),
+                                    net::PackageType::INTERNAL_SERVER_ERROR};
+        emit nicknameExistanceRequestCompleted(resultPackage, socket);
+    }
+}
+
 void RequestHandlerServer::handlePasswordRequest(const net::Package &packageData, QTcpSocket *socket)
 {
     bool requestResult;

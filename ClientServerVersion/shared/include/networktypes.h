@@ -17,6 +17,8 @@ enum class PackageType : qint32 {
     TOP_TURNS_RESPONSE,
     ADD_RECORD_REQUEST,
     ADD_RECORD_RESPONSE,
+    NICKNAME_EXISTANCE_REQUEST,
+    NICKNAME_EXISTANCE_RESPONSE,
     INTERNAL_SERVER_ERROR
 };
 
@@ -27,6 +29,7 @@ enum class ConnectionState {
 };
 
 enum class InternalServerError {
+    NICKNAME_EXISTANCE_ERROR,
     PASSWORD_ERROR,
     USER_ADDITION_ERROR,
     RECORD_ADDITION_ERROR,

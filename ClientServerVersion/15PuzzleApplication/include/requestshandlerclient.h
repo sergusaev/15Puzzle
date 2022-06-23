@@ -17,6 +17,7 @@ public:
     bool requestRecordAddition (const Record& record);
     bool requestUserAddition (const QString &nickname, const QString &password);
     bool requestPassword (const QString &nickname);
+    bool requestNicknameExistance (const QString &nickname);
 
 signals:
     void topTimeRequestCompleted(const std::vector<Record>& data);
@@ -24,7 +25,8 @@ signals:
     void recordAdditionRequestCompleted(bool additionResult);
     void userAdditionRequestCompleted(bool additionResult);
     void passwordRequestCompleted(const QString& password);
-    void internalServerErrorOccured(const QVariant& data);
+    void nicknameExistanceRequestCompleted(bool exist);
+    void internalServerErrorOccured(net::InternalServerError error);
 
 private slots:
     void onConnectionStateChanged(net::ConnectionState state);
@@ -33,6 +35,7 @@ private slots:
     void onRecordAdditionSucceed(const QVariant &data);
     void onUserAdditionSucceed(const QVariant &data);
     void onPasswordDownloadSucceed(const QVariant& data);
+    void onNicknameExistanceRequestSucceed(const QVariant& data);
     void onInternalServerError(const QVariant& data);
 
 private:

@@ -3,12 +3,29 @@
 AuthorizationManager::AuthorizationManager()
     : m_dimension (2)
 {
+    connect(RequestsHandlerClient::instance(), &RequestsHandlerClient::internalServerErrorOccured,
+            this, &AuthorizationManager::onInternalServerErrorOccured);
     connect(RequestsHandlerClient::instance(), &RequestsHandlerClient::passwordRequestCompleted,
             this, &AuthorizationManager::onPasswordDownloaded);
     connect(RequestsHandlerClient::instance(), &RequestsHandlerClient::userAdditionRequestCompleted,
             this, &AuthorizationManager::onUserAdded);
     connect(ClientManager::instance(), &ClientManager::connectionStateChanged,
             this, &AuthorizationManager::onConnectionStateChanged);
+    connect(&m_nicknameHint, &NicknameHint::nicknameExists,
+            this, &AuthorizationManager::onNicknameExists);
+}
+
+ int AuthorizationManager::authorizationPageState() const
+{
+    return static_cast<int>(m_authorizathionPageState);
+}
+
+void AuthorizationManager::setAuthorizationPageState(int newAuthorizathionPageState)
+{
+    if (m_authorizathionPageState == static_cast<AuthorizationPageState>(newAuthorizathionPageState))
+        return;
+    m_authorizathionPageState = static_cast<AuthorizationPageState>(newAuthorizathionPageState);
+    emit authorizationPageStateChanged(newAuthorizathionPageState);
 }
 
 
@@ -79,15 +96,15 @@ void AuthorizationManager::setDimension(int newDimension)
 
 bool AuthorizationManager::connectionState() const
 {
-    return m_connectionState;
+    return m_connectToServer;
 }
 
 void AuthorizationManager::setConnectionState(bool newConnectionState)
 {
-    if (m_connectionState == newConnectionState)
+    if (m_connectToServer == newConnectionState)
         return;
-    m_connectionState = newConnectionState;
-    emit connectionStateChanged(m_connectionState);
+    m_connectToServer = newConnectionState;
+    emit connectionStateChanged(m_connectToServer);
 }
 
 
@@ -123,7 +140,32 @@ void AuthorizationManager::onConnectionStateChanged(net::ConnectionState state)
         setConnectionState(false);
         break;
     }
+    emit connectionStateChanged(m_connectToServer);
+}
 
+void AuthorizationManager::onInternalServerErrorOccured(net::InternalServerError error)
+{
+    switch(error) {
+    case net::InternalServerError::NICKNAME_EXISTANCE_ERROR :
+        emit nicknameExistanceInternalServerError();
+        break;
+    case net::InternalServerError::PASSWORD_ERROR :
+        emit passwordInternalServerError();
+        break;
+    case net::InternalServerError::USER_ADDITION_ERROR :
+        emit userAdditionInternalServerError();
+        break;
+    case net::InternalServerError::TOP_TIME_ERROR:
+        emit topTimeInternalServerError();
+        break;
+    case net::InternalServerError::TOP_TURNS_ERROR:
+        emit topTurnsInternalServerError();
+        break;
+    case net::InternalServerError::RECORD_ADDITION_ERROR :
+        emit recordAdditionInternalServerError();
+
+        break;
+    }
 }
 
 
@@ -140,6 +182,11 @@ void AuthorizationManager::onPasswordDownloaded(const QString &password)
         return;
     }
     setEthalonPassword(password);
+}
+
+void AuthorizationManager::onNicknameExists()
+{
+    emit nicknameExists();
 }
 
 

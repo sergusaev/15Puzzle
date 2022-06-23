@@ -11,9 +11,9 @@ QML_IMPORT_MAJOR_VERSION = 1
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+        src/nicknamehint.cpp \
         src/signalshandler.cpp \
         src/authorizationmanager.cpp \
-        src/errorhandler.cpp \
         src/cachehandler.cpp \
         src/clientmanager.cpp \
         src/recordsmodel.cpp \
@@ -40,7 +40,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     include/authorizationmanager.h \
-    include/errorhandler.h \
     include/cachehandler.h \
     include/clientmanager.h \
     include/gameboard.h \
@@ -48,7 +47,8 @@ HEADERS += \
     include/recordsmodel.h \
     include/requestshandlerclient.h \
     include/usersettings.h \
-    include/signalshandler.h
+    include/signalshandler.h \
+    include/nicknamehint.h
 
 INCLUDEPATH += $$PWD/include
 INCLUDEPATH += $$PWD/../shared/include

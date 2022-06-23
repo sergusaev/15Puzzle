@@ -105,6 +105,9 @@ void ServerManager::handlePackage(net::Package &package, QTcpSocket *socket)
     case net::PackageType::ADD_RECORD_REQUEST:
         currPackageType = "ADD_RECORD_REQUEST";
         break;
+    case net::PackageType::NICKNAME_EXISTANCE_REQUEST:
+        currPackageType = "NICKNAME_EXISTANCE_REQUEST";
+        break;
     default:
         currPackageType = "INVALID";
         break;
@@ -139,6 +142,11 @@ void ServerManager::handlePackage(net::Package &package, QTcpSocket *socket)
         m_requestHandler.handleAddRecordRequest(package, socket);
         break;
     }
+    case net::PackageType::NICKNAME_EXISTANCE_REQUEST:
+    {
+        m_requestHandler.handleNicknameExistanceRequest(package, socket);
+        break;
+    }
     default: {
         qWarning() << "Invalid package recieved!";
     }
@@ -150,6 +158,8 @@ void ServerManager::connectSignals()
     connect(&m_server, &QTcpServer::newConnection,
             this, &ServerManager::onNewConnection);
     connect(&m_requestHandler, &RequestHandlerServer::passwordRequestCompleted,
+            this, &ServerManager::notify);
+    connect(&m_requestHandler, &RequestHandlerServer::nicknameExistanceRequestCompleted,
             this, &ServerManager::notify);
     connect(&m_requestHandler, &RequestHandlerServer::userAdditionRequestCompleted,
             this, &ServerManager::notify);

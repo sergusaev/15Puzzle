@@ -124,6 +124,9 @@ void ClientManager::handlePackage(net::Package &package)
     case net::PackageType::ADD_RECORD_RESPONSE:
         currPackageType = "ADD_RECORD_RESPONCE";
         break;
+    case net::PackageType::NICKNAME_EXISTANCE_RESPONSE:
+        currPackageType = "NICKNAME_EXISTANCE_RESPONCE";
+        break;
     case net::PackageType::INTERNAL_SERVER_ERROR:
         currPackageType = "INTERNAL_SERVER_ERROR";
         break;
@@ -159,6 +162,11 @@ void ClientManager::handlePackage(net::Package &package)
     case net::PackageType::PASSWORD_RESPONSE:
     {
         handlePasswordResponsePackage(package);
+        break;
+    }
+    case net::PackageType::NICKNAME_EXISTANCE_RESPONSE:
+    {
+        handleNicknameExistanceResponsePackage(package);
         break;
     }
     case net::PackageType::INTERNAL_SERVER_ERROR:
@@ -215,6 +223,11 @@ void ClientManager::handleAddUserResponsePackage(const net::Package &package)
 void ClientManager::handlePasswordResponsePackage(const net::Package &package)
 {
     emit passwordResponse(package.data());
+}
+
+void ClientManager::handleNicknameExistanceResponsePackage(const net::Package &package)
+{
+    emit nicknameExistanceResponse(package.data());
 }
 
 void ClientManager::handleInternalServerErrorPackage(const net::Package &package)

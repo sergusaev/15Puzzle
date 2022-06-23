@@ -11,13 +11,15 @@ public:
 
     ~UserSettings();
 
-    Q_INVOKABLE void writeSettings(const QString &nickname, const QString &password, int dimension);
+    Q_INVOKABLE void writeSettings(const QString &nickname, const QString &password, int dimension, int authorizationPageState);
 
     Q_INVOKABLE QString readNickname();
 
     Q_INVOKABLE QString readPassword();
 
     Q_INVOKABLE int readDimension();
+
+    Q_INVOKABLE int readAuthorizationPageState();
 
     Q_INVOKABLE void clearSettings();
 
