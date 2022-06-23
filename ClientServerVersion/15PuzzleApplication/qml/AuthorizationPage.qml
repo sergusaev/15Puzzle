@@ -19,7 +19,6 @@ CustomPage {
         }
 
         function onAuthorizationPageStateChanged(newAuthorizationPageState) {
-            console.log(newAuthorizationPageState)
             switch(newAuthorizationPageState){
             case 1:
                 root.authorizationState = "NicknameInput"
@@ -33,16 +32,21 @@ CustomPage {
             default:
                 break;
             }
+            console.log("New autorization page state: " + root.authorizationState)
         }
 
-//        function onEthalonPasswordChanged() {
-//            root.ethalonPasswordOnAuthorizationPage = AuthorizationManager.ethalonPassword
-//            if(root.ethalonPasswordOnAuthorizationPage === "")  {
-//                _invalid_nickname_window.visible = true
-//            } else {
-//                _ok_button.clicked()
-//            }
-//        }
+        function onEthalonPasswordChanged(password) {
+            console.log("Current ethalon password: ")
+            console.log(password)
+            if(password === "")  {
+                _invalid_nickname_window.visible = true
+            } else {
+                if(password !== _password_text_field.text) {
+                    _invalid_password_window.visible = true
+                    AuthorizationManager.setAuthorizationPageState(2)
+                }
+            }
+        }
     }
 
 
@@ -108,11 +112,6 @@ CustomPage {
             radius: 10
         }
         enabled: root.authorizationState === "NicknameInput"
-
-        onTextChanged: {
-            AuthorizationManager.requestUserPassword(_nickname_text_field.text)
-        }
-
     }
     Rectangle {
         id: _nickname_text_field_darkener
@@ -153,7 +152,9 @@ CustomPage {
         visible:  root.authorizationState === "PasswordInput" || root.authorizationState === "DimensionSelection" ? true : false
         enabled: root.authorizationState === "PasswordInput"
 
-
+        onTextChanged: {
+            console.log("Password changed to " + _password_text_field.text)
+        }
     }
 
     Rectangle {
@@ -265,7 +266,10 @@ CustomPage {
                 when: root.authorizationState === "DimensionSelection"
             },
             State {
-                name: "ProcessingPasswordRequest"
+                name: "ProcessingAuthorizationRequest"
+                when: root.authorizationState !== "NicknameInput"
+                      && root.authorizationState !== "PasswordInput"
+                      && root.authorizationState !== "DimensionSelection"
             }
 
         ]
@@ -273,25 +277,11 @@ CustomPage {
 
         onClicked:  {
             if (state === "NickInput") {
-                AuthorizationManager.requestUserPassword(_nickname_text_field.text)
-                state = "ProcessingPasswordRequest"
-            }
-            else if (state === "ProcessingPasswordRequest") {
-                console.log("Clicking OK-button (ProcessingPasswordRequest state)")
-                console.log("ethalonPassword: " + AuthorizationManager.ethalonPassword)
                 AuthorizationManager.setAuthorizationPageState(2)
             }
             else if (state === "PassInput"){
-
-                console.log("Clicking OK-button (PassInput state)")
-                console.log("ethalonPassword: " + root.ethalonPasswordOnAuthorizationPage)
-                console.log("_password_text_field.text: " + _password_text_field.text)
-
-                if(root.ethalonPasswordOnAuthorizationPage === _password_text_field.text) {
-                    AuthorizationManager.setAuthorizationPageState(3)
-                } else {
-                   _invalid_password_window.visible = true
-                }
+                AuthorizationManager.requestUserPassword(_nickname_text_field.text)
+                AuthorizationManager.setAuthorizationPageState(3)
             }
 
             else if (state === "DimSelect") {
@@ -332,11 +322,11 @@ CustomPage {
         states:[
             State {
                 name: "Quit"
-                when: root.authorizationState === "NicknameInput"
+                when: AuthorizationManager.authorizationPageState === 1
             },
             State {
                 name: "Back"
-                when: root.authorizationState !== "NicknameInput"
+                when: AuthorizationManager.authorizationPageState !== 1
             }
 
         ]
@@ -344,11 +334,12 @@ CustomPage {
             if(state === "Quit") {
                 Qt.quit()
             } else {
-                if(root.authorizationState === "PasswordInput") {
-                    root.authorizationState = "NicknameInput"
+                if(AuthorizationManager.authorizationPageState === 2) {
+                    AuthorizationManager.setAuthorizationPageState(1)
+                    console.log("Changed password to empty")
                     _password_text_field.text = ""
                 } else {
-                    root.authorizationState = "PasswordInput"
+                    AuthorizationManager.setAuthorizationPageState(2)
                     AuthorizationManager.setDimension (2)
                 }
             }
@@ -362,7 +353,7 @@ CustomPage {
         anchors.top: _ok_button.bottom
         anchors.topMargin: _puzzle_size_selection_combobox.height / 3
         text:  qsTr("New player")
-        enabled: root.authorizationState === "NicknameInput"
+        enabled: AuthorizationManager.authorizationPageState === 1
         onClicked:  {
             _stack_view.push(_new_user_stack_page)
             AuthorizationManager.setNickname("")
@@ -412,144 +403,5 @@ CustomPage {
         visible: false
 
     }
-
-
-//    Popup
-//    {
-//        id: _internal_server_error_popup
-//        width: parent.width * 0.9
-//        height: width
-//        anchors.centerIn: parent
-//        padding: 0
-
-
-//        background: Rectangle {
-//            id:_inner_internal_server_error_popup_rect
-//            anchors.fill:parent
-//            radius: 10
-
-//            Image {
-//                id:_inner_internal_server_error_popup_rect_background
-//                property bool rounded: true
-//                property bool adapt: true
-//                anchors.fill: parent
-
-//                source: "../pics/wood_5.png"
-//                layer.enabled: rounded
-//                layer.effect: OpacityMask {
-//                    maskSource: Item {
-//                        width: _inner_internal_server_error_popup_rect_background.width
-//                        height: _inner_internal_server_error_popup_rect_background.height
-//                        Rectangle {
-//                            anchors.centerIn: parent
-//                            width: _inner_internal_server_error_popup_rect_background.adapt
-//                                   ? _inner_internal_server_error_popup_rect_background.width
-//                                   : Math.min(_inner_internal_server_error_popup_rect_background.width, _inner_internal_server_error_popup_rect_background.height)
-//                            height: _inner_internal_server_error_popup_rect_background.adapt ? _inner_internal_server_error_popup_rect_background.height : width
-//                            radius: _inner_internal_server_error_popup_rect.radius
-//                        }
-//                    }
-//                }
-
-//            }
-
-//            CustomText {
-//                id: _internal_server_error_text
-//                text: qsTr("Internal server error!")
-//                fontPointSize: 30
-//                anchors.top: parent.top
-//                anchors.horizontalCenter: parent.horizontalCenter
-//                anchors.topMargin: parent.height / 3
-//            }
-
-//            CustomButton {
-//                id: _internal_server_error_try_again_button
-//                width: parent.width * 0.5
-//                height: width * 0.4
-//                anchors.horizontalCenter: parent.horizontalCenter
-//                anchors.top: _internal_server_error_text.bottom
-//                anchors.topMargin: parent.height / 4
-//                text: qsTr("Try again")
-//                onClicked: _internal_server_error_popup.close()
-//            }
-
-
-//        }
-
-//    }
-//    Popup
-//    {
-//        id: _no_server_connection_popup
-//        width: parent.width * 0.9
-//        height: width
-//        anchors.centerIn: parent
-//        padding: 0
-
-
-//        background: Rectangle {
-//            id:_no_server_connection_popup_rect
-//            anchors.fill:parent
-//            radius: 10
-
-//            Image {
-//                id:_no_server_connection_popup_rect_background
-//                property bool rounded: true
-//                property bool adapt: true
-//                anchors.fill: parent
-
-//                source: "../pics/wood_5.png"
-//                layer.enabled: rounded
-//                layer.effect: OpacityMask {
-//                    maskSource: Item {
-//                        width: _no_server_connection_popup_rect_background.width
-//                        height: _no_server_connection_popup_rect_background.height
-//                        Rectangle {
-//                            anchors.centerIn: parent
-//                            width: _no_server_connection_popup_rect_background.adapt
-//                                   ? _no_server_connection_popup_rect_background.width
-//                                   : Math.min(_no_server_connection_popup_rect_background.width, _no_server_connection_popup_rect_background.height)
-//                            height: _no_server_connection_popup_rect_background.adapt ? _no_server_connection_popup_rect_background.height : width
-//                            radius: _no_server_connection_popup_rect.radius
-//                        }
-//                    }
-//                }
-
-//            }
-
-//            CustomText {
-//                id: _no_server_connection_text
-//                text: qsTr("No server connection!")
-//                fontPointSize: 30
-//                anchors.top: parent.top
-//                anchors.horizontalCenter: parent.horizontalCenter
-//                anchors.topMargin: parent.height / 3
-//            }
-//            CustomText {
-//                id: _cache_adding_text
-//                text: qsTr("Record added into cache.")
-//                anchors.top: _no_server_connection_text.top
-//                anchors.horizontalCenter: parent.horizontalCenter
-//                anchors.topMargin: parent.height / 6
-//                //                visible: ErrorHandler.cacheAddingTextVisible
-//            }
-
-//            CustomButton {
-//                id: _no_server_connection_try_again_button
-//                width: parent.width * 0.5
-//                height: width * 0.4
-//                anchors.horizontalCenter: parent.horizontalCenter
-//                anchors.top: _cache_adding_text.bottom
-//                anchors.topMargin: parent.height / 4
-//                text: qsTr("Try again")
-//                onClicked:  {
-//                    ErrorHandler.setCacheAddingTextVisible(false)
-//                    _no_server_connection_popup.close()
-//                }
-
-
-//            }
-
-//        }
-//    }
 
 }

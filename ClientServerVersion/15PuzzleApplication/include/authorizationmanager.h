@@ -45,6 +45,8 @@ public:
 
     Q_INVOKABLE void requestUserPassword(const QString& password);
 
+    Q_INVOKABLE void checkNicknameExistance(const QString& nickname);
+
 
 
 signals:

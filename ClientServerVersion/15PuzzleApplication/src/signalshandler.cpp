@@ -17,6 +17,15 @@ SignalsHandler::SignalsHandler()
             this, &SignalsHandler::onEthalonPasswordChanged);
     connect(AuthorizationManager::instance(),&AuthorizationManager::dimensionChanged,
             this, &SignalsHandler::onDimensionChanged);
+    connect(AuthorizationManager::instance(),&AuthorizationManager::nicknameExists,
+            this, &SignalsHandler::onNicknameExists);
+    connect(AuthorizationManager::instance(),&AuthorizationManager::nicknameExistanceInternalServerError,
+            this, &SignalsHandler::onNicknameExistanceInternalServerError);
+    connect(AuthorizationManager::instance(),&AuthorizationManager::passwordInternalServerError,
+            this, &SignalsHandler::onPasswordInternalServerError);
+    connect(AuthorizationManager::instance(),&AuthorizationManager::userAdditionInternalServerError,
+            this, &SignalsHandler::onUserAdditionInternalServerError);
+
 }
 
 void SignalsHandler::onNoServerConnection()
@@ -46,7 +55,7 @@ void SignalsHandler::onPasswordChanged(const QString &password)
 
 void SignalsHandler::onEthalonPasswordChanged(const QString &ethalonPassword)
 {
-    emit ethalonPasswordChanged();
+    emit ethalonPasswordChanged(ethalonPassword);
 }
 
 void SignalsHandler::onDimensionChanged(int dimension)
@@ -57,4 +66,19 @@ void SignalsHandler::onDimensionChanged(int dimension)
 void SignalsHandler::onNicknameExists()
 {
     emit nicknameExists();
+}
+
+void SignalsHandler::onNicknameExistanceInternalServerError()
+{
+    emit nicknameExistanceInternalServerError();
+}
+
+void SignalsHandler::onPasswordInternalServerError()
+{
+    emit passwordInternalServerError();
+}
+
+void SignalsHandler::onUserAdditionInternalServerError()
+{
+    emit userAdditionInternalServerError();
 }

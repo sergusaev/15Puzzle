@@ -9,7 +9,7 @@ class NicknameHint : public QObject
     Q_OBJECT
 public:
     NicknameHint();
-    Q_INVOKABLE void requestNicknameExistanceCheck(const QString &nickname);
+    bool requestNicknameExistanceCheck(const QString &nickname);
 
 signals:
     void nicknameExists();

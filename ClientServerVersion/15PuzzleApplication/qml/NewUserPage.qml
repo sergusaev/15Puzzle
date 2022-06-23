@@ -5,22 +5,17 @@ import AuthorizationManager 1.0
 
 CustomPage {
     id:root
-    property string ethalonPasswordOnNewUserPage: ""
-
 
     Connections {
-        id: _authorization_page_connections
+        id: _new_user_page_connections
         target: signalsHandler
 
-        function onEthalonPasswordChanged() {
-            root.ethalonPasswordOnNewUserPage = AuthorizationManager.ethalonPassword
-            console.log("root.ethalonPasswordOnNewUserPage changed")
-            console.log(root.ethalonPasswordOnNewUserPage)
-            if(root.ethalonPasswordOnNewUserPage !== "")  {
-                _user_already_exists_text.visible = true
-            } else {
-                _user_already_exists_text.visible = false
-            }
+        function onNicknameExists() {
+            _user_already_exists_text.visible = true
+        }
+
+        function onNicknameExistanceInternalServerError() {
+            _new_user_server_error_window.visible = true
         }
 
     }
@@ -54,8 +49,8 @@ CustomPage {
         }
 
         onTextChanged:  {
-            AuthorizationManager.requestUserPassword(_new_nickname_text_field.text)
-            console.log("New user ethalon password: " + AuthorizationManager.ethalonPassword)
+            _user_already_exists_text.visible = false
+            AuthorizationManager.checkNicknameExistance(_new_nickname_text_field.text)
         }
 
     }
@@ -120,8 +115,13 @@ CustomPage {
             visible: parent.enabled ? false : true
         }
         onClicked:  {
+            console.log("On new player data accepted:")
             AuthorizationManager.setNickname(_new_nickname_text_field.text)
             AuthorizationManager.setPassword(_new_password_text_field.text)
+            AuthorizationManager.setAuthorizationPageState(3)
+            console.log("New user nickname: " + AuthorizationManager.nickname)
+            console.log("New user password: " + AuthorizationManager.password)
+            console.log("Authorization page state: " + AuthorizationManager.authorizationPageState)
             _stack_view.pop()
         }
     }
@@ -136,6 +136,15 @@ CustomPage {
         text: qsTr("Back")
         onClicked:  {
             _stack_view.pop()
+        }
+    }
+
+    InternalServerErrorWindow {
+        id: _new_user_server_error_window
+        anchors.fill: parent
+        visible: false
+        onTryAgainButtonClicked: {
+            _new_user_server_error_window.visible = false
         }
     }
 

@@ -7,9 +7,9 @@ NicknameHint::NicknameHint()
             this, &NicknameHint::onNicknameExistanceRequestCompleted);
 }
 
-void NicknameHint::requestNicknameExistanceCheck(const QString &nickname)
+bool NicknameHint::requestNicknameExistanceCheck(const QString &nickname)
 {
-    RequestsHandlerClient::instance()->requestNicknameExistance(nickname);
+    return RequestsHandlerClient::instance()->requestNicknameExistance(nickname);
 }
 
 void NicknameHint::onNicknameExistanceRequestCompleted(bool exist)

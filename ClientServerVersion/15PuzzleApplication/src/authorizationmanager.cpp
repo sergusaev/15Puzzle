@@ -129,6 +129,16 @@ void AuthorizationManager::requestUserPassword(const QString &password)
     }
 }
 
+void AuthorizationManager::checkNicknameExistance(const QString &nickname)
+{
+    if(!m_nicknameHint.requestNicknameExistanceCheck(nickname)) {
+        qDebug() << "Failed to access remote database, try again";
+        emit noServerConnection();
+    } else {
+        qDebug() << "Nickname existance request successfully sent";
+    }
+}
+
 void AuthorizationManager::onConnectionStateChanged(net::ConnectionState state)
 {
     switch (state)

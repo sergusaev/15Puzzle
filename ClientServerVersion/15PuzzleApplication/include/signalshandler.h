@@ -19,6 +19,9 @@ private slots:
     void onEthalonPasswordChanged(const QString &ethalonPassword);
     void onDimensionChanged(int dimension);
     void onNicknameExists();
+    void onNicknameExistanceInternalServerError();
+    void onPasswordInternalServerError();
+    void onUserAdditionInternalServerError();
 
 signals:
     void noServerConnection();
@@ -26,9 +29,13 @@ signals:
     void authorizationPageStateChanged(int newAuthorizationPageState);
     void nicknameChanged();
     void passwordChanged();
-    void ethalonPasswordChanged();
+    void ethalonPasswordChanged(const QString &ethalonPassword);
     void dimensionChanged();
     void nicknameExists();
+    void nicknameExistanceInternalServerError();
+    void passwordInternalServerError();
+    void userAdditionInternalServerError();
+
 };
 
 #endif // SIGNALSHANDLER_H
