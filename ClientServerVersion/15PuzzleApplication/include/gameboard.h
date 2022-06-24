@@ -87,30 +87,19 @@ private:
     int m_currentElement = 0;
     int m_seconds = 0;
     int m_counter = 0;
-    QString m_nickname;
-    QString m_password;
-    QString m_ethalonPassword;
     QTimer m_timer;
-
     bool isBoardValid() const;
     bool isPositionValid(const int position) const;
     bool isSolved() const;
     Position getRowCol(int index) const;
 
-
-
-
-
 signals:
     void currentElementChanged();
     void timePointChanged();
     void counterChanged();
-    void getTimeChanged();
-    void nicknameChanged();
+    void getTimeChanged();  
     void dimensionChanged();
-    void passwordChanged();
-    void passwordFromDBChanged();
-    void ethalonPasswordChanged();
+
 };
 
 #endif // GAMEBOARD_H

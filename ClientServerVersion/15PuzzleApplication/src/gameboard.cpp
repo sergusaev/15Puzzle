@@ -8,7 +8,6 @@
 
 GameBoard::GameBoard(QObject *parent, int dimension):
     QAbstractListModel {parent},
-    m_dimension {dimension},
     m_currentElement {-1},
     m_seconds {0},
     m_counter {0}
@@ -271,8 +270,14 @@ bool GameBoard::checkWin()
 {
     if(isSolved()) {
         m_timer.stop();
-        if(!RequestsHandlerClient::instance()->requestRecordAddition({m_nickname, m_seconds, m_counter, m_dimension})) {
-            CacheHandler::instance()->addRecord({m_nickname, m_seconds, m_counter, m_dimension});
+        if(!RequestsHandlerClient::instance()->requestRecordAddition({AuthorizationManager::instance()->nickname(),
+                                                                     m_seconds,
+                                                                     m_counter,
+                                                                     m_dimension})) {
+            CacheHandler::instance()->addRecord({AuthorizationManager::instance()->nickname(),
+                                                 m_seconds,
+                                                 m_counter,
+                                                 m_dimension});
         }
         return true;
     }
