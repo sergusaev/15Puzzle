@@ -15,14 +15,14 @@ CustomPage {
         target: signalsHandler
 
         function onConnectionStateChanged(connectionState) {
-            console.log("onConnectionStateChanged signal caught, connectionState: " + connectionState)
+//            console.log("onConnectionStateChanged signal caught, connectionState: " + connectionState)
             _authorization_page_connecting_to_server_window.visible = !connectionState
         }
 
         function onNicknameExists(exists) {
-            console.log("onNicknameExists signal caught, exists: " + exists)
-            console.log("Current _ok_button_state: " + _ok_button.state)
-            console.log("root.newUser: " + root.newUser)
+//            console.log("onNicknameExists signal caught, exists: " + exists)
+//            console.log("Current _ok_button_state: " + _ok_button.state)
+//            console.log("root.newUser: " + root.newUser)
             if (root.newUser) {
                 return
             }
@@ -34,8 +34,8 @@ CustomPage {
         }
 
         function onEthalonPasswordChanged(ethalonPassword) {
-            console.log("onEthalonPasswordChanged signal caught, ethalonPassword: " + ethalonPassword)
-            console.log("Current _ok_button_state: " + _ok_button.state)
+//            console.log("onEthalonPasswordChanged signal caught, ethalonPassword: " + ethalonPassword)
+//            console.log("Current _ok_button_state: " + _ok_button.state)
 
             if(ethalonPassword !== _password_text_field.text) {
                 _invalid_password_window.visible = true
@@ -46,24 +46,24 @@ CustomPage {
         }
 
         function onNicknameChanged(nickname) {
-            console.log("onNicknameChanged signal caught, nickname: " + nickname)
+//            console.log("onNicknameChanged signal caught, nickname: " + nickname)
             _nickname_text_field.text = nickname
         }
 
         function onPasswordChanged(password) {
-            console.log("onPasswordChanged signal caught, password: " + password)
+//            console.log("onPasswordChanged signal caught, password: " + password)
             _password_text_field.text = password
         }
 
         function onDimensionChanged(dimension) {
-            console.log("onDimensionChanged signal caught, dimension: " + dimension)
+//            console.log("onDimensionChanged signal caught, dimension: " + dimension)
             _puzzle_size_selection_combobox.currentIndex = dimension - 2
         }
 
 
 
         function onAuthorizationPageStateChanged(newAuthorizationPageState) {
-            console.log("onAuthorizationPageStateChanged signal caught, newAuthorizationPageState: " + newAuthorizationPageState)
+//            console.log("onAuthorizationPageStateChanged signal caught, newAuthorizationPageState: " + newAuthorizationPageState)
             switch(newAuthorizationPageState){
             case 1:
                 root.authorizationState = "NicknameInput"
@@ -77,11 +77,11 @@ CustomPage {
             default:
                 break;
             }
-            console.log("New autorization page state: " + root.authorizationState)
+//            console.log("New autorization page state: " + root.authorizationState)
         }
 
         function onNewUserChanged(newUser) {
-            console.log("onNewUserChanged signal caught, newUser: " + newUser)
+//            console.log("onNewUserChanged signal caught, newUser: " + newUser)
             root.newUser = newUser
         }
 
@@ -92,14 +92,14 @@ CustomPage {
 
     Component.onCompleted: {
 
-        console.log("On AuthorizationPage creation")
+//        console.log("On AuthorizationPage creation")
 
         AuthorizationManager.setNickname (userSettings.readNickname())
         AuthorizationManager.setPassword (userSettings.readPassword())
         if((userSettings.readDimension() > 2)) {
             AuthorizationManager.setDimension (userSettings.readDimension())
         }
-        console.log("QSettings authorizationPageState:" + userSettings.readAuthorizationPageState())
+//        console.log("QSettings authorizationPageState:" + userSettings.readAuthorizationPageState())
         if((1 < userSettings.readAuthorizationPageState() && userSettings.readAuthorizationPageState() < 4)) {
             AuthorizationManager.setAuthorizationPageState (userSettings.readAuthorizationPageState())
         } else {
@@ -108,11 +108,11 @@ CustomPage {
         AuthorizationManager.requestUserPassword(userSettings.readNickname())
         _puzzle_size_selection_combobox.currentIndex = AuthorizationManager.dimension - 2
 
-        console.log("nickname: " + AuthorizationManager.nickname)
-        console.log("password: " + AuthorizationManager.password)
-        console.log("dimension: " + AuthorizationManager.dimension)
-        console.log("authorizationPageState: " + AuthorizationManager.authorizationPageState)
-        console.log("AuthorizationManager ethalon password: " + AuthorizationManager.ethalonPassword)
+//        console.log("nickname: " + AuthorizationManager.nickname)
+//        console.log("password: " + AuthorizationManager.password)
+//        console.log("dimension: " + AuthorizationManager.dimension)
+//        console.log("authorizationPageState: " + AuthorizationManager.authorizationPageState)
+//        console.log("AuthorizationManager ethalon password: " + AuthorizationManager.ethalonPassword)
 //        userSettings.clearSettings()
     }
 
@@ -137,7 +137,7 @@ CustomPage {
         id: _nickname_text_field
         width: root.width * 0.76
         height:width / 5
-        text: AuthorizationManager.nickname
+        text: ""
         validator: RegularExpressionValidator { regularExpression: /\w{0,12}/ }
         color: "lightyellow"
         font {
@@ -175,7 +175,7 @@ CustomPage {
         id: _password_text_field
         width: root.width * 0.76
         height:width / 5
-        text:  AuthorizationManager.password
+        text:  ""
         validator: RegularExpressionValidator { regularExpression: /\w{0,12}/ }
         color: "lightyellow"
         font {
@@ -191,9 +191,6 @@ CustomPage {
         visible:  root.authorizationState === "PasswordInput" || root.authorizationState === "DimensionSelection" ? true : false
         enabled: root.authorizationState === "PasswordInput"
 
-        onTextChanged: {
-            console.log("Password changed to " + _password_text_field.text)
-        }
     }
 
     Rectangle {
@@ -311,14 +308,14 @@ CustomPage {
         ]
 
         onStateChanged:  {
-            console.log("_ok_button.stateChanged signal caught, state: " + _ok_button.state)
+//            console.log("_ok_button.stateChanged signal caught, state: " + _ok_button.state)
             if(state === "ProcessingPasswordRequest" && root.newUser) {
                 _ok_button.clicked()
             }
         }
 
         onClicked:  {
-            console.log("Ok button pressed, state: " + state)
+//            console.log("Ok button pressed, state: " + state)
             if (state === "NickInput") {
                 AuthorizationManager.setAuthorizationPageState(2)
             }
@@ -392,7 +389,7 @@ CustomPage {
 
         ]
         onClicked:{
-            console.log("_quit_or_back_button pressed, state: " + state)
+//            console.log("_quit_or_back_button pressed, state: " + state)
             if(state === "Quit") {
                 Qt.quit()
             } else {
@@ -404,8 +401,6 @@ CustomPage {
                     //set authorizationState "PasswordInput" and return dimension to minimal (2)
                     AuthorizationManager.setAuthorizationPageState(2)
                     AuthorizationManager.setDimension (2)
-                    //set newUser false (if user was trying to add new user )
-
                 }
             }
         }
@@ -421,13 +416,9 @@ CustomPage {
         text:  qsTr("New player")
         enabled: root.authorizationState === "NicknameInput"
         onClicked:  {
-            console.log("_new_player_button pressed")
+//            console.log("_new_player_button pressed")
             _stack_view.push(_new_user_stack_page)
             AuthorizationManager.setNewUser(true)
-            //            AuthorizationManager.setNickname("")
-            //            AuthorizationManager.setPassword("")
-            //            AuthorizationManager.setDimension(2)
-            //            AuthorizationManager.requestUserPassword("")
         }
         Rectangle {
             id: _new_player_button_darkener

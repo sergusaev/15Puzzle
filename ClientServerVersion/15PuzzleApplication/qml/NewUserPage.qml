@@ -11,7 +11,7 @@ CustomPage {
         target: signalsHandler
 
         function onConnectionStateChanged(connectionState) {
-            console.log("onConnectionStateChanged signal caught, connectionState: " + connectionState)
+//            console.log("onConnectionStateChanged signal caught, connectionState: " + connectionState)
             _new_user_connecting_to_server_window.visible = !connectionState
         }
 
@@ -123,13 +123,13 @@ CustomPage {
             visible: parent.enabled ? false : true
         }
         onClicked:  {
-            console.log("On new player data accepted:")
+//            console.log("On new player data accepted:")
             AuthorizationManager.setNickname(_new_nickname_text_field.text)
             AuthorizationManager.setPassword(_new_password_text_field.text)
             AuthorizationManager.setAuthorizationPageState(3)
-            console.log("New user nickname: " + AuthorizationManager.nickname)
-            console.log("New user password: " + AuthorizationManager.password)
-            console.log("Authorization page state: " + AuthorizationManager.authorizationPageState)
+//            console.log("New user nickname: " + AuthorizationManager.nickname)
+//            console.log("New user password: " + AuthorizationManager.password)
+//            console.log("Authorization page state: " + AuthorizationManager.authorizationPageState)
             _stack_view.pop()
         }
     }

@@ -1,13 +1,8 @@
 import QtQuick 2.15
-//import Game 1.0
-
-
 
 GridView {
     id: root
     model: gameBoardModel
-
-
 
     move: Transition {
               NumberAnimation { properties: "x,y"; duration: 120 }
