@@ -10,8 +10,13 @@ CustomPage {
         id: _new_user_page_connections
         target: signalsHandler
 
-        function onNicknameExists() {
-            _user_already_exists_text.visible = true
+        function onConnectionStateChanged(connectionState) {
+            console.log("onConnectionStateChanged signal caught, connectionState: " + connectionState)
+            _new_user_connecting_to_server_window.visible = !connectionState
+        }
+
+        function onNicknameExists(exists) {
+            _user_already_exists_text.visible = exists
         }
 
         function onNicknameExistanceInternalServerError() {
@@ -49,6 +54,9 @@ CustomPage {
         }
 
         onTextChanged:  {
+            if (_new_nickname_text_field.text === "") {
+                return
+            }
             _user_already_exists_text.visible = false
             AuthorizationManager.checkNicknameExistance(_new_nickname_text_field.text)
         }
@@ -146,6 +154,14 @@ CustomPage {
         onTryAgainButtonClicked: {
             _new_user_server_error_window.visible = false
         }
+    }
+
+    ConnectingToServerWindow {
+        id: _new_user_connecting_to_server_window
+        z: parent.z + 2
+        anchors.fill: parent
+        visible: false
+
     }
 
 }

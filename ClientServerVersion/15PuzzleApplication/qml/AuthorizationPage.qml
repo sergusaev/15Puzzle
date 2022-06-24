@@ -8,17 +8,62 @@ import AuthorizationManager 1.0
 CustomPage {
     id: root
     property string authorizationState: ""
-    property string ethalonPasswordOnAuthorizationPage : ""
+    property bool newUser: false
 
     Connections {
         id: _authorization_page_connections
         target: signalsHandler
 
         function onConnectionStateChanged(connectionState) {
-            _connecting_to_server_window.visible = !connectionState
+            console.log("onConnectionStateChanged signal caught, connectionState: " + connectionState)
+            _authorization_page_connecting_to_server_window.visible = !connectionState
         }
 
+        function onNicknameExists(exists) {
+            console.log("onNicknameExists signal caught, exists: " + exists)
+            console.log("Current _ok_button_state: " + _ok_button.state)
+            console.log("root.newUser: " + root.newUser)
+            if (root.newUser) {
+                return
+            }
+            if(exists) {
+                _ok_button.clicked()
+            } else {
+                _invalid_nickname_window.visible = true
+            }
+        }
+
+        function onEthalonPasswordChanged(ethalonPassword) {
+            console.log("onEthalonPasswordChanged signal caught, ethalonPassword: " + ethalonPassword)
+            console.log("Current _ok_button_state: " + _ok_button.state)
+
+            if(ethalonPassword !== _password_text_field.text) {
+                _invalid_password_window.visible = true
+            } else {
+                _ok_button.clicked()
+            }
+
+        }
+
+        function onNicknameChanged(nickname) {
+            console.log("onNicknameChanged signal caught, nickname: " + nickname)
+            _nickname_text_field.text = nickname
+        }
+
+        function onPasswordChanged(password) {
+            console.log("onPasswordChanged signal caught, password: " + password)
+            _password_text_field.text = password
+        }
+
+        function onDimensionChanged(dimension) {
+            console.log("onDimensionChanged signal caught, dimension: " + dimension)
+            _puzzle_size_selection_combobox.currentIndex = dimension - 2
+        }
+
+
+
         function onAuthorizationPageStateChanged(newAuthorizationPageState) {
+            console.log("onAuthorizationPageStateChanged signal caught, newAuthorizationPageState: " + newAuthorizationPageState)
             switch(newAuthorizationPageState){
             case 1:
                 root.authorizationState = "NicknameInput"
@@ -35,18 +80,12 @@ CustomPage {
             console.log("New autorization page state: " + root.authorizationState)
         }
 
-        function onEthalonPasswordChanged(password) {
-            console.log("Current ethalon password: ")
-            console.log(password)
-            if(password === "")  {
-                _invalid_nickname_window.visible = true
-            } else {
-                if(password !== _password_text_field.text) {
-                    _invalid_password_window.visible = true
-                    AuthorizationManager.setAuthorizationPageState(2)
-                }
-            }
+        function onNewUserChanged(newUser) {
+            console.log("onNewUserChanged signal caught, newUser: " + newUser)
+            root.newUser = newUser
         }
+
+
     }
 
 
@@ -66,7 +105,7 @@ CustomPage {
         } else {
             AuthorizationManager.setAuthorizationPageState(1)
         }
-
+        AuthorizationManager.requestUserPassword(userSettings.readNickname())
         _puzzle_size_selection_combobox.currentIndex = AuthorizationManager.dimension - 2
 
         console.log("nickname: " + AuthorizationManager.nickname)
@@ -74,7 +113,7 @@ CustomPage {
         console.log("dimension: " + AuthorizationManager.dimension)
         console.log("authorizationPageState: " + AuthorizationManager.authorizationPageState)
         console.log("AuthorizationManager ethalon password: " + AuthorizationManager.ethalonPassword)
-//                userSettings.clearSettings()
+//        userSettings.clearSettings()
     }
 
     CustomText {
@@ -201,10 +240,6 @@ CustomPage {
             background: CustomBackground {
                 radius: 10
             }
-            onClicked:  {
-//                root.currDimension = (index + 2)
-
-            }
         }
 
         Rectangle {
@@ -266,37 +301,62 @@ CustomPage {
                 when: root.authorizationState === "DimensionSelection"
             },
             State {
-                name: "ProcessingAuthorizationRequest"
-                when: root.authorizationState !== "NicknameInput"
-                      && root.authorizationState !== "PasswordInput"
-                      && root.authorizationState !== "DimensionSelection"
-            }
+                name: "ProcessingNicknameExistanceRequest"
 
+            },
+            State {
+                name: "ProcessingAuthorizationRequest"
+
+            }
         ]
 
+        onStateChanged:  {
+            console.log("_ok_button.stateChanged signal caught, state: " + _ok_button.state)
+            if(state === "ProcessingPasswordRequest" && root.newUser) {
+                _ok_button.clicked()
+            }
+        }
 
         onClicked:  {
+            console.log("Ok button pressed, state: " + state)
             if (state === "NickInput") {
                 AuthorizationManager.setAuthorizationPageState(2)
             }
             else if (state === "PassInput"){
-                AuthorizationManager.requestUserPassword(_nickname_text_field.text)
                 AuthorizationManager.setAuthorizationPageState(3)
             }
-
             else if (state === "DimSelect") {
+                if(root.newUser) {
+                    state = "ProcessingPasswordRequest"
+                } else {
+                    AuthorizationManager.checkNicknameExistance(_nickname_text_field.text)
+                    state = "ProcessingNicknameExistanceRequest"
+                }
+
+            }
+            else if(state === "ProcessingNicknameExistanceRequest") {
+                AuthorizationManager.requestUserPassword(_nickname_text_field.text)
+                state = "ProcessingPasswordRequest"
+            }
+
+            else if (state === "ProcessingPasswordRequest"){
+
                 AuthorizationManager.setNickname(_nickname_text_field.text)
                 AuthorizationManager.setPassword(_password_text_field.text)
                 AuthorizationManager.setDimension(_puzzle_size_selection_combobox.currentIndex + 2)
-                AuthorizationManager.addNewUser(AuthorizationManager.nickname, AuthorizationManager.password)
-                userSettings.writeSettings(AuthorizationManager.nickname, AuthorizationManager.password, AuthorizationManager.dimension, AuthorizationManager.authorizationPageState)
+                if(root.newUser) {
+                    AuthorizationManager.addNewUser(AuthorizationManager.nickname, AuthorizationManager.password)
+                }
+                userSettings.writeSettings(AuthorizationManager.nickname,
+                                           AuthorizationManager.password,
+                                           AuthorizationManager.dimension,
+                                           AuthorizationManager.authorizationPageState)
                 _stack_view.push(_main_menu_stack_page)
-
-
             }
 
-
         }
+
+
         Rectangle {
             id: _ok_button_darkener
             z: _ok_button.z + 1
@@ -305,8 +365,9 @@ CustomPage {
             radius: 10
             visible: parent.enabled ? false : true
         }
-
     }
+
+
 
 
 
@@ -322,27 +383,32 @@ CustomPage {
         states:[
             State {
                 name: "Quit"
-                when: AuthorizationManager.authorizationPageState === 1
+                when: root.authorizationState === "NicknameInput"
             },
             State {
                 name: "Back"
-                when: AuthorizationManager.authorizationPageState !== 1
+                when: root.authorizationState !== "NicknameInput"
             }
 
         ]
-        onClicked:
+        onClicked:{
+            console.log("_quit_or_back_button pressed, state: " + state)
             if(state === "Quit") {
                 Qt.quit()
             } else {
-                if(AuthorizationManager.authorizationPageState === 2) {
+                AuthorizationManager.setNewUser(false)
+                if(root.authorizationState === "PasswordInput") {
+                    //set authorizationState "NicknameInput"
                     AuthorizationManager.setAuthorizationPageState(1)
-                    console.log("Changed password to empty")
-                    _password_text_field.text = ""
                 } else {
+                    //set authorizationState "PasswordInput" and return dimension to minimal (2)
                     AuthorizationManager.setAuthorizationPageState(2)
                     AuthorizationManager.setDimension (2)
+                    //set newUser false (if user was trying to add new user )
+
                 }
             }
+        }
     }
 
     CustomButton {
@@ -353,13 +419,15 @@ CustomPage {
         anchors.top: _ok_button.bottom
         anchors.topMargin: _puzzle_size_selection_combobox.height / 3
         text:  qsTr("New player")
-        enabled: AuthorizationManager.authorizationPageState === 1
+        enabled: root.authorizationState === "NicknameInput"
         onClicked:  {
+            console.log("_new_player_button pressed")
             _stack_view.push(_new_user_stack_page)
-            AuthorizationManager.setNickname("")
-            AuthorizationManager.setPassword("")
-            AuthorizationManager.setDimension(2)
-            AuthorizationManager.requestUserPassword("")
+            AuthorizationManager.setNewUser(true)
+            //            AuthorizationManager.setNickname("")
+            //            AuthorizationManager.setPassword("")
+            //            AuthorizationManager.setDimension(2)
+            //            AuthorizationManager.requestUserPassword("")
         }
         Rectangle {
             id: _new_player_button_darkener
@@ -378,11 +446,6 @@ CustomPage {
         z: parent.z + 1
         anchors.fill: parent
         visible: false
-
-
-        onNewUserButtonClicked: {
-            _new_player_button.clicked()
-        }
     }
 
 
@@ -392,12 +455,10 @@ CustomPage {
         anchors.fill: parent
         visible: false
 
-
-
     }
 
     ConnectingToServerWindow {
-        id: _connecting_to_server_window
+        id: _authorization_page_connecting_to_server_window
         z: parent.z + 2
         anchors.fill: parent
         visible: false
@@ -405,3 +466,4 @@ CustomPage {
     }
 
 }
+

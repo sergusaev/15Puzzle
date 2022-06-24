@@ -18,6 +18,7 @@ class AuthorizationManager : public QObject
     Q_PROPERTY(QString ethalonPassword READ ethalonPassword WRITE setEthalonPassword NOTIFY ethalonPasswordChanged)
     Q_PROPERTY(int dimension READ dimension WRITE setDimension NOTIFY dimensionChanged)
     Q_PROPERTY(bool connectionState READ connectionState WRITE setConnectionState NOTIFY connectionStateChanged)
+    Q_PROPERTY(bool newUser READ newUser WRITE setNewUser NOTIFY newUserChanged)
 
 public:
     static AuthorizationManager *instance();
@@ -41,13 +42,14 @@ public:
     bool connectionState() const;
     void setConnectionState(bool newConnectionState);
 
+    bool newUser() const;
+    Q_INVOKABLE void setNewUser(bool newNewUser);
+
     Q_INVOKABLE void addNewUser(const QString &nickname, const QString &password);
 
-    Q_INVOKABLE void requestUserPassword(const QString& password);
+    Q_INVOKABLE void requestUserPassword(const QString& nickname);
 
     Q_INVOKABLE void checkNicknameExistance(const QString& nickname);
-
-
 
 signals:
     void noServerConnection();
@@ -57,20 +59,24 @@ signals:
     void ethalonPasswordChanged(const QString &ethalonPassword);
     void dimensionChanged(int dimension);
     void connectionStateChanged(bool connectionState);
+    void newUserChanged(bool newNewUser);
+
     void nicknameExistanceInternalServerError();
     void passwordInternalServerError();
     void userAdditionInternalServerError();
     void recordAdditionInternalServerError();
     void topTimeInternalServerError();
     void topTurnsInternalServerError();
-    void nicknameExists();
+    void nicknameExists(bool exists);
+
+
 
 private slots:
     void onConnectionStateChanged(net::ConnectionState state);
     void onInternalServerErrorOccured(net::InternalServerError error);
     void onUserAdded(bool additionResult);
     void onPasswordDownloaded(const QString &password);
-    void onNicknameExists();
+    void onNicknameExists(bool exists);
 
 private:
     AuthorizationManager();    
@@ -87,10 +93,12 @@ private:
     QString m_ethalonPassword;
     int m_dimension;
     bool m_connectToServer;
+    bool m_newUser;
 
     NicknameHint m_nicknameHint;
 
 
+    Q_PROPERTY(bool newUser READ newUser WRITE setNewUser NOTIFY newUserChanged)
 };
 
 #endif // AUTHORIZATIONMANAGER_H

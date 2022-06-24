@@ -7,6 +7,8 @@ SignalsHandler::SignalsHandler()
             this, &SignalsHandler::onNoServerConnection);
     connect(AuthorizationManager::instance(),&AuthorizationManager::connectionStateChanged,
             this, &SignalsHandler::onConnectionStateChanged);
+    connect(AuthorizationManager::instance(),&AuthorizationManager::newUserChanged,
+            this, &SignalsHandler::onNewUserChanged);
     connect(AuthorizationManager::instance(),&AuthorizationManager::authorizationPageStateChanged,
             this, &SignalsHandler::onAuthorizathionPageStateChanged);
     connect(AuthorizationManager::instance(),&AuthorizationManager::nicknameChanged,
@@ -38,9 +40,16 @@ void SignalsHandler::onConnectionStateChanged(bool connectionState)
     emit connectionStateChanged(connectionState);
 }
 
+void SignalsHandler::onNewUserChanged(bool newUser)
+{
+    emit newUserChanged(newUser);
+}
+
+
+
 void SignalsHandler::onNicknameChanged(const QString &nickname)
 {
-    emit nicknameChanged();
+    emit nicknameChanged(nickname);
 }
 
 void SignalsHandler::onAuthorizathionPageStateChanged(int newAuthorizationPageState)
@@ -50,7 +59,7 @@ void SignalsHandler::onAuthorizathionPageStateChanged(int newAuthorizationPageSt
 
 void SignalsHandler::onPasswordChanged(const QString &password)
 {
-    emit passwordChanged();
+    emit passwordChanged(password);
 }
 
 void SignalsHandler::onEthalonPasswordChanged(const QString &ethalonPassword)
@@ -60,12 +69,12 @@ void SignalsHandler::onEthalonPasswordChanged(const QString &ethalonPassword)
 
 void SignalsHandler::onDimensionChanged(int dimension)
 {
-    emit dimensionChanged();
+    emit dimensionChanged(dimension);
 }
 
-void SignalsHandler::onNicknameExists()
+void SignalsHandler::onNicknameExists(bool exists)
 {
-    emit nicknameExists();
+    emit nicknameExists(exists);
 }
 
 void SignalsHandler::onNicknameExistanceInternalServerError()

@@ -12,7 +12,7 @@ public:
     bool requestNicknameExistanceCheck(const QString &nickname);
 
 signals:
-    void nicknameExists();
+    void nicknameExists(bool exists);
 
 private slots:
     void onNicknameExistanceRequestCompleted(bool exist);

@@ -1,12 +1,11 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtGraphicalEffects 1.15
+import AuthorizationManager 1.0
 
 
 Item {
     id:root
-
-    signal newUserButtonClicked()
 
     Rectangle {
         id: _invalid_nickname_window_wrapper
@@ -59,23 +58,6 @@ Item {
                 anchors.topMargin: parent.height / 10
             }
 
-
-            CustomButton {
-                id: _new_player_button
-                width: parent.width * 0.45
-                height: width * 0.4
-                anchors.left: parent.left
-                anchors.leftMargin: 10
-                anchors.top: _invalid_nickname_text.bottom
-                anchors.topMargin: parent.height / 14
-                text: qsTr("New player")
-
-                onClicked:  {
-                    root.visible = false
-                    root.newUserButtonClicked()
-                }
-            }
-
             CustomButton {
                 id: _to_authorization_window_button
                 width: parent.width * 0.45
@@ -87,6 +69,10 @@ Item {
                 text: qsTr("Back")
                 onClicked:  {
                     root.visible = false
+                    //set authorizationState "NicknameInput"
+                    AuthorizationManager.setAuthorizationPageState(1)
+                    AuthorizationManager.setPassword("")
+                    AuthorizationManager.setDimension(2)
 
                 }
             }

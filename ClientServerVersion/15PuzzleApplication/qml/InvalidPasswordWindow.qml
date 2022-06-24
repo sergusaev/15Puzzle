@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtGraphicalEffects 1.15
-
+import AuthorizationManager 1.0
 
 Item {
     id: root
@@ -67,11 +67,16 @@ Item {
                 anchors.top: _wrong_password_text.bottom
                 anchors.topMargin: parent.height / 4
                 text: qsTr("Try again")
-                onClicked: root.visible = false
+                onClicked: {
+                    root.visible = false
+                    //set authorizationState "PasswordInput" and return simension to minimal(2)
+                    AuthorizationManager.setAuthorizationPageState(2)
+                    AuthorizationManager.setDimension(2)
+                }
+
             }
 
         }
-
         DropShadow {
             anchors.fill: _invalid_password_window
             horizontalOffset: 6
@@ -79,6 +84,6 @@ Item {
             color: "black"
             source: _invalid_password_window
         }
-    }
 
+    }
 }

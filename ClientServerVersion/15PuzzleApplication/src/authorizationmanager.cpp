@@ -15,6 +15,8 @@ AuthorizationManager::AuthorizationManager()
             this, &AuthorizationManager::onNicknameExists);
 }
 
+
+
  int AuthorizationManager::authorizationPageState() const
 {
     return static_cast<int>(m_authorizathionPageState);
@@ -22,8 +24,6 @@ AuthorizationManager::AuthorizationManager()
 
 void AuthorizationManager::setAuthorizationPageState(int newAuthorizathionPageState)
 {
-    if (m_authorizathionPageState == static_cast<AuthorizationPageState>(newAuthorizathionPageState))
-        return;
     m_authorizathionPageState = static_cast<AuthorizationPageState>(newAuthorizathionPageState);
     emit authorizationPageStateChanged(newAuthorizathionPageState);
 }
@@ -48,8 +48,6 @@ const QString &AuthorizationManager::nickname() const
 
 void AuthorizationManager::setNickname(const QString &newNickname)
 {
-    if (m_nickname == newNickname)
-        return;
     m_nickname = newNickname;
     emit nicknameChanged(m_nickname);
 }
@@ -61,8 +59,6 @@ const QString &AuthorizationManager::password() const
 
 void AuthorizationManager::setPassword(const QString &newPassword)
 {
-    if (m_password == newPassword)
-        return;
     m_password = newPassword;
     emit passwordChanged(m_password);
 }
@@ -74,8 +70,6 @@ const QString &AuthorizationManager::ethalonPassword() const
 
 void AuthorizationManager::setEthalonPassword(const QString &newEthalonPassword)
 {
-    if (m_ethalonPassword == newEthalonPassword)
-        return;
     m_ethalonPassword = newEthalonPassword;
     emit ethalonPasswordChanged(m_ethalonPassword);
     qDebug() << "Ethalon password: " + ethalonPassword();
@@ -88,8 +82,6 @@ int AuthorizationManager::dimension() const
 
 void AuthorizationManager::setDimension(int newDimension)
 {
-    if (m_dimension == newDimension)
-        return;
     m_dimension = newDimension;
     emit dimensionChanged(m_dimension);
 }
@@ -101,12 +93,20 @@ bool AuthorizationManager::connectionState() const
 
 void AuthorizationManager::setConnectionState(bool newConnectionState)
 {
-    if (m_connectToServer == newConnectionState)
-        return;
     m_connectToServer = newConnectionState;
     emit connectionStateChanged(m_connectToServer);
 }
 
+bool AuthorizationManager::newUser() const
+{
+    return m_newUser;
+}
+
+void AuthorizationManager::setNewUser(bool newNewUser)
+{
+    m_newUser = newNewUser;
+    emit newUserChanged(newNewUser);
+}
 
 void AuthorizationManager::addNewUser(const QString &nickname, const QString &password)
 {
@@ -119,13 +119,14 @@ void AuthorizationManager::addNewUser(const QString &nickname, const QString &pa
 
 }
 
-void AuthorizationManager::requestUserPassword(const QString &password)
+void AuthorizationManager::requestUserPassword(const QString &nickname)
 {
-    if(!RequestsHandlerClient::instance()->requestPassword(password)) {
+    if(!RequestsHandlerClient::instance()->requestPassword(nickname)) {
         qDebug() << "Failed to access remote database, try again";
         emit noServerConnection();
     } else {
-        qDebug() << "Password request successfully sent";
+        qDebug() << "Password request on nickname " + nickname + " successfully sent";
+
     }
 }
 
@@ -187,16 +188,12 @@ void AuthorizationManager::onUserAdded(bool additionResult)
 void AuthorizationManager::onPasswordDownloaded(const QString &password)
 {
     qDebug() << "In AuthorizationManager recieved password: " + password;
-
-    if(password == ethalonPassword()) {
-        return;
-    }
     setEthalonPassword(password);
 }
 
-void AuthorizationManager::onNicknameExists()
+void AuthorizationManager::onNicknameExists(bool exists)
 {
-    emit nicknameExists();
+    emit nicknameExists(exists);
 }
 
 

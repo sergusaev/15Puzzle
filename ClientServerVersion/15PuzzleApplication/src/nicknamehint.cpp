@@ -14,7 +14,6 @@ bool NicknameHint::requestNicknameExistanceCheck(const QString &nickname)
 
 void NicknameHint::onNicknameExistanceRequestCompleted(bool exist)
 {
-    if(exist) {
-        emit nicknameExists();
-    }
+
+        emit nicknameExists(exist);
 }
