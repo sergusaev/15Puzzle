@@ -26,6 +26,7 @@ private slots:
     void onPasswordInternalServerError();
     void onUserAdditionInternalServerError();
     void onCacheDataAdditionInternalServerError();
+    void onUserAdded();
 
 
 signals:
@@ -42,6 +43,7 @@ signals:
     void passwordInternalServerError();
     void userAdditionInternalServerError();
     void cacheDataAdditionInternalServerError();
+    void userSuccessfullyAdded();
 
 private:
     SignalsHandler();

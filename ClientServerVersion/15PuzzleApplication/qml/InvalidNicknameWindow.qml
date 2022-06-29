@@ -55,17 +55,16 @@ Item {
                 fontPointSize: 30
                 anchors.top: parent.top
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.topMargin: parent.height / 10
+                anchors.topMargin: parent.height / 3
             }
 
             CustomButton {
                 id: _to_authorization_window_button
                 width: parent.width * 0.45
                 height: width * 0.4
-                anchors.right: parent.right
-                anchors.rightMargin: 10
+                anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: _invalid_nickname_text.bottom
-                anchors.topMargin: parent.height / 14
+                anchors.topMargin: parent.height / 10
                 text: qsTr("Back")
                 onClicked:  {
                     root.visible = false

@@ -86,7 +86,17 @@ CustomPage {
             root.newUser = newUser
         }
 
+        function onUserSuccessfullyAdded() {
+            _new_user_addition_succes_window.visible = true
+        }
 
+        function onUserAdditionInternalServerError() {
+            _internal_server_error_window.visible = true
+        }
+
+        function onPasswordInternalServerError() {
+             _internal_server_error_window.visible = true
+        }
     }
 
 
@@ -349,7 +359,9 @@ CustomPage {
                                            AuthorizationManager.password,
                                            AuthorizationManager.dimension,
                                            AuthorizationManager.authorizationPageState)
+                if(!root.newUser) {
                 _stack_view.push(_main_menu_stack_page)
+                }
             }
 
         }
@@ -455,6 +467,28 @@ CustomPage {
         anchors.fill: parent
         visible: false
 
+    }
+
+    UserAdditionSuccessWindow {
+        id: _new_user_addition_succes_window
+        anchors.fill: parent
+        z: parent.z + 2
+        visible: false
+        onOkButtonClicked: {
+            _new_user_addition_succes_window.visible = false
+            _stack_view.push(_main_menu_stack_page)
+        }
+    }
+
+    InternalServerErrorWindow {
+        id: _internal_server_error_window
+        anchors.fill: parent
+        visible: false
+        onTryAgainButtonClicked: {
+            _internal_server_error_window.visible = false
+            //set authorizationState "NicknameInput"
+            AuthorizationManager.setAuthorizationPageState(1)
+        }
     }
 
 }

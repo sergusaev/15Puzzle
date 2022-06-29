@@ -24,6 +24,8 @@ CustomPage {
             _new_user_server_error_window.visible = true
         }
 
+
+
     }
 
 
@@ -157,6 +159,8 @@ CustomPage {
         }
     }
 
+
+
     ConnectingToServerWindow {
         id: _new_user_connecting_to_server_window
         z: parent.z + 2
@@ -164,6 +168,8 @@ CustomPage {
         visible: false
 
     }
+
+
 
 }
 

@@ -39,6 +39,8 @@ SignalsHandler::SignalsHandler()
             this, &SignalsHandler::onPasswordInternalServerError);
     connect(AuthorizationManager::instance(),&AuthorizationManager::userAdditionInternalServerError,
             this, &SignalsHandler::onUserAdditionInternalServerError);
+    connect(AuthorizationManager::instance(),&AuthorizationManager::userAdded,
+            this, &SignalsHandler::onUserAdded);
 
 }
 
@@ -109,4 +111,9 @@ void SignalsHandler::onUserAdditionInternalServerError()
 void SignalsHandler::onCacheDataAdditionInternalServerError()
 {
     emit cacheDataAdditionInternalServerError();
+}
+
+void SignalsHandler::onUserAdded()
+{
+    emit userSuccessfullyAdded();
 }

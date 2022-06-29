@@ -26,5 +26,6 @@
         <file>qml/InvalidPasswordWindow.qml</file>
         <file>qml/ConnectingToServerWindow.qml</file>
         <file>qml/InternalServerErrorWindow.qml</file>
+        <file>qml/UserAdditionSuccessWindow.qml</file>
     </qresource>
 </RCC>

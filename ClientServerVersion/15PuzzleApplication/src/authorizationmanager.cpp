@@ -184,7 +184,9 @@ void AuthorizationManager::onInternalServerErrorOccured(net::InternalServerError
 
 void AuthorizationManager::onUserAdded(bool additionResult)
 {
-
+    if(additionResult) {
+        emit userAdded();
+    }
 }
 
 void AuthorizationManager::onPasswordDownloaded(const QString &password)

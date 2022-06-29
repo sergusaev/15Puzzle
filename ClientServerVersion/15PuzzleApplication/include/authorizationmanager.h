@@ -60,6 +60,7 @@ signals:
     void dimensionChanged(int dimension);
     void connectionStateChanged(bool connectionState);
     void newUserChanged(bool newNewUser);
+    void userAdded();
 
     void nicknameExistanceInternalServerError();
     void passwordInternalServerError();
