@@ -4,6 +4,7 @@ import QtQuick.Controls.Styles 1.4
 import QtGraphicalEffects 1.15
 import QtQuick.Dialogs 1.3
 import AuthorizationManager 1.0
+import SignalsHandler 1.0
 
 CustomPage {
     id: root
@@ -12,7 +13,7 @@ CustomPage {
 
     Connections {
         id: _authorization_page_connections
-        target: signalsHandler
+        target: SignalsHandler
 
         function onConnectionStateChanged(connectionState) {
 //            console.log("onConnectionStateChanged signal caught, connectionState: " + connectionState)

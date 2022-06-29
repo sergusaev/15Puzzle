@@ -41,6 +41,11 @@ DBTypes::DBResult ProcessorServer::insertDataRecord(DBTypes::DBTables table, con
     return m_d->insertRow(tableMapper.at(table), recordData);
 }
 
+DBTypes::DBResult ProcessorServer::insertDataRecordMultiple(DBTypes::DBTables table, const DBTypes::DBEntry &recordData, int paramCount)
+{
+    return m_d->insertRowMultiple(tableMapper.at(table), recordData, paramCount);
+}
+
 
 
 }

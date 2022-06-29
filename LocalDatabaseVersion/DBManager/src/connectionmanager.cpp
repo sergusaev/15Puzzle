@@ -89,7 +89,7 @@ bool ConnectionManager::DBManagerPrivate::setUpWorkspace()
 #ifdef BUILD_TESTS
     const QString databaseName {"TestDB"};
 #else
-    const QString databaseName {"RecordsDB"};
+    const QString databaseName {"RecordsDBLocal"};
 #endif
     const QString location {QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)};
     const QString fullPath {location + "/" + databaseName};

@@ -6,6 +6,11 @@ ClientManager::ClientManager()
     connectSocketSignals();
 }
 
+ClientManager::~ClientManager()
+{
+
+}
+
 ClientManager *ClientManager::instance()
 {
     static ClientManager *instance = new ClientManager();
@@ -124,6 +129,9 @@ void ClientManager::handlePackage(net::Package &package)
     case net::PackageType::ADD_RECORD_RESPONSE:
         currPackageType = "ADD_RECORD_RESPONCE";
         break;
+    case net::PackageType::ADD_CACHE_DATA_RESPONSE:
+        currPackageType = "ADD_CACHE_DATA_RESPONSE";
+        break;
     case net::PackageType::NICKNAME_EXISTANCE_RESPONSE:
         currPackageType = "NICKNAME_EXISTANCE_RESPONCE";
         break;
@@ -152,6 +160,11 @@ void ClientManager::handlePackage(net::Package &package)
     case net::PackageType::ADD_RECORD_RESPONSE:
     {
         handleAddRecordResponsePackage(package);
+        break;
+    }
+    case net::PackageType::ADD_CACHE_DATA_RESPONSE:
+    {
+        handleAddCacheDataResponsePackage(package);
         break;
     }
     case net::PackageType::ADD_USER_RESPONSE:
@@ -213,6 +226,11 @@ void ClientManager::handleAddRecordResponsePackage(const net::Package &package)
 {
 
     emit addRecordResponse(package.data());
+}
+
+void ClientManager::handleAddCacheDataResponsePackage(const net::Package &package)
+{
+    emit addCacheDataResponse(package.data());
 }
 
 void ClientManager::handleAddUserResponsePackage(const net::Package &package)

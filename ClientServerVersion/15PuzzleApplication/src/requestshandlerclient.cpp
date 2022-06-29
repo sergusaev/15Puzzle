@@ -1,4 +1,5 @@
 #include "requestshandlerclient.h"
+#include "cachehandler.h"
 
 
 RequestsHandlerClient::RequestsHandlerClient()
@@ -11,6 +12,8 @@ RequestsHandlerClient::RequestsHandlerClient()
             this, &RequestsHandlerClient::onTopTurnsDownloadSucceed);
     connect(ClientManager::instance(), &ClientManager::addRecordResponse,
             this, &RequestsHandlerClient::onRecordAdditionSucceed);
+    connect(ClientManager::instance(), &ClientManager::addCacheDataResponse,
+            this, &RequestsHandlerClient::onCacheDataAdditionSucceed);
     connect(ClientManager::instance(), &ClientManager::addUserResponse,
             this, &RequestsHandlerClient::onUserAdditionSucceed);
     connect(ClientManager::instance(), &ClientManager::passwordResponse,
@@ -56,6 +59,23 @@ bool RequestsHandlerClient::requestRecordAddition(const Record &record)
     const net::Package package {QVariant::fromValue(dataList), net::PackageType::ADD_RECORD_REQUEST};
     return ClientManager::instance()->sendPackage(package);
 }
+
+bool RequestsHandlerClient::requestRecordAdditionMultiple(const std::vector<DBTypes::DBEntry> &entries)
+{
+    DBTypes::DBEntry rawData;
+    size_t recordParamCount = entries[0].size();
+    for (auto record : entries) {
+        for(size_t i = 0; i < recordParamCount; ++i) {
+            rawData.push_back(std::move(record[i]));
+        }
+    }
+    rawData.push_front(QVariant::fromValue(static_cast<int>(recordParamCount)));
+    const net::Package package {QVariant::fromValue(rawData), net::PackageType::ADD_CACHE_DATA_REQUEST};
+    return ClientManager::instance()->sendPackage(package);
+}
+
+
+
 
 bool RequestsHandlerClient::requestUserAddition(const QString &nickname, const QString &password)
 {
@@ -128,6 +148,11 @@ void RequestsHandlerClient::onTopTurnsDownloadSucceed(const std::vector<QVariant
 void RequestsHandlerClient::onRecordAdditionSucceed(const QVariant &data)
 {
     emit recordAdditionRequestCompleted(data.toBool());
+}
+
+void RequestsHandlerClient::onCacheDataAdditionSucceed(const QVariant &data)
+{
+    emit cacheDataAdditionRequestCompleted(data.toBool());
 }
 
 void RequestsHandlerClient::onUserAdditionSucceed(const QVariant &data)

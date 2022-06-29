@@ -65,6 +65,7 @@ signals:
     void passwordInternalServerError();
     void userAdditionInternalServerError();
     void recordAdditionInternalServerError();
+    void cacheDataAdditionInternalServerError();
     void topTimeInternalServerError();
     void topTurnsInternalServerError();
     void nicknameExists(bool exists);
@@ -97,8 +98,6 @@ private:
 
     NicknameHint m_nicknameHint;
 
-
-    Q_PROPERTY(bool newUser READ newUser WRITE setNewUser NOTIFY newUserChanged)
 };
 
 #endif // AUTHORIZATIONMANAGER_H

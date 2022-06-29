@@ -81,4 +81,10 @@ bool RecordsManager::addRecord(const DBTypes::DBEntry &entry)
     return result == DBTypes::DBResult::OK;
 }
 
+bool RecordsManager::addRecordMultiple(const DBTypes::DBEntry &entry, int paramCount)
+{
+    DBTypes::DBResult result = m_processor->insertDataRecordMultiple(DBTypes::DBTables::Records, entry, paramCount);
+    return result == DBTypes::DBResult::OK;
+}
+
 

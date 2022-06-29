@@ -156,5 +156,21 @@ void RequestHandlerServer::handleAddRecordRequest(const net::Package& packageDat
 
 }
 
+void RequestHandlerServer::handleAddCacheDataRequest(const net::Package &packageData, QTcpSocket *socket)
+{
+    QVariantList cacheDataList = packageData.data().toList();
+    int paramCount = cacheDataList.front().toInt();
+    cacheDataList.pop_front();
+    bool additionResult {m_recordsManager.addRecordMultiple(cacheDataList, paramCount)};
+    if(additionResult) {
+        net::Package resultPackage {QVariant::fromValue(additionResult), net::PackageType::ADD_CACHE_DATA_RESPONSE};
+        emit cacheDataAdditionRequestCompleted(resultPackage, socket);
+    } else {
+        cacheDataList.push_front(QVariant::fromValue(static_cast<int>(net::InternalServerError::CACHE_DATA_ADDITION_ERROR)));
+        net::Package resultPackage {QVariant::fromValue(cacheDataList), net::PackageType::INTERNAL_SERVER_ERROR};
+        emit cacheDataAdditionRequestCompleted(resultPackage, socket);
+    }
+}
+
 
 

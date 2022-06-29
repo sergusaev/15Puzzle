@@ -5,7 +5,7 @@ namespace db {
 
 QString DBManagerServer::getDatabaseName()
 {
-    return "ServerDB";
+    return "ServerRecordsDB";
 }
 
 std::vector<QSqlQuery> DBManagerServer::getCreationQueries()

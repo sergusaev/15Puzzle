@@ -105,6 +105,9 @@ void ServerManager::handlePackage(net::Package &package, QTcpSocket *socket)
     case net::PackageType::ADD_RECORD_REQUEST:
         currPackageType = "ADD_RECORD_REQUEST";
         break;
+    case net::PackageType::ADD_CACHE_DATA_REQUEST:
+        currPackageType = "ADD_CACHE_DATA_REQUEST";
+        break;
     case net::PackageType::NICKNAME_EXISTANCE_REQUEST:
         currPackageType = "NICKNAME_EXISTANCE_REQUEST";
         break;
@@ -140,6 +143,11 @@ void ServerManager::handlePackage(net::Package &package, QTcpSocket *socket)
     case net::PackageType::ADD_RECORD_REQUEST:
     {
         m_requestHandler.handleAddRecordRequest(package, socket);
+        break;
+    }
+    case net::PackageType::ADD_CACHE_DATA_REQUEST:
+    {
+        m_requestHandler.handleAddCacheDataRequest(package, socket);
         break;
     }
     case net::PackageType::NICKNAME_EXISTANCE_REQUEST:

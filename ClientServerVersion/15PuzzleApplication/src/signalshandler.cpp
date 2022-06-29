@@ -1,6 +1,18 @@
 #include "signalshandler.h"
 #include "authorizationmanager.h"
 
+
+SignalsHandler::~SignalsHandler()
+{
+
+}
+
+SignalsHandler *SignalsHandler::instance()
+{
+    static SignalsHandler *instance = new SignalsHandler;
+    return instance;
+}
+
 SignalsHandler::SignalsHandler()
 {
     connect(AuthorizationManager::instance(),&AuthorizationManager::noServerConnection,
@@ -29,6 +41,8 @@ SignalsHandler::SignalsHandler()
             this, &SignalsHandler::onUserAdditionInternalServerError);
 
 }
+
+
 
 void SignalsHandler::onNoServerConnection()
 {
@@ -90,4 +104,9 @@ void SignalsHandler::onPasswordInternalServerError()
 void SignalsHandler::onUserAdditionInternalServerError()
 {
     emit userAdditionInternalServerError();
+}
+
+void SignalsHandler::onCacheDataAdditionInternalServerError()
+{
+    emit cacheDataAdditionInternalServerError();
 }

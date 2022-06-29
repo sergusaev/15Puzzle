@@ -16,6 +16,10 @@ GameBoard::GameBoard(QObject *parent, int dimension):
     connect(&m_timer, &QTimer::timeout, this, &GameBoard::onTimeout);
     connect(AuthorizationManager::instance(), &AuthorizationManager::dimensionChanged,
             this, &GameBoard::onDimensionChanged);
+    connect(AuthorizationManager::instance(), &AuthorizationManager::connectionStateChanged,
+            this, &GameBoard::onConnectionStateChanged);
+    connect(RequestsHandlerClient::instance(), &RequestsHandlerClient::cacheDataAdditionRequestCompleted,
+            this, &GameBoard::onCacheDataAdditionRequestCompleted);
 }
 
 
@@ -27,6 +31,18 @@ void GameBoard::onTimeout()
 void GameBoard::onDimensionChanged(int dimension)
 {
     GameBoard::setDimension(dimension);
+}
+
+void GameBoard::onCacheDataAdditionRequestCompleted(bool additionResult)
+{
+    if(additionResult) {
+        CacheHandler::instance()->deleteAllCacheRecords();
+    }
+}
+
+void GameBoard::onConnectionStateChanged(bool connectionState)
+{
+    setConnectionState(connectionState);
 }
 
 
@@ -215,6 +231,16 @@ GameBoard::Position GameBoard::getRowCol(int index) const
     return std::make_pair(row, col);
 }
 
+bool GameBoard::connectionState() const
+{
+    return m_connectionState;
+}
+
+void GameBoard::setConnectionState(bool newConnectionState)
+{
+    m_connectionState = newConnectionState;
+}
+
 namespace  {
 bool is_adjacent (GameBoard::Position first, GameBoard::Position second)
 {
@@ -270,14 +296,15 @@ bool GameBoard::checkWin()
 {
     if(isSolved()) {
         m_timer.stop();
-        if(!RequestsHandlerClient::instance()->requestRecordAddition({AuthorizationManager::instance()->nickname(),
-                                                                     m_seconds,
-                                                                     m_counter,
-                                                                     m_dimension})) {
-            CacheHandler::instance()->addRecord({AuthorizationManager::instance()->nickname(),
-                                                 m_seconds,
-                                                 m_counter,
-                                                 m_dimension});
+        CacheHandler::instance()->addRecord({AuthorizationManager::instance()->nickname(),
+                                                         m_seconds,
+                                                         m_counter,
+                                                         m_dimension});
+        bool cacheBrowseResult;
+        std::vector<QVariantList> cacheData;
+        std::tie(cacheBrowseResult, cacheData) = CacheHandler::instance()->browseAllCacheData();
+        if(cacheBrowseResult) {
+            RequestsHandlerClient::instance()->requestRecordAdditionMultiple(cacheData);
         }
         return true;
     }

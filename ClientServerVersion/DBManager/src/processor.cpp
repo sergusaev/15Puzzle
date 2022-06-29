@@ -13,7 +13,15 @@ Processor::Processor(DBTypes::DBManagerType managerType)
 {
 }
 
+
 //manipulator methods
+
+std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry>> Processor::requestTableData(DBTypes::DBTables table)
+{
+    std::vector<QVariantList> result;
+    const DBTypes::DBResult resultState {selectAll(tableMapper.at(table), result)};
+    return std::make_pair(resultState, std::move(result));
+}
 
 DBTypes::DBResult Processor::insertRow(const std::string& tableName, const DBTypes::DBEntry& recordData)
 {
@@ -22,12 +30,33 @@ DBTypes::DBResult Processor::insertRow(const std::string& tableName, const DBTyp
     return result.first;
 }
 
+DBTypes::DBResult Processor::insertRowMultiple(const std::string &tableName, const DBTypes::DBEntry &recordData, int paramCount)
+{
+
+    int multiplier = recordData.size() / paramCount;
+    const std::string& query {Processor::generateMultipleInsertQuery(tableName, paramCount, multiplier)};
+    const std::pair<DBTypes::DBResult, QSqlQuery>& result {m_executor.execute(query, recordData)};
+    return result.first;
+}
+
+
+
 DBTypes::DBResult Processor::deleteFirst(const std::string &tableName)
 {
     const std::string& query {"DELETE FROM " + tableName + " WHERE rowid = 1"};
     const std::pair<DBTypes::DBResult, QSqlQuery>& result {m_executor.execute(query)};
     return result.first;
 }
+
+DBTypes::DBResult Processor::deleteAll(const std::string &tableName)
+{
+    const std::string& query {"DELETE FROM " + tableName};
+    const std::pair<DBTypes::DBResult, QSqlQuery>& result {m_executor.execute(query)};
+    return result.first;
+}
+
+
+
 
 std::string Processor::generateBindString(int paramCount) const
 {
@@ -54,6 +83,26 @@ std::string Processor::generateInsertQuery(const std::string& tableName, int par
     return query;
 }
 
+std::string Processor::generateMultipleInsertQuery(const std::string &tableName, int paramCount, int multiplier) const
+{
+    std::string tableColumns = tablesMapping.at(tableName)[0] + ",";
+    for(int i = 1; i < paramCount; ++i) {
+        tableColumns += " " + tablesMapping.at(tableName)[i] + ",";
+    }
+    tableColumns.pop_back(); //the last ","
+    std::string query = "INSERT INTO " + tableName +  " (" + tableColumns + ")" +
+                        " VALUES ";
+    for(int i = 0; i < multiplier; ++i) {
+        query += "(";
+        query += generateBindString(paramCount);
+        query += "),";
+    }
+    query.pop_back(); //the last ","
+    return query;
+}
+
+
+
 //selector methods
 
 
@@ -69,7 +118,7 @@ DBTypes::DBResult Processor::selectAll(const std::string& tableName, std::vector
         {
             const QSqlRecord& resultRecord = resultQuery.record();
             QVariantList resultList;
-            for (int i = 0; i < resultRecord.count(); ++i)
+            for (int i = 1; i < resultRecord.count(); ++i)
             {
                 resultList.push_back(resultRecord.value(i));
             }

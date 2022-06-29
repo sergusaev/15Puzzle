@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     GameBoard model;
     RecordsModel timeRecordsModel;
     RecordsModel turnsRecordsModel;
-    SignalsHandler signalsHandler;
+
 
 
 //  register QML type, importing as module (deprecated)
@@ -37,6 +37,7 @@ int main(int argc, char *argv[])
 
 //  register C++ singlton as singlton in QML
     qmlRegisterSingletonInstance("AuthorizationManager", 1, 0, "AuthorizationManager", AuthorizationManager::instance());
+    qmlRegisterSingletonInstance("SignalsHandler", 1, 0, "SignalsHandler", SignalsHandler::instance());
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));
@@ -51,7 +52,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("timeRecordsModel", &timeRecordsModel);
     engine.rootContext()->setContextProperty("turnsRecordsModel", &turnsRecordsModel);
     engine.rootContext()->setContextProperty("userSettings", &settings);
-    engine.rootContext()->setContextProperty("signalsHandler", &signalsHandler);
+
 
 
 

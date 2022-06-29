@@ -13,6 +13,9 @@ class ClientManager : public QObject
 {
     Q_OBJECT
 public:
+
+    ~ClientManager();
+
     static ClientManager *instance();
 
     constexpr static std::chrono::milliseconds reconnectionTime() {
@@ -30,6 +33,7 @@ signals:
     void passwordResponse(const QVariant& data);
     void nicknameExistanceResponse(const QVariant& data);
     void internalServerErrorResponse(const QVariant& data);
+    void addCacheDataResponse(const QVariant& data);
 
 
     void connectionStateChanged(net::ConnectionState state);
@@ -50,6 +54,7 @@ private:
     void handleTopTimeResponsePackage(const net::Package& package);
     void handleTopTurnsResponsePackage(const net::Package& package);
     void handleAddRecordResponsePackage(const net::Package& package);
+    void handleAddCacheDataResponsePackage(const net::Package& package);
     void handleAddUserResponsePackage(const net::Package& package);
     void handlePasswordResponsePackage(const net::Package& package);
     void handleNicknameExistanceResponsePackage(const net::Package& package);

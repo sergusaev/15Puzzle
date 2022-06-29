@@ -14,6 +14,14 @@ ProcessorClient::~ProcessorClient()
 {
 }
 
+std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry> > ProcessorClient::requestCacheData(DBTypes::DBTables table)
+{
+    std::vector<DBTypes::DBEntry> result;
+    DBTypes::DBResult resultState;
+    std::tie(resultState, result) = m_d->requestTableData(table);
+    return {resultState, result};
+}
+
 std::pair<DBTypes::DBResult, DBTypes::DBEntry> ProcessorClient::requestFirstRecordData(DBTypes::DBTables table)
 {
     QVariantList result;
@@ -24,6 +32,11 @@ std::pair<DBTypes::DBResult, DBTypes::DBEntry> ProcessorClient::requestFirstReco
 DBTypes::DBResult ProcessorClient::deleteFirstRecord(DBTypes::DBTables table)
 {
     return m_d->deleteFirst(tableMapper.at(table));
+}
+
+DBTypes::DBResult ProcessorClient::deleteCacheData(DBTypes::DBTables table)
+{
+    return m_d->deleteAll(tableMapper.at(table));
 }
 
 

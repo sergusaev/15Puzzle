@@ -2,13 +2,14 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtGraphicalEffects 1.15
 import AuthorizationManager 1.0
+import SignalsHandler 1.0
 
 CustomPage {
     id:root
 
     Connections {
         id: _new_user_page_connections
-        target: signalsHandler
+        target: SignalsHandler
 
         function onConnectionStateChanged(connectionState) {
 //            console.log("onConnectionStateChanged signal caught, connectionState: " + connectionState)

@@ -8,7 +8,9 @@ class SignalsHandler : public QObject
 {
     Q_OBJECT
 public:
-    SignalsHandler();
+    ~SignalsHandler();
+
+    static SignalsHandler *instance();
 
 private slots:
     void onNoServerConnection();
@@ -23,6 +25,7 @@ private slots:
     void onNicknameExistanceInternalServerError();
     void onPasswordInternalServerError();
     void onUserAdditionInternalServerError();
+    void onCacheDataAdditionInternalServerError();
 
 
 signals:
@@ -38,6 +41,10 @@ signals:
     void nicknameExistanceInternalServerError();
     void passwordInternalServerError();
     void userAdditionInternalServerError();
+    void cacheDataAdditionInternalServerError();
+
+private:
+    SignalsHandler();
 
 };
 

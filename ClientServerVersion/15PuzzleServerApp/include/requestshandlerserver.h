@@ -20,6 +20,7 @@ public:
     void handleTopTimeRequest(const net::Package& packageData, QTcpSocket* socket);
     void handleTopTurnsRequest(const net::Package& packageData, QTcpSocket* socket);
     void handleAddRecordRequest(const net::Package& packageData, QTcpSocket* socket);
+    void handleAddCacheDataRequest(const net::Package& packageData, QTcpSocket* socket);
 
 signals:
     void nicknameExistanceRequestCompleted(const net::Package& packageData, QTcpSocket* socket);
@@ -28,6 +29,7 @@ signals:
     void topTimeRequestCompleted(const net::Package& packageData, QTcpSocket* socket);
     void topTurnsRequestCompleted(const net::Package& packageData, QTcpSocket* socket);
     void recordAdditionRequestCompleted(const net::Package& packageData, QTcpSocket* socket);
+    void cacheDataAdditionRequestCompleted(const net::Package& packageData, QTcpSocket* socket);
 
 private:
     RecordsManager m_recordsManager;

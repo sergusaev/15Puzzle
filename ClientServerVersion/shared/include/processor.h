@@ -15,8 +15,13 @@ public:
     Processor(DBTypes::DBManagerType managerType);
 
     //manipulator methods
+
+    std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry>> requestTableData(DBTypes::DBTables table);
     DBTypes::DBResult insertRow(const std::string& tableName, const DBTypes::DBEntry& recordData);
+    DBTypes::DBResult insertRowMultiple(const std::string& tableName, const DBTypes::DBEntry& recordData, int paramCount);
+
     DBTypes::DBResult deleteFirst(const std::string& tableName);
+    DBTypes::DBResult deleteAll(const std::string& tableName);
 
     //selector methods
     DBTypes::DBResult selectAll(const std::string& tableName, std::vector<QVariantList>& returnData);
@@ -30,6 +35,7 @@ private:
     //manipulator methods
     std::string generateBindString(int paramCount) const;
     std::string generateInsertQuery(const std::string& tableName, int paramCount) const;
+    std::string generateMultipleInsertQuery(const std::string& tableName, int paramCount, int multiplier) const;
 
     //selector methods
     std::string generateSelectAllQuery(const std::string& tableName) const;

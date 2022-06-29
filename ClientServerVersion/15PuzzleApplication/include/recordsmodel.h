@@ -25,6 +25,7 @@ public:
 
     Q_INVOKABLE void getTurnsRanking(int dimension);
 
+
     QString timeToString(int time) const; // func to display time in records table
 
     Q_INVOKABLE QString rankToString(int rank) const;

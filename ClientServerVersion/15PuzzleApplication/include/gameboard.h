@@ -74,9 +74,14 @@ public:
 
 
 
+    bool connectionState() const;
+    void setConnectionState(bool newConnectionState);
+
 private slots:
     void onTimeout();
     void onDimensionChanged(int dimension);
+    void onCacheDataAdditionRequestCompleted(bool additionResult);
+    void onConnectionStateChanged(bool connectionState);
 
 
 private:
@@ -87,6 +92,7 @@ private:
     int m_currentElement = 0;
     int m_seconds = 0;
     int m_counter = 0;
+    bool m_connectionState;
     QTimer m_timer;
     bool isBoardValid() const;
     bool isPositionValid(const int position) const;

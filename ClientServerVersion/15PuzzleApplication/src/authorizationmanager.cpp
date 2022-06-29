@@ -174,7 +174,9 @@ void AuthorizationManager::onInternalServerErrorOccured(net::InternalServerError
         break;
     case net::InternalServerError::RECORD_ADDITION_ERROR :
         emit recordAdditionInternalServerError();
-
+        break;
+    case net::InternalServerError::CACHE_DATA_ADDITION_ERROR :
+        emit cacheDataAdditionInternalServerError();
         break;
     }
 }

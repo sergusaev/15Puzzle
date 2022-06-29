@@ -4,7 +4,7 @@ namespace db {
 
 QString DBManagerClient::getDatabaseName()
 {
-    return "ClientDB";
+    return "ClientCacheRecordsDB";
 }
 
 std::vector<QSqlQuery> DBManagerClient::getCreationQueries()

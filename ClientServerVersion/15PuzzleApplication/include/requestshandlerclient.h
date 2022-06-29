@@ -15,6 +15,7 @@ public:
     bool requestTopTime(int dimension);
     bool requestTopTurns(int dimension);
     bool requestRecordAddition (const Record& record);
+    bool requestRecordAdditionMultiple(const std::vector<DBTypes::DBEntry>& entries);
     bool requestUserAddition (const QString &nickname, const QString &password);
     bool requestPassword (const QString &nickname);
     bool requestNicknameExistance (const QString &nickname);
@@ -23,6 +24,7 @@ signals:
     void topTimeRequestCompleted(const std::vector<Record>& data);
     void topTurnsRequestCompleted(const std::vector<Record>& data);
     void recordAdditionRequestCompleted(bool additionResult);
+    void cacheDataAdditionRequestCompleted(bool additionResult);
     void userAdditionRequestCompleted(bool additionResult);
     void passwordRequestCompleted(const QString& password);
     void nicknameExistanceRequestCompleted(bool exist);
@@ -33,6 +35,7 @@ private slots:
     void onTopTimeDownloadSucceed(const std::vector<QVariant>& data);
     void onTopTurnsDownloadSucceed(const std::vector<QVariant>& data);
     void onRecordAdditionSucceed(const QVariant &data);
+    void onCacheDataAdditionSucceed(const QVariant &data);
     void onUserAdditionSucceed(const QVariant &data);
     void onPasswordDownloadSucceed(const QVariant& data);
     void onNicknameExistanceRequestSucceed(const QVariant& data);

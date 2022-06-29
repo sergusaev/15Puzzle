@@ -20,6 +20,7 @@ public:
     std::pair<bool,QVariant> getPassword(const QVariant &nicknameData);
     bool addUser (const DBTypes::DBEntry& entry);
     bool addRecord (const DBTypes::DBEntry& entry);
+    bool addRecordMultiple (const DBTypes::DBEntry& entry, int paramCount);
     std::pair<bool, std::vector<QVariant> > getTopTime(const QVariant &dimensionData);
     std::pair<bool, std::vector<QVariant> > getTopTurns(const QVariant &dimensionData);
 
