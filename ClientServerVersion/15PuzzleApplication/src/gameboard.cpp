@@ -35,14 +35,21 @@ void GameBoard::onDimensionChanged(int dimension)
 
 void GameBoard::onCacheDataAdditionRequestCompleted(bool additionResult)
 {
+    qDebug() << "cacheDataAdditionRequestCompleted signal caught, additionResult: " << additionResult;
     if(additionResult) {
         CacheHandler::instance()->deleteAllCacheRecords();
     }
 }
 
-void GameBoard::onConnectionStateChanged(bool connectionState)
+void GameBoard::onConnectionStateChanged(bool newConnectionState)
 {
-    setConnectionState(connectionState);
+    setConnectionState(newConnectionState);
+    if(connectionState()) {
+        std::vector<DBTypes::DBEntry> cacheData {CacheHandler::instance()->browseAllCacheData().second};
+        if(!cacheData.empty()) {
+        RequestsHandlerClient::instance()->requestRecordAdditionMultiple(cacheData);
+        }
+    }
 }
 
 
@@ -303,8 +310,10 @@ bool GameBoard::checkWin()
         bool cacheBrowseResult;
         std::vector<QVariantList> cacheData;
         std::tie(cacheBrowseResult, cacheData) = CacheHandler::instance()->browseAllCacheData();
-        if(cacheBrowseResult) {
+        if(cacheBrowseResult && m_connectionState) {
             RequestsHandlerClient::instance()->requestRecordAdditionMultiple(cacheData);
+        } else {
+
         }
         return true;
     }

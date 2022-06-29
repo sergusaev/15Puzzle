@@ -122,7 +122,7 @@ std::string Selector::generateSelectTopTurnsQuery(const std::string &tableName) 
             + tablesMapping.at(tableName)[3]
             + " = ?"
             + " ORDER BY "
-            + tablesMapping.at(tableName)[1]
+            + tablesMapping.at(tableName)[2]
             + " ASC LIMIT 10";
     return query;
 }

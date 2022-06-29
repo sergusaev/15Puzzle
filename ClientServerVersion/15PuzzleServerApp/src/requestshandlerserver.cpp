@@ -166,10 +166,18 @@ void RequestHandlerServer::handleAddCacheDataRequest(const net::Package &package
         net::Package resultPackage {QVariant::fromValue(additionResult), net::PackageType::ADD_CACHE_DATA_RESPONSE};
         emit cacheDataAdditionRequestCompleted(resultPackage, socket);
     } else {
-        cacheDataList.push_front(QVariant::fromValue(static_cast<int>(net::InternalServerError::CACHE_DATA_ADDITION_ERROR)));
-        net::Package resultPackage {QVariant::fromValue(cacheDataList), net::PackageType::INTERNAL_SERVER_ERROR};
+        net::Package resultPackage {QVariant::fromValue(static_cast<int>(net::InternalServerError::CACHE_DATA_ADDITION_ERROR)), net::PackageType::INTERNAL_SERVER_ERROR};
         emit cacheDataAdditionRequestCompleted(resultPackage, socket);
     }
+
+#ifdef DEBUG_OUTPUT
+    if(additionResult) {
+        qDebug() << "Cache data successfully added";
+        qDebug() << cacheDataList;
+    } else {
+        qDebug() << "Internal server error";
+    }
+#endif
 }
 
 

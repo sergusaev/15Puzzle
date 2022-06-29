@@ -177,6 +177,8 @@ void ServerManager::connectSignals()
             this, &ServerManager::notify);
     connect(&m_requestHandler, &RequestHandlerServer::recordAdditionRequestCompleted,
             this, &ServerManager::notify);
+    connect(&m_requestHandler, &RequestHandlerServer::cacheDataAdditionRequestCompleted,
+            this, &ServerManager::notify);
 }
 
 void ServerManager::connectSocketSignals(QTcpSocket* socket)

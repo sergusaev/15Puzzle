@@ -81,7 +81,7 @@ private slots:
     void onTimeout();
     void onDimensionChanged(int dimension);
     void onCacheDataAdditionRequestCompleted(bool additionResult);
-    void onConnectionStateChanged(bool connectionState);
+    void onConnectionStateChanged(bool newConnectionState);
 
 
 private:

@@ -67,6 +67,7 @@ void ClientManager::onSocketStateChanged(QAbstractSocket::SocketState socketStat
 
 void ClientManager::onDataRecieved()
 {
+    qDebug() << "New data recieved";
     QMutexLocker locker(&m_mux);
     QDataStream in {&m_serverSocket};
     in.setVersion(QDataStream::Qt_DefaultCompiledVersion);
@@ -230,6 +231,7 @@ void ClientManager::handleAddRecordResponsePackage(const net::Package &package)
 
 void ClientManager::handleAddCacheDataResponsePackage(const net::Package &package)
 {
+    qDebug() << "CacheDataResponse package data: " << package.data();
     emit addCacheDataResponse(package.data());
 }
 
