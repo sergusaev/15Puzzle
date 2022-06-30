@@ -6,6 +6,8 @@
 #include <networktypes.h>
 #include "clientmanager.h"
 
+using Row = std::pair<QString, int>;
+
 class RequestsHandlerClient : public QObject
 {
     Q_OBJECT
@@ -21,8 +23,8 @@ public:
     bool requestNicknameExistance (const QString &nickname);
 
 signals:
-    void topTimeRequestCompleted(const std::vector<Record>& data);
-    void topTurnsRequestCompleted(const std::vector<Record>& data);
+    void topTimeRequestCompleted(const std::vector<Row>& data);
+    void topTurnsRequestCompleted(const std::vector<Row>& data);
     void recordAdditionRequestCompleted(bool additionResult);
     void cacheDataAdditionRequestCompleted(bool additionResult);
     void userAdditionRequestCompleted(bool additionResult);

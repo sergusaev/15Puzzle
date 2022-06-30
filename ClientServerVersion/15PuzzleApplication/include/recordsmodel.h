@@ -31,17 +31,18 @@ public:
     Q_INVOKABLE QString rankToString(int rank) const;
 
 private slots:
-    void onTopTimeDownloaded(const std::vector<Record> &data);
-    void onTopTurnsDownloaded(const std::vector<Record> &data);
+    void onTopTimeDownloaded(const std::vector<Row> &data);
+    void onTopTurnsDownloaded(const std::vector<Row> &data);
 
 private:
-    std::vector<Record> m_records;
+    using Row = std::pair<QString, int>;
+
+    std::vector<Row> m_recordRows;
 
     enum RecordRoles {
         NicknameRole = Qt::UserRole + 1,
         TimeRole,
-        TurnsRole,
-        DimensionRole,
+        TurnsRole
     };
 };
 

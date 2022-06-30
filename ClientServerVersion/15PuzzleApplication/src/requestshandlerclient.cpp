@@ -106,28 +106,21 @@ void RequestsHandlerClient::onConnectionStateChanged(net::ConnectionState state)
 //    }
 }
 
-Record transformQVariantListToRecord(QVariantList& dataList) {
-    Record record;
-    record.setNickname(std::move(dataList.first().toString()));
-    dataList.pop_front();
-    record.setTime(dataList.first().toInt());
-    dataList.pop_front();
-    record.setTurns(dataList.first().toInt());
-    dataList.pop_front();
-    record.setDimension(dataList.first().toInt());
-    return record;
+Row transformQVariantListToRow(QVariantList& dataList) {
+    return {dataList.first().toString(), dataList.last().toInt()};
+
 }
 
-static std::vector<Record> transform(const std::vector<QVariant>& source)
+static std::vector<Row> transform(const std::vector<QVariant>& source)
 {
-    std::vector<Record> target;
+    std::vector<Row> target;
     std::transform(source.begin(),
                    source.end(),
                    std::back_inserter(target),
                    [](const QVariant& entry) {
                                         QVariantList dataList = entry.toList();
-                                        Record record  = transformQVariantListToRecord(dataList);
-                                        return record;
+                                        Row row  = transformQVariantListToRow(dataList);
+                                        return row;
                                      });
     return target;
 }

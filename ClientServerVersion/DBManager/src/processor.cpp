@@ -219,7 +219,11 @@ std::string Processor::generateSelectAllQuery(const std::string& tableName) cons
 
 std::string Processor::generateSelectTopTimeQuery(const std::string &tableName) const
 {
-    std::string query = "SELECT * FROM "
+    std::string query = "SELECT DISTINCT "
+            + tablesMapping.at(tableName)[0]
+            + ", "
+            + tablesMapping.at(tableName)[1]
+            + " FROM "
             + tableName
             + " WHERE "
             + tablesMapping.at(tableName)[3]
@@ -232,7 +236,11 @@ std::string Processor::generateSelectTopTimeQuery(const std::string &tableName) 
 
 std::string Processor::generateSelectTopTurnsQuery(const std::string &tableName) const
 {
-    std::string query = "SELECT * FROM "
+    std::string query = "SELECT DISTINCT "
+            + tablesMapping.at(tableName)[0]
+            + ", "
+            + tablesMapping.at(tableName)[2]
+            + " FROM "
             + tableName
             + " WHERE "
             + tablesMapping.at(tableName)[3]

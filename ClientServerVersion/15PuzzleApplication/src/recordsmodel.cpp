@@ -15,14 +15,13 @@ QHash<int, QByteArray> RecordsModel::roleNames() const
     roles[RecordRoles::NicknameRole] = "nickname";
     roles[RecordRoles::TimeRole] = "time";
     roles[RecordRoles::TurnsRole] = "turns";
-    roles[RecordRoles::DimensionRole] = "dimension";
     return roles;
 }
 
 int RecordsModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return static_cast<int>(m_records.size());
+    return static_cast<int>(m_recordRows.size());
 }
 
 QVariant RecordsModel::data(const QModelIndex &index, int role) const
@@ -30,20 +29,18 @@ QVariant RecordsModel::data(const QModelIndex &index, int role) const
     if(!index.isValid() || index.row() > rowCount(index)) {
         return {};
     }
-    const Record& record {m_records.at(index.row())};
+    const Row& row {m_recordRows.at(index.row())};
     switch (role) {
     case RecordRoles::NicknameRole: {
-        return QVariant::fromValue(record.nickname());
+        return QVariant::fromValue(row.first);
     }
     case RecordRoles::TimeRole: {
-        return QVariant::fromValue(timeToString(record.time()));
+        return QVariant::fromValue(timeToString(row.second));
     }
     case RecordRoles::TurnsRole: {
-        return QVariant::fromValue(record.turns());
+        return QVariant::fromValue(row.second);
     }
-    case RecordRoles::DimensionRole: {
-        return QVariant::fromValue(record.dimension());
-    }
+
     default:
     {
         return true;
@@ -86,19 +83,19 @@ QString RecordsModel::rankToString(int rank) const
     return QString("%1.").arg(rank);
 }
 
-void RecordsModel::onTopTimeDownloaded(const std::vector<Record> &data)
+void RecordsModel::onTopTimeDownloaded(const std::vector<Row> &data)
 {
     beginResetModel();
-    std::vector<Record> topTimeResult {data};
-    m_records.swap(topTimeResult);
+    std::vector<Row> topTimeResult {data};
+    m_recordRows.swap(topTimeResult);
     endResetModel();
 }
 
-void RecordsModel::onTopTurnsDownloaded(const std::vector<Record> &data)
+void RecordsModel::onTopTurnsDownloaded(const std::vector<Row> &data)
 {
     beginResetModel();
-    std::vector<Record> topTurnsResult {data};
-    m_records.swap(topTurnsResult);
+    std::vector<Row> topTurnsResult {data};
+    m_recordRows.swap(topTurnsResult);
     endResetModel();
 }
 
