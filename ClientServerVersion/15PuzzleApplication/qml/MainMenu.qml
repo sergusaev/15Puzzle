@@ -58,6 +58,7 @@ CustomPage {
             if(_stack_view.depth > 1) {
                 _stack_view.pop()
                 AuthorizationManager.setNewUser(false)
+
             } else {
                 return
             }

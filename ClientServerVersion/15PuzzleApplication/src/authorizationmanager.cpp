@@ -187,7 +187,7 @@ void AuthorizationManager::onUserAdded(bool additionResult)
 
 void AuthorizationManager::onPasswordValidationRequestCompleted(const bool validationResult)
 {
-    qDebug() << "In AuthorizationManager recieved password vlidation result: "  << validationResult;
+    qDebug() << "In AuthorizationManager recieved password validation result: "  << validationResult;
     emit passwordValidationCompleted(validationResult);
 
 }

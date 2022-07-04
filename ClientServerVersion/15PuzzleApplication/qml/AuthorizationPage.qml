@@ -11,6 +11,12 @@ CustomPage {
     property string authorizationState: ""
     property bool newUser: false
 
+    onAuthorizationStateChanged: {
+        console.log("root.onAuthorizationStateChanged signal caught" )
+        console.log("Current root.authorizationState: " + root.authorizationState)
+        console.log("Current _ok_button.state: " + _ok_button.state)
+    }
+
     Connections {
         id: _authorization_page_connections
         target: SignalsHandler
@@ -37,7 +43,6 @@ CustomPage {
 
         function onPasswordValidationCompleted(validationResult) {
             console.log("onPasswordValidationCompleted signal caught, validationResult: " + validationResult)
-            console.log("Encoded password: " + AuthorizationManager.encodedPassword)
             console.log("Current _ok_button_state: " + _ok_button.state)
             if(!validationResult) {
                 _invalid_password_window.visible = true
@@ -282,6 +287,9 @@ CustomPage {
             }
         }
         visible: root.authorizationState === "DimensionSelection" ? true : false
+        onCurrentIndexChanged: {
+            AuthorizationManager.setDimension(currentIndex + 2)
+        }
     }
 
 
@@ -365,7 +373,9 @@ CustomPage {
                                            AuthorizationManager.authorizationPageState)
                 if(!root.newUser) {
                 _stack_view.push(_main_menu_stack_page)
+
                 }
+
             }
 
         }
