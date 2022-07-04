@@ -30,7 +30,7 @@ signals:
     void topTurnsResponse(const std::vector<QVariant>& data);
     void addRecordResponse(const QVariant& data);
     void addUserResponse(const QVariant& data);
-    void passwordResponse(const QVariant& data);
+    void passwordValidityResponse(const QVariant& data);
     void nicknameExistanceResponse(const QVariant& data);
     void internalServerErrorResponse(const QVariant& data);
     void addCacheDataResponse(const QVariant& data);
@@ -56,7 +56,7 @@ private:
     void handleAddRecordResponsePackage(const net::Package& package);
     void handleAddCacheDataResponsePackage(const net::Package& package);
     void handleAddUserResponsePackage(const net::Package& package);
-    void handlePasswordResponsePackage(const net::Package& package);
+    void handlePasswordValidityResponsePackage(const net::Package& package);
     void handleNicknameExistanceResponsePackage(const net::Package& package);
     void handleInternalServerErrorPackage(const net::Package& package);
 

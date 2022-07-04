@@ -13,6 +13,8 @@ ServerManager::ServerManager(const net::ConnectionArgumentsParser &parser)
     {
         qCritical() << "Cannot initialize server! Not started!";
     }
+
+    qDebug() << "Server params: " << m_parser.hostArgument() << " ," << m_parser.portArgument();
 }
 
 void ServerManager::onNewConnection()
@@ -90,8 +92,8 @@ void ServerManager::handlePackage(net::Package &package, QTcpSocket *socket)
 #ifdef DEBUG_OUTPUT
     QString currPackageType;
     switch(package.type()){
-    case net::PackageType::PASSWORD_REQUEST:
-        currPackageType = "PASSWORD_REQUEST";
+    case net::PackageType::PASSWORD_VALIDATION_REQUEST:
+        currPackageType = "PASSWORD_VALIDATION_REQUEST";
         break;
     case net::PackageType::ADD_USER_REQUEST:
         currPackageType = "ADD_USER_REQUEST";
@@ -120,9 +122,9 @@ void ServerManager::handlePackage(net::Package &package, QTcpSocket *socket)
 
     switch (package.type())
     {
-    case net::PackageType::PASSWORD_REQUEST:
+    case net::PackageType::PASSWORD_VALIDATION_REQUEST:
     {
-        m_requestHandler.handlePasswordRequest(package,socket);
+        m_requestHandler.handlePasswordValidityRequest(package,socket);
         break;
     }
     case net::PackageType::ADD_USER_REQUEST:
@@ -165,7 +167,7 @@ void ServerManager::connectSignals()
 {
     connect(&m_server, &QTcpServer::newConnection,
             this, &ServerManager::onNewConnection);
-    connect(&m_requestHandler, &RequestHandlerServer::passwordRequestCompleted,
+    connect(&m_requestHandler, &RequestHandlerServer::passwordValidityRequestCompleted,
             this, &ServerManager::notify);
     connect(&m_requestHandler, &RequestHandlerServer::nicknameExistanceRequestCompleted,
             this, &ServerManager::notify);

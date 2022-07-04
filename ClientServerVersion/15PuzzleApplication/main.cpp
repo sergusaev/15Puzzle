@@ -34,6 +34,7 @@ int main(int argc, char *argv[])
 
     net::ConnectionArgumentsParser parser (*QCoreApplication::instance());
     ClientManager::instance()->setConnectionSettings(parser);
+    qDebug() << "Client params: " << parser.hostArgument() << " ," << parser.portArgument();
 
 //  register C++ singlton as singlton in QML
     qmlRegisterSingletonInstance("AuthorizationManager", 1, 0, "AuthorizationManager", AuthorizationManager::instance());

@@ -15,7 +15,7 @@ public:
     ~RequestHandlerServer();
 
     void handleNicknameExistanceRequest(const net::Package& packageData,QTcpSocket* socket);
-    void handlePasswordRequest(const net::Package& packageData,QTcpSocket* socket);
+    void handlePasswordValidityRequest(const net::Package& packageData,QTcpSocket* socket);
     void handleAddUserRequest(const net::Package& packageData, QTcpSocket* socket);
     void handleTopTimeRequest(const net::Package& packageData, QTcpSocket* socket);
     void handleTopTurnsRequest(const net::Package& packageData, QTcpSocket* socket);
@@ -24,7 +24,7 @@ public:
 
 signals:
     void nicknameExistanceRequestCompleted(const net::Package& packageData, QTcpSocket* socket);
-    void passwordRequestCompleted(const net::Package& packageData, QTcpSocket* socket);
+    void passwordValidityRequestCompleted(const net::Package& packageData, QTcpSocket* socket);
     void userAdditionRequestCompleted(const net::Package& packageData, QTcpSocket* socket);
     void topTimeRequestCompleted(const net::Package& packageData, QTcpSocket* socket);
     void topTurnsRequestCompleted(const net::Package& packageData, QTcpSocket* socket);

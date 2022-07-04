@@ -20,6 +20,7 @@ namespace db
 class DBManager {
 public:
 
+
     std::unique_ptr<QSqlDatabase, DBCloser> m_database;
 
     DBTypes::DBState m_state {DBTypes::DBState::OK};

@@ -34,11 +34,12 @@ CustomPage {
             }
         }
 
-        function onEthalonPasswordChanged(ethalonPassword) {
-//            console.log("onEthalonPasswordChanged signal caught, ethalonPassword: " + ethalonPassword)
-//            console.log("Current _ok_button_state: " + _ok_button.state)
 
-            if(ethalonPassword !== _password_text_field.text) {
+        function onPasswordValidationCompleted(validationResult) {
+            console.log("onPasswordValidationCompleted signal caught, validationResult: " + validationResult)
+            console.log("Encoded password: " + AuthorizationManager.encodedPassword)
+            console.log("Current _ok_button_state: " + _ok_button.state)
+            if(!validationResult) {
                 _invalid_password_window.visible = true
             } else {
                 _ok_button.clicked()
@@ -47,17 +48,17 @@ CustomPage {
         }
 
         function onNicknameChanged(nickname) {
-//            console.log("onNicknameChanged signal caught, nickname: " + nickname)
+            console.log("onNicknameChanged signal caught, nickname: " + nickname)
             _nickname_text_field.text = nickname
         }
 
         function onPasswordChanged(password) {
-//            console.log("onPasswordChanged signal caught, password: " + password)
+            console.log("onPasswordChanged signal caught, password: " + password)
             _password_text_field.text = password
         }
 
         function onDimensionChanged(dimension) {
-//            console.log("onDimensionChanged signal caught, dimension: " + dimension)
+            console.log("onDimensionChanged signal caught, dimension: " + dimension)
             _puzzle_size_selection_combobox.currentIndex = dimension - 2
         }
 
@@ -116,7 +117,7 @@ CustomPage {
         } else {
             AuthorizationManager.setAuthorizationPageState(1)
         }
-        AuthorizationManager.requestUserPassword(userSettings.readNickname())
+        AuthorizationManager.validatePassword(AuthorizationManager.nickname, AuthorizationManager.password)
         _puzzle_size_selection_combobox.currentIndex = AuthorizationManager.dimension - 2
 
 //        console.log("nickname: " + AuthorizationManager.nickname)
@@ -326,14 +327,17 @@ CustomPage {
         }
 
         onClicked:  {
-//            console.log("Ok button pressed, state: " + state)
+            console.log("Ok button pressed, state: " + state)
             if (state === "NickInput") {
+                AuthorizationManager.setNickname(_nickname_text_field.text)
                 AuthorizationManager.setAuthorizationPageState(2)
             }
             else if (state === "PassInput"){
+                AuthorizationManager.setPassword(_password_text_field.text)
                 AuthorizationManager.setAuthorizationPageState(3)
             }
             else if (state === "DimSelect") {
+                AuthorizationManager.setDimension(_puzzle_size_selection_combobox.currentIndex + 2)
                 if(root.newUser) {
                     state = "ProcessingPasswordRequest"
                 } else {
@@ -343,15 +347,15 @@ CustomPage {
 
             }
             else if(state === "ProcessingNicknameExistanceRequest") {
-                AuthorizationManager.requestUserPassword(_nickname_text_field.text)
+                AuthorizationManager.validatePassword(_nickname_text_field.text, _password_text_field.text)
                 state = "ProcessingPasswordRequest"
             }
 
             else if (state === "ProcessingPasswordRequest"){
 
-                AuthorizationManager.setNickname(_nickname_text_field.text)
-                AuthorizationManager.setPassword(_password_text_field.text)
-                AuthorizationManager.setDimension(_puzzle_size_selection_combobox.currentIndex + 2)
+//                AuthorizationManager.setNickname(_nickname_text_field.text)
+//                AuthorizationManager.setPassword(_password_text_field.text)
+//                AuthorizationManager.setDimension(_puzzle_size_selection_combobox.currentIndex + 2)
                 if(root.newUser) {
                     AuthorizationManager.addNewUser(AuthorizationManager.nickname, AuthorizationManager.password)
                 }

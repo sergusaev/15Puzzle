@@ -19,8 +19,10 @@ public:
     bool requestRecordAddition (const Record& record);
     bool requestRecordAdditionMultiple(const std::vector<DBTypes::DBEntry>& entries);
     bool requestUserAddition (const QString &nickname, const QString &password);
-    bool requestPassword (const QString &nickname);
+    bool requestPasswordValidation (const QString &nickname, const QString &password);
     bool requestNicknameExistance (const QString &nickname);
+    QByteArray encodePassword(const QString& password);
+
 
 signals:
     void topTimeRequestCompleted(const std::vector<Row>& data);
@@ -28,7 +30,7 @@ signals:
     void recordAdditionRequestCompleted(bool additionResult);
     void cacheDataAdditionRequestCompleted(bool additionResult);
     void userAdditionRequestCompleted(bool additionResult);
-    void passwordRequestCompleted(const QString& password);
+    void passwordValidationRequestCompleted(const bool validationResult);
     void nicknameExistanceRequestCompleted(bool exist);
     void internalServerErrorOccured(net::InternalServerError error);
 
@@ -39,7 +41,7 @@ private slots:
     void onRecordAdditionSucceed(const QVariant &data);
     void onCacheDataAdditionSucceed(const QVariant &data);
     void onUserAdditionSucceed(const QVariant &data);
-    void onPasswordDownloadSucceed(const QVariant& data);
+    void onPasswordValidationSucceed(const QVariant& data);
     void onNicknameExistanceRequestSucceed(const QVariant& data);
     void onInternalServerError(const QVariant& data);
 

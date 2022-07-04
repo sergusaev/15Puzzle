@@ -26,23 +26,23 @@ void RequestHandlerServer::handleNicknameExistanceRequest(const net::Package &pa
     }
 }
 
-void RequestHandlerServer::handlePasswordRequest(const net::Package &packageData, QTcpSocket *socket)
+void RequestHandlerServer::handlePasswordValidityRequest(const net::Package &packageData, QTcpSocket *socket)
 {
     bool requestResult;
     QVariant data;
-    std::tie(requestResult, data) = m_recordsManager.getPassword(packageData.data());
+    std::tie(requestResult, data) = m_recordsManager.checkPasswordValidity(packageData.data());
     if(requestResult) {
-        net::Package resultPackage {data, net::PackageType::PASSWORD_RESPONSE};
-        emit passwordRequestCompleted(resultPackage, socket);      
+        net::Package resultPackage {data, net::PackageType::PASSWORD_VALIDATION_RESPONSE};
+        emit passwordValidityRequestCompleted(resultPackage, socket);
     } else {
         net::Package resultPackage {QVariant::fromValue(static_cast<int>(net::InternalServerError::PASSWORD_ERROR)),
                                     net::PackageType::INTERNAL_SERVER_ERROR};
-        emit passwordRequestCompleted(resultPackage, socket);
+        emit passwordValidityRequestCompleted(resultPackage, socket);
     }
 
 #ifdef DEBUG_OUTPUT
     if(requestResult) {
-        qDebug() << "Requested password successfully sent";
+        qDebug() << "Requested password validation result successfully sent";
         qDebug() << data;
     } else {
         qDebug() << "Internal server error";

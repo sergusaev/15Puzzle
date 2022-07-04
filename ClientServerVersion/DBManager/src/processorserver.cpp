@@ -29,12 +29,25 @@ std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry> > ProcessorServer::re
     return std::make_pair(resultState, std::move(result));
 }
 
-std::pair<DBTypes::DBResult,QVariant> ProcessorServer::getPasswordData(const QString &nickname)
+std::pair<DBTypes::DBResult,QVariant> ProcessorServer::checkPassword(const QVariantList &userData)
 {
     QVariant returnData;
-    DBTypes::DBResult resultState {m_d->selectUserPassword(nickname.toStdString(), returnData)};
-    return std::make_pair(resultState, std::move(returnData));
+    DBTypes::DBResult resultState {m_d->selectUserPassword(userData.front().toString().toStdString(), returnData)};
+    qDebug() << "User data password hash: " << userData.back();
+    qDebug() << "User ethalon password hash: " << returnData;
+    return std::make_pair(resultState, QVariant::fromValue(returnData == userData.back()));
 }
+
+std::pair<DBTypes::DBResult, QVariant> ProcessorServer::checkNicknameExistance(const QVariant &nicknameData)
+{
+    QVariant returnData;
+    DBTypes::DBResult resultState {m_d->selectUserPassword(nicknameData.toString().toStdString(), returnData)};
+    qDebug() << "User nickname: " << nicknameData;
+    qDebug() << "User ethalon password hash: " << returnData;
+    return std::make_pair(resultState, QVariant::fromValue(returnData.isNull()));
+}
+
+
 
 DBTypes::DBResult ProcessorServer::insertDataRecord(DBTypes::DBTables table, const DBTypes::DBEntry &recordData)
 {

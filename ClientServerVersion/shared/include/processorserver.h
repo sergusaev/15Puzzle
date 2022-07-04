@@ -11,7 +11,8 @@ public:
     ~ProcessorServer();
     std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry>> requestTopTimeData(DBTypes::DBTables table, int dimension);
     std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry>> requestTopTurnsData(DBTypes::DBTables table, int dimension);
-    std::pair<DBTypes::DBResult, QVariant> getPasswordData(const QString& nickname);
+    std::pair<DBTypes::DBResult, QVariant> checkPassword(const QVariantList& userData);
+    std::pair<DBTypes::DBResult, QVariant> checkNicknameExistance(const QVariant& nicknameData);
     DBTypes::DBResult insertDataRecord(DBTypes::DBTables table, const DBTypes::DBEntry& recordData);
     DBTypes::DBResult insertDataRecordMultiple(DBTypes::DBTables table, const DBTypes::DBEntry& recordData, int paramCount);
 

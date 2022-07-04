@@ -5,8 +5,8 @@ AuthorizationManager::AuthorizationManager()
 {
     connect(RequestsHandlerClient::instance(), &RequestsHandlerClient::internalServerErrorOccured,
             this, &AuthorizationManager::onInternalServerErrorOccured);
-    connect(RequestsHandlerClient::instance(), &RequestsHandlerClient::passwordRequestCompleted,
-            this, &AuthorizationManager::onPasswordDownloaded);
+    connect(RequestsHandlerClient::instance(), &RequestsHandlerClient::passwordValidationRequestCompleted,
+            this, &AuthorizationManager::onPasswordValidationRequestCompleted);
     connect(RequestsHandlerClient::instance(), &RequestsHandlerClient::userAdditionRequestCompleted,
             this, &AuthorizationManager::onUserAdded);
     connect(ClientManager::instance(), &ClientManager::connectionStateChanged,
@@ -14,6 +14,7 @@ AuthorizationManager::AuthorizationManager()
     connect(&m_nicknameHint, &NicknameHint::nicknameExists,
             this, &AuthorizationManager::onNicknameExists);
 }
+
 
 
 
@@ -59,21 +60,11 @@ const QString &AuthorizationManager::password() const
 
 void AuthorizationManager::setPassword(const QString &newPassword)
 {
+
     m_password = newPassword;
     emit passwordChanged(m_password);
 }
 
-const QString &AuthorizationManager::ethalonPassword() const
-{
-    return m_ethalonPassword;
-}
-
-void AuthorizationManager::setEthalonPassword(const QString &newEthalonPassword)
-{
-    m_ethalonPassword = newEthalonPassword;
-    emit ethalonPasswordChanged(m_ethalonPassword);
-    qDebug() << "Ethalon password: " + ethalonPassword();
-}
 
 int AuthorizationManager::dimension() const
 {
@@ -119,13 +110,13 @@ void AuthorizationManager::addNewUser(const QString &nickname, const QString &pa
 
 }
 
-void AuthorizationManager::requestUserPassword(const QString &nickname)
+void AuthorizationManager::validatePassword(const QString &nickname, const QString &password)
 {
-    if(!RequestsHandlerClient::instance()->requestPassword(nickname)) {
+    if(!RequestsHandlerClient::instance()->requestPasswordValidation(nickname, password)) {
         qDebug() << "Failed to access remote database, try again";
         emit noServerConnection();
     } else {
-        qDebug() << "Password request on nickname " + nickname + " successfully sent";
+        qDebug() << "Password validity request on nickname " + nickname + " successfully sent";
 
     }
 }
@@ -138,6 +129,11 @@ void AuthorizationManager::checkNicknameExistance(const QString &nickname)
     } else {
         qDebug() << "Nickname existance request successfully sent";
     }
+}
+
+QByteArray AuthorizationManager::encodePasswordFromQml(const QString &password)
+{
+    return RequestsHandlerClient::instance()->encodePassword(password);
 }
 
 void AuthorizationManager::onConnectionStateChanged(net::ConnectionState state)
@@ -189,10 +185,11 @@ void AuthorizationManager::onUserAdded(bool additionResult)
     }
 }
 
-void AuthorizationManager::onPasswordDownloaded(const QString &password)
+void AuthorizationManager::onPasswordValidationRequestCompleted(const bool validationResult)
 {
-    qDebug() << "In AuthorizationManager recieved password: " + password;
-    setEthalonPassword(password);
+    qDebug() << "In AuthorizationManager recieved password vlidation result: "  << validationResult;
+    emit passwordValidationCompleted(validationResult);
+
 }
 
 void AuthorizationManager::onNicknameExists(bool exists)

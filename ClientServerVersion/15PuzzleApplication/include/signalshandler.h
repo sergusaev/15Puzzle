@@ -19,7 +19,7 @@ private slots:
     void onNicknameChanged(const QString &nickname);
     void onAuthorizathionPageStateChanged(int newAuthorizationPageState);
     void onPasswordChanged(const QString &password);
-    void onEthalonPasswordChanged(const QString &ethalonPassword);
+    void onPasswordValidationSucceed(const bool validationResult);
     void onDimensionChanged(int dimension);
     void onNicknameExists(bool exists);
     void onNicknameExistanceInternalServerError();
@@ -36,7 +36,7 @@ signals:
     void authorizationPageStateChanged(int newAuthorizationPageState);
     void nicknameChanged(const QString &nickname);
     void passwordChanged(const QString &password);
-    void ethalonPasswordChanged(const QString &ethalonPassword);
+    void passwordValidationCompleted(const bool validationResult);
     void dimensionChanged(int dimension);
     void nicknameExists(bool exists);
     void nicknameExistanceInternalServerError();

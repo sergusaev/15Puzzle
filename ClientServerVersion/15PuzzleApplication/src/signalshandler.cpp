@@ -27,8 +27,8 @@ SignalsHandler::SignalsHandler()
             this, &SignalsHandler::onNicknameChanged);
     connect(AuthorizationManager::instance(),&AuthorizationManager::passwordChanged,
             this, &SignalsHandler::onPasswordChanged);
-    connect(AuthorizationManager::instance(),&AuthorizationManager::ethalonPasswordChanged,
-            this, &SignalsHandler::onEthalonPasswordChanged);
+    connect(AuthorizationManager::instance(),&AuthorizationManager::passwordValidationCompleted,
+            this, &SignalsHandler::onPasswordValidationSucceed);
     connect(AuthorizationManager::instance(),&AuthorizationManager::dimensionChanged,
             this, &SignalsHandler::onDimensionChanged);
     connect(AuthorizationManager::instance(),&AuthorizationManager::nicknameExists,
@@ -78,10 +78,12 @@ void SignalsHandler::onPasswordChanged(const QString &password)
     emit passwordChanged(password);
 }
 
-void SignalsHandler::onEthalonPasswordChanged(const QString &ethalonPassword)
+void SignalsHandler::onPasswordValidationSucceed(const bool validationResult)
 {
-    emit ethalonPasswordChanged(ethalonPassword);
+    emit passwordValidationCompleted(validationResult);
 }
+
+
 
 void SignalsHandler::onDimensionChanged(int dimension)
 {

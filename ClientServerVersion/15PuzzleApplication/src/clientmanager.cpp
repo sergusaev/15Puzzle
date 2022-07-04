@@ -4,6 +4,7 @@
 ClientManager::ClientManager()
 {
     connectSocketSignals();
+
 }
 
 ClientManager::~ClientManager()
@@ -115,8 +116,8 @@ void ClientManager::handlePackage(net::Package &package)
 #ifdef DEBUG_OUTPUT
     QString currPackageType;
     switch(package.type()){
-    case net::PackageType::PASSWORD_RESPONSE:
-        currPackageType = "PASSWORD_RESPONCE";
+    case net::PackageType::PASSWORD_VALIDATION_RESPONSE:
+        currPackageType = "PASSWORD_VALIDATION_RESPONCE";
         break;
     case net::PackageType::ADD_USER_RESPONSE:
         currPackageType = "ADD_USER_RESPONCE";
@@ -173,9 +174,9 @@ void ClientManager::handlePackage(net::Package &package)
         handleAddUserResponsePackage(package);
         break;
     }
-    case net::PackageType::PASSWORD_RESPONSE:
+    case net::PackageType::PASSWORD_VALIDATION_RESPONSE:
     {
-        handlePasswordResponsePackage(package);
+        handlePasswordValidityResponsePackage(package);
         break;
     }
     case net::PackageType::NICKNAME_EXISTANCE_RESPONSE:
@@ -240,9 +241,9 @@ void ClientManager::handleAddUserResponsePackage(const net::Package &package)
     emit addUserResponse(package.data());
 }
 
-void ClientManager::handlePasswordResponsePackage(const net::Package &package)
+void ClientManager::handlePasswordValidityResponsePackage(const net::Package &package)
 {
-    emit passwordResponse(package.data());
+    emit passwordValidityResponse(package.data());
 }
 
 void ClientManager::handleNicknameExistanceResponsePackage(const net::Package &package)

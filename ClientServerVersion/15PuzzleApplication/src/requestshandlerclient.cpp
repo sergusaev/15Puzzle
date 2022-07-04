@@ -1,5 +1,12 @@
 #include "requestshandlerclient.h"
 #include "cachehandler.h"
+#include <QCryptographicHash>
+
+
+QByteArray RequestsHandlerClient::encodePassword(const QString& password) {
+     QByteArray encodedPassword {QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha256)};
+     return encodedPassword.toBase64();
+}
 
 
 RequestsHandlerClient::RequestsHandlerClient()
@@ -16,8 +23,8 @@ RequestsHandlerClient::RequestsHandlerClient()
             this, &RequestsHandlerClient::onCacheDataAdditionSucceed);
     connect(ClientManager::instance(), &ClientManager::addUserResponse,
             this, &RequestsHandlerClient::onUserAdditionSucceed);
-    connect(ClientManager::instance(), &ClientManager::passwordResponse,
-            this, &RequestsHandlerClient::onPasswordDownloadSucceed);
+    connect(ClientManager::instance(), &ClientManager::passwordValidityResponse,
+            this, &RequestsHandlerClient::onPasswordValidationSucceed);
     connect(ClientManager::instance(), &ClientManager::nicknameExistanceResponse,
             this, &RequestsHandlerClient::onNicknameExistanceRequestSucceed);
     connect(ClientManager::instance(), &ClientManager::internalServerErrorResponse,
@@ -79,15 +86,15 @@ bool RequestsHandlerClient::requestRecordAdditionMultiple(const std::vector<DBTy
 
 bool RequestsHandlerClient::requestUserAddition(const QString &nickname, const QString &password)
 {
-    QVariantList dataList {QVariant::fromValue(nickname),QVariant::fromValue(password)};
+    QVariantList dataList {QVariant::fromValue(nickname),QVariant::fromValue(encodePassword(password))};
     const net::Package package {QVariant::fromValue(dataList), net::PackageType::ADD_USER_REQUEST};
     return ClientManager::instance()->sendPackage(package);
 }
 
-bool RequestsHandlerClient::requestPassword(const QString &nickname)
+bool RequestsHandlerClient::requestPasswordValidation(const QString &nickname, const QString &password)
 {
-    QVariant data {QVariant::fromValue(nickname)};
-    const net::Package package {data, net::PackageType::PASSWORD_REQUEST};
+    QVariantList dataList {QVariant::fromValue(nickname), QVariant::fromValue(encodePassword(password))};
+    const net::Package package {QVariant::fromValue(dataList), net::PackageType::PASSWORD_VALIDATION_REQUEST};
     return ClientManager::instance()->sendPackage(package);
 }
 
@@ -153,11 +160,12 @@ void RequestsHandlerClient::onUserAdditionSucceed(const QVariant &data)
     emit userAdditionRequestCompleted(data.toBool());
 }
 
-void RequestsHandlerClient::onPasswordDownloadSucceed(const QVariant &data)
+void RequestsHandlerClient::onPasswordValidationSucceed(const QVariant &data)
 {
-    qDebug() << "Recieved password: ";
+    qDebug() << "Recieved password validation result: ";
     qDebug() << data;
-    emit passwordRequestCompleted(data.toString());
+
+    emit passwordValidationRequestCompleted(data.toBool());
 }
 
 void RequestsHandlerClient::onNicknameExistanceRequestSucceed(const QVariant &data)

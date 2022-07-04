@@ -30,8 +30,8 @@ std::pair<bool, QVariant> RecordsManager::findNickname(const QVariant &nicknameD
 {
     DBTypes::DBResult resultState;
     QVariant returnData;
-    std::tie(resultState, returnData) = m_processor->getPasswordData(nicknameData.toString());
-    if(returnData.isNull()){
+    std::tie(resultState, returnData) = m_processor->checkNicknameExistance(nicknameData);
+    if(returnData.toBool()){
         returnData.clear();
         returnData = QVariant::fromValue(false);
     } else {
@@ -42,11 +42,11 @@ std::pair<bool, QVariant> RecordsManager::findNickname(const QVariant &nicknameD
     return {resultState == DBTypes::DBResult::OK, returnData};
 }
 
-std::pair<bool,QVariant> RecordsManager::getPassword(const QVariant &nicknameData)
+std::pair<bool,QVariant> RecordsManager::checkPasswordValidity(const QVariant &data)
 {
     DBTypes::DBResult resultState;
     QVariant returnData;
-    std::tie(resultState, returnData) = m_processor->getPasswordData(nicknameData.toString());
+    std::tie(resultState, returnData) = m_processor->checkPassword(data.toList());
     return {resultState == DBTypes::DBResult::OK, returnData};
 
 }

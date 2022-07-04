@@ -15,7 +15,8 @@ class AuthorizationManager : public QObject
     Q_PROPERTY(int authorizationPageState READ authorizationPageState WRITE setAuthorizationPageState NOTIFY authorizationPageStateChanged)
     Q_PROPERTY(QString nickname READ nickname WRITE setNickname NOTIFY nicknameChanged)
     Q_PROPERTY(QString password READ password WRITE setPassword NOTIFY passwordChanged)
-    Q_PROPERTY(QString ethalonPassword READ ethalonPassword WRITE setEthalonPassword NOTIFY ethalonPasswordChanged)
+
+
     Q_PROPERTY(int dimension READ dimension WRITE setDimension NOTIFY dimensionChanged)
     Q_PROPERTY(bool connectionState READ connectionState WRITE setConnectionState NOTIFY connectionStateChanged)
     Q_PROPERTY(bool newUser READ newUser WRITE setNewUser NOTIFY newUserChanged)
@@ -33,9 +34,6 @@ public:
     const QString &password() const;
     Q_INVOKABLE void setPassword(const QString &newPassword);
 
-    const QString &ethalonPassword() const;
-    void setEthalonPassword(const QString &newEthalonPassword);
-
     int dimension() const;
     Q_INVOKABLE void setDimension(int newDimension);
 
@@ -47,21 +45,25 @@ public:
 
     Q_INVOKABLE void addNewUser(const QString &nickname, const QString &password);
 
-    Q_INVOKABLE void requestUserPassword(const QString& nickname);
+    Q_INVOKABLE void validatePassword(const QString& nickname, const QString &password);
 
     Q_INVOKABLE void checkNicknameExistance(const QString& nickname);
+
+    Q_INVOKABLE QByteArray encodePasswordFromQml(const QString& password);
+
+
 
 signals:
     void noServerConnection();
     void authorizationPageStateChanged(int newAuthorizathionPageState);
     void nicknameChanged(const QString &nickname);
     void passwordChanged(const QString &password);
-    void ethalonPasswordChanged(const QString &ethalonPassword);
+    void encodedPasswordChanged(const QByteArray &encodedPassword);
+    void passwordValidationCompleted(const bool validationResult);
     void dimensionChanged(int dimension);
     void connectionStateChanged(bool connectionState);
     void newUserChanged(bool newNewUser);
     void userAdded();
-
     void nicknameExistanceInternalServerError();
     void passwordInternalServerError();
     void userAdditionInternalServerError();
@@ -73,11 +75,15 @@ signals:
 
 
 
+
+
+
+
 private slots:
     void onConnectionStateChanged(net::ConnectionState state);
     void onInternalServerErrorOccured(net::InternalServerError error);
     void onUserAdded(bool additionResult);
-    void onPasswordDownloaded(const QString &password);
+    void onPasswordValidationRequestCompleted(const bool validationResult);
     void onNicknameExists(bool exists);
 
 private:
@@ -92,12 +98,12 @@ private:
     AuthorizationPageState m_authorizathionPageState;
     QString m_nickname;
     QString m_password;
-    QString m_ethalonPassword;
     int m_dimension;
     bool m_connectToServer;
     bool m_newUser;
 
     NicknameHint m_nicknameHint;
+
 
 };
 
