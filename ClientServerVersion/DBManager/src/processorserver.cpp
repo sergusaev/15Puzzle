@@ -33,8 +33,8 @@ std::pair<DBTypes::DBResult,QVariant> ProcessorServer::checkPassword(const QVari
 {
     QVariant returnData;
     DBTypes::DBResult resultState {m_d->selectUserPassword(userData.front().toString().toStdString(), returnData)};
-    qDebug() << "User data password hash: " << userData.back();
-    qDebug() << "User ethalon password hash: " << returnData;
+//    qDebug() << "User data password hash: " << userData.back();
+//    qDebug() << "User ethalon password hash: " << returnData;
     return std::make_pair(resultState, QVariant::fromValue(returnData == userData.back()));
 }
 
@@ -42,8 +42,8 @@ std::pair<DBTypes::DBResult, QVariant> ProcessorServer::checkNicknameExistance(c
 {
     QVariant returnData;
     DBTypes::DBResult resultState {m_d->selectUserPassword(nicknameData.toString().toStdString(), returnData)};
-    qDebug() << "User nickname: " << nicknameData;
-    qDebug() << "User ethalon password hash: " << returnData;
+//    qDebug() << "User nickname: " << nicknameData;
+//    qDebug() << "User ethalon password hash: " << returnData;
     return std::make_pair(resultState, QVariant::fromValue(returnData.isNull()));
 }
 

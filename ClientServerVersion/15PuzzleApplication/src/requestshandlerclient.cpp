@@ -11,8 +11,7 @@ QByteArray RequestsHandlerClient::encodePassword(const QString& password) {
 
 RequestsHandlerClient::RequestsHandlerClient()
 {
-    connect(ClientManager::instance(), &ClientManager::connectionStateChanged,
-            this, &RequestsHandlerClient::onConnectionStateChanged);
+
     connect(ClientManager::instance(), &ClientManager::topTimeResponse,
             this, &RequestsHandlerClient::onTopTimeDownloadSucceed);
     connect(ClientManager::instance(), &ClientManager::topTurnsResponse,
@@ -105,13 +104,7 @@ bool RequestsHandlerClient::requestNicknameExistance(const QString &nickname)
     return ClientManager::instance()->sendPackage(package);
 }
 
-void RequestsHandlerClient::onConnectionStateChanged(net::ConnectionState state)
-{
-//    if (state == net::ConnectionState::Connected)
-//    {
-//        requestBrowseContacts();
-//    }
-}
+
 
 Row transformQVariantListToRow(QVariantList& dataList) {
     return {dataList.first().toString(), dataList.last().toInt()};

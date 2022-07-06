@@ -11,12 +11,6 @@ CustomPage {
     property string authorizationState: ""
     property bool newUser: false
 
-    onAuthorizationStateChanged: {
-        console.log("root.onAuthorizationStateChanged signal caught" )
-        console.log("Current root.authorizationState: " + root.authorizationState)
-        console.log("Current _ok_button.state: " + _ok_button.state)
-    }
-
     Connections {
         id: _authorization_page_connections
         target: SignalsHandler
@@ -42,8 +36,8 @@ CustomPage {
 
 
         function onPasswordValidationCompleted(validationResult) {
-            console.log("onPasswordValidationCompleted signal caught, validationResult: " + validationResult)
-            console.log("Current _ok_button_state: " + _ok_button.state)
+//            console.log("onPasswordValidationCompleted signal caught, validationResult: " + validationResult)
+//            console.log("Current _ok_button_state: " + _ok_button.state)
             if(!validationResult) {
                 _invalid_password_window.visible = true
             } else {
@@ -53,17 +47,17 @@ CustomPage {
         }
 
         function onNicknameChanged(nickname) {
-            console.log("onNicknameChanged signal caught, nickname: " + nickname)
+//            console.log("onNicknameChanged signal caught, nickname: " + nickname)
             _nickname_text_field.text = nickname
         }
 
         function onPasswordChanged(password) {
-            console.log("onPasswordChanged signal caught, password: " + password)
+//            console.log("onPasswordChanged signal caught, password: " + password)
             _password_text_field.text = password
         }
 
         function onDimensionChanged(dimension) {
-            console.log("onDimensionChanged signal caught, dimension: " + dimension)
+//            console.log("onDimensionChanged signal caught, dimension: " + dimension)
             _puzzle_size_selection_combobox.currentIndex = dimension - 2
         }
 
@@ -335,7 +329,7 @@ CustomPage {
         }
 
         onClicked:  {
-            console.log("Ok button pressed, state: " + state)
+//            console.log("Ok button pressed, state: " + state)
             if (state === "NickInput") {
                 AuthorizationManager.setNickname(_nickname_text_field.text)
                 AuthorizationManager.setAuthorizationPageState(2)

@@ -35,7 +35,6 @@ signals:
     void internalServerErrorOccured(net::InternalServerError error);
 
 private slots:
-    void onConnectionStateChanged(net::ConnectionState state);
     void onTopTimeDownloadSucceed(const std::vector<QVariant>& data);
     void onTopTurnsDownloadSucceed(const std::vector<QVariant>& data);
     void onRecordAdditionSucceed(const QVariant &data);
