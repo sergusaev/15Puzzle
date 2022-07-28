@@ -22,7 +22,7 @@ public:
 
 
     std::unique_ptr<QSqlDatabase, DBCloser> m_database;
-
+    virtual ~DBManager() = default;
     DBTypes::DBState m_state {DBTypes::DBState::OK};
     bool m_isValid {true};
 

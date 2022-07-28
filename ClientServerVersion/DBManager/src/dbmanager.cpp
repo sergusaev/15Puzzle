@@ -7,6 +7,7 @@
 
 namespace db{
 
+
 bool DBManager::setUp()
 {
     const QString driver {"QSQLITE"};
